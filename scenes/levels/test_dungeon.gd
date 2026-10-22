@@ -13,8 +13,7 @@ var _enemies_left: int = 0
 func _ready() -> void:
 	nav_region.bake_navigation_mesh(false)
 
-	hud.track_player(player.health)
-	player.died.connect(hud.show_game_over)
+	hud.track_player(player)
 
 	for enemy in get_tree().get_nodes_in_group("enemies"):
 		_enemies_left += 1

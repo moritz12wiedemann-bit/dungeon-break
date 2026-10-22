@@ -1,13 +1,19 @@
 class_name DamageNumber
 extends Label3D
-## Schadenszahl, die kurz über einer Figur aufsteigt und verblasst.
+## Schadenszahl (oder kurzer Text), die über einer Figur aufsteigt und verblasst.
 ## Aufruf von überall: DamageNumber.spawn(self, 12, Color.WHITE)
+## oder für Text: DamageNumber.spawn_text(self, "+20 XP", Color.VIOLET)
 
 
 ## Erzeugt eine Zahl über dem Knoten `owner_node`.
 static func spawn(owner_node: Node3D, amount: int, color: Color) -> void:
+	spawn_text(owner_node, str(amount), color)
+
+
+## Erzeugt einen Text über dem Knoten `owner_node`.
+static func spawn_text(owner_node: Node3D, text_to_show: String, color: Color) -> void:
 	var label := DamageNumber.new()
-	label.text = str(amount)
+	label.text = text_to_show
 	label.modulate = color
 	owner_node.get_tree().current_scene.add_child(label)
 	label.global_position = owner_node.global_position + Vector3(randf_range(-0.3, 0.3), 2.2, 0)

@@ -7,6 +7,8 @@ extends CharacterBody3D
 
 ## Wird ausgelöst, wenn der Spieler stirbt (die Benutzeroberfläche zeigt dann "Gestorben").
 signal died
+## Wird ausgelöst, wenn der Spieler wiederbelebt wurde.
+signal revived
 
 ## Laufgeschwindigkeit in Metern pro Sekunde.
 @export var move_speed: float = 6.0
@@ -24,14 +26,36 @@ signal died
 ## Sekunden zwischen zwei Schlägen.
 @export var attack_cooldown: float = 0.6
 
+@export_group("Stufenaufstieg")
+## So viele maximale Lebenspunkte kommen pro Stufe dazu.
+@export var health_per_level: int = 10
+## So viel Schaden kommt pro Stufe dazu.
+@export var damage_per_level: int = 1
+
+@export_group("Heiltrank")
+## Anteil der maximalen Lebenspunkte, den ein Trank heilt (0.4 = 40 %).
+@export var potion_heal_ratio: float = 0.4
+## Abklingzeit des Tranks in Sekunden.
+@export var potion_cooldown: float = 20.0
+
+@export_group("Wiederbeleben")
+## Mit welchem Anteil der maximalen Lebenspunkte man wiederbelebt wird.
+@export var revive_health_ratio: float = 0.25
+## So lange (Sekunden) ist man nach dem Wiederbeleben unverwundbar.
+@export var revive_protection: float = 3.0
+
 @onready var nav_agent: NavigationAgent3D = $NavigationAgent3D
 @onready var health: Health = $Health
+@onready var experience: Experience = $Experience
 @onready var visual: Node3D = $Visual
 
 var _gravity: float = ProjectSettings.get_setting("physics/3d/default_gravity")
 ## Der Gegner, den wir gerade angreifen (null = keiner).
 var _attack_target: Node3D = null
 var _cooldown_left: float = 0.0
+## Sekunden, bis der Heiltrank wieder benutzt werden kann (0 = bereit).
+var potion_cooldown_left: float = 0.0
+var _protection_left: float = 0.0
 
 
 func _ready() -> void:
@@ -40,12 +64,20 @@ func _ready() -> void:
 	nav_agent.target_position = global_position
 	health.damaged.connect(_on_damaged)
 	health.died.connect(_on_died)
+	experience.leveled_up.connect(_on_leveled_up)
 
 
 func _unhandled_input(event: InputEvent) -> void:
 	# Ein einzelner Klick setzt sofort ein neues Ziel.
 	if event.is_action_pressed("move"):
 		_pick_target_from_mouse()
+	elif event.is_action_pressed("potion"):
+		drink_potion()
+
+
+func _process(delta: float) -> void:
+	potion_cooldown_left = maxf(potion_cooldown_left - delta, 0.0)
+	_protection_left = maxf(_protection_left - delta, 0.0)
 
 
 func _physics_process(delta: float) -> void:
@@ -93,7 +125,40 @@ func _physics_process(delta: float) -> void:
 
 ## Wird von Gegnern aufgerufen, wenn sie uns treffen.
 func take_damage(amount: int) -> void:
+	if _protection_left > 0.0:
+		return
 	health.take_damage(amount)
+
+
+## Wird von Gegnern aufgerufen, wenn sie sterben.
+func gain_xp(amount: int) -> void:
+	if experience.is_max_level():
+		return
+	experience.add_xp(amount)
+	DamageNumber.spawn_text(self, "+%d XP" % amount, Color(0.75, 0.55, 1.0))
+
+
+## Trinkt einen Heiltrank, falls die Abklingzeit vorbei ist. Gibt true zurück, wenn es geklappt hat.
+func drink_potion() -> bool:
+	if health.is_dead() or potion_cooldown_left > 0.0:
+		return false
+	potion_cooldown_left = potion_cooldown
+	var amount := int(round(health.max_health * potion_heal_ratio))
+	health.heal(amount)
+	DamageNumber.spawn_text(self, "+%d" % amount, Color(0.4, 1.0, 0.4))
+	return true
+
+
+## Holt den toten Spieler an derselben Stelle zurück, mit wenig Leben und kurzem Schutz.
+func revive() -> void:
+	if not health.is_dead():
+		return
+	health.revive(int(round(health.max_health * revive_health_ratio)))
+	_protection_left = revive_protection
+	nav_agent.target_position = global_position
+	var tween := create_tween()
+	tween.tween_property(visual, "rotation:x", 0.0, 0.3)
+	revived.emit()
 
 
 func is_dead() -> bool:
@@ -132,7 +197,8 @@ func _in_attack_range(target: Node3D) -> bool:
 
 func _attack(target: Node3D) -> void:
 	_cooldown_left = attack_cooldown
-	target.take_damage(randi_range(damage_min, damage_max))
+	var bonus := (experience.level - 1) * damage_per_level
+	target.take_damage(randi_range(damage_min, damage_max) + bonus)
 	_play_lunge()
 
 
@@ -145,6 +211,12 @@ func _play_lunge() -> void:
 
 func _on_damaged(amount: int) -> void:
 	DamageNumber.spawn(self, amount, Color(1.0, 0.35, 0.3))
+
+
+func _on_leveled_up(new_level: int) -> void:
+	health.set_max_health(health.max_health + health_per_level)
+	health.heal(health.max_health)
+	DamageNumber.spawn_text(self, "Stufe %d!" % new_level, Color(1.0, 0.85, 0.2))
 
 
 func _on_died() -> void:

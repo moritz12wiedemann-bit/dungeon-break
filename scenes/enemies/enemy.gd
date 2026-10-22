@@ -17,6 +17,8 @@ enum State { IDLE, CHASE, RETURN, DEAD }
 @export var leash_range: float = 18.0
 ## Auf welchen Physik-Ebenen Wände die Sicht blockieren (1 = Welt).
 @export_flags_3d_physics var sight_mask: int = 1
+## So viele Erfahrungspunkte bekommt der Spieler, wenn er diesen Gegner besiegt.
+@export var xp_reward: int = 20
 
 @export_group("Kampf")
 @export var damage_min: int = 5
@@ -176,6 +178,8 @@ func _on_died() -> void:
 	# Keine Kollision mehr: man kann über die Leiche laufen und nicht mehr draufklicken.
 	collision.set_deferred("disabled", true)
 	health_bar.hide()
+	if _player and _player.has_method("gain_xp"):
+		_player.gain_xp(xp_reward)
 	died.emit()
 	# Umkippen, im Boden versinken, dann verschwinden.
 	var tween := create_tween()

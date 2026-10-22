@@ -8,6 +8,7 @@ Ein Action-RPG im Stil von Diablo 3, gebaut mit **Godot 4.7** (GDScript, Forward
 2. Im Editor oben rechts auf **▶ (F5)** drücken. Der Test-Dungeon startet.
 3. **Linke Maustaste auf den Boden** klicken oder gedrückt halten: die Figur läuft zum Mauszeiger und findet selbst den Weg um Wände herum.
 4. **Linke Maustaste auf einen Gegner**: die Figur läuft hin und schlägt so lange zu, bis er tot ist.
+5. **Taste 1** oder Klick auf den roten Kreis rechts neben dem Lebensbalken: Heiltrank trinken (heilt 40 %, danach 20 Sekunden Abklingzeit).
 
 Das alte Testlevel (`scenes/levels/test_level.tscn`) gibt es noch. Zum Starten die Szene im Editor öffnen und **F6** („Aktuelle Szene starten“) drücken.
 
@@ -18,7 +19,15 @@ Vier Räume mit Gängen: Startraum (unten links), zwei Räume mit Gegnern und ei
 - **Gegner** (rote Kapseln) stehen still, bis du ihnen näher als ihre *Aggro-Reichweite* kommst und keine Wand dazwischen ist. Dann verfolgen sie dich und schlagen zu. Wer getroffen wird, wehrt sich sofort.
 - Läufst du weit genug weg (*Leine*), geben sie auf, gehen zurück an ihren Platz und heilen sich.
 - Oben links steht, wie viele Gegner noch leben. Unten in der Mitte ist dein Lebensbalken. Gegner zeigen ihren Balken, sobald sie verletzt sind.
-- Stirbst du, erscheint „Du bist gestorben!“ mit einem Knopf zum Neustarten.
+- Stirbst du, erscheint „Du bist gestorben!“. Mit **Wiederbeleben** stehst du an derselben Stelle wieder auf, mit 25 % Leben und 3 Sekunden Schutz.
+- Leben kommt von selbst zurück: 1 Lebenspunkt pro Sekunde.
+
+## Erfahrung und Stufen
+
+- Besiegte Gegner geben Erfahrung (XP): normale Gegner 20, der Brocken 150. Der lila Balken unten zeigt Stufe und XP.
+- Höchste Stufe ist **100**. Jede Stufe braucht mehr XP als die vorige: `100 × Stufe^1,6` (Stufe 1 → 2: 100 XP, Stufe 10: ca. 4.000, Stufe 50: ca. 52.000, Stufe 99: ca. 156.000).
+- Pro Stufe: +10 maximale Lebenspunkte, +1 Schaden, und du wirst voll geheilt.
+- Die Werte stehen im Spieler (Inspektor, Gruppen „Stufenaufstieg“, „Heiltrank“, „Wiederbeleben“) und im Kind-Knoten `Experience`.
 
 Werte wie Lebenspunkte, Schaden, Tempo und Reichweiten kannst du im Editor ändern: Gegner (oder Spieler) in der Szene anklicken und rechts im **Inspektor** die Werte anpassen. Die Lebenspunkte stehen im Kind-Knoten `Health`.
 
@@ -29,7 +38,7 @@ Werte wie Lebenspunkte, Schaden, Tempo und Reichweiten kannst du im Editor ände
 | `scenes/levels/` | Levels (Testlevel, später Hub, Overworld, Dungeons) |
 | `scenes/player/` | Spielerfigur: Szene + Skript |
 | `scenes/enemies/` | Gegner: `enemy.tscn` (normaler Gegner) und `enemy_brute.tscn` (stärkere Variante, „erbt“ vom normalen Gegner) |
-| `scenes/components/` | Bausteine, die an mehrere Figuren gehängt werden, z. B. `health.gd` (Lebenspunkte) |
+| `scenes/components/` | Bausteine, die an Figuren gehängt werden: `health.gd` (Lebenspunkte, Regeneration), `experience.gd` (XP und Stufe) |
 | `scenes/camera/` | Iso-Kamera, die dem Spieler folgt |
 | `scenes/ui/` | Bildschirm-Anzeige (HUD), Lebensbalken über Gegnern, Schadenszahlen |
 | `assets/models/` | 3D-Modelle (z. B. KayKit, Kenney, Quaternius) |
