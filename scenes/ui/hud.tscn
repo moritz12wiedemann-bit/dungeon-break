@@ -1,0 +1,107 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scenes/ui/hud.gd" id="1_hudsc"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_bg001"]
+bg_color = Color(0.08, 0.05, 0.05, 0.85)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.4, 0.3, 0.2, 1)
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_right = 4
+corner_radius_bottom_left = 4
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_fill01"]
+bg_color = Color(0.75, 0.1, 0.1, 1)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_panel1"]
+bg_color = Color(0.05, 0.04, 0.04, 0.9)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.55, 0.4, 0.2, 1)
+content_margin_left = 32.0
+content_margin_top = 24.0
+content_margin_right = 32.0
+content_margin_bottom = 24.0
+
+[node name="HUD" type="CanvasLayer" unique_id=1620394857]
+script = ExtResource("1_hudsc")
+
+[node name="HealthBar" type="ProgressBar" parent="." unique_id=1938475620]
+unique_name_in_owner = true
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -160.0
+offset_top = -56.0
+offset_right = 160.0
+offset_bottom = -28.0
+grow_horizontal = 2
+grow_vertical = 0
+mouse_filter = 2
+theme_override_styles/background = SubResource("StyleBoxFlat_bg001")
+theme_override_styles/fill = SubResource("StyleBoxFlat_fill01")
+value = 100.0
+show_percentage = false
+
+[node name="HealthLabel" type="Label" parent="HealthBar" unique_id=1203948576]
+unique_name_in_owner = true
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/outline_size = 4
+text = "100 / 100"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="EnemiesLabel" type="Label" parent="." unique_id=1847563920]
+unique_name_in_owner = true
+offset_left = 16.0
+offset_top = 12.0
+offset_right = 216.0
+offset_bottom = 38.0
+theme_override_constants/outline_size = 4
+theme_override_font_sizes/font_size = 20
+text = "Gegner übrig: 0"
+
+[node name="MessagePanel" type="PanelContainer" parent="." unique_id=1092837465]
+unique_name_in_owner = true
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -150.0
+offset_top = -70.0
+offset_right = 150.0
+offset_bottom = 70.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_panel1")
+
+[node name="VBox" type="VBoxContainer" parent="MessagePanel" unique_id=1564738291]
+theme_override_constants/separation = 16
+alignment = 1
+
+[node name="MessageLabel" type="Label" parent="MessagePanel/VBox" unique_id=1473829105]
+unique_name_in_owner = true
+theme_override_font_sizes/font_size = 28
+text = "Du bist gestorben!"
+horizontal_alignment = 1
+
+[node name="RestartButton" type="Button" parent="MessagePanel/VBox" unique_id=1837465029]
+unique_name_in_owner = true
+text = "Neu starten"

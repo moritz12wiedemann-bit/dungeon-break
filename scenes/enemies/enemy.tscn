@@ -1,0 +1,59 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scenes/enemies/enemy.gd" id="1_en3my"]
+[ext_resource type="Script" path="res://scenes/components/health.gd" id="2_hp4pl"]
+[ext_resource type="Script" path="res://scenes/ui/health_bar_3d.gd" id="3_hb3dx"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_en1bd"]
+albedo_color = Color(0.75, 0.2, 0.18, 1)
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_en1bd"]
+material = SubResource("StandardMaterial3D_en1bd")
+radius = 0.4
+height = 1.7
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_en1ey"]
+albedo_color = Color(1, 0.9, 0.3, 1)
+emission_enabled = true
+emission = Color(1, 0.8, 0.2, 1)
+
+[sub_resource type="BoxMesh" id="BoxMesh_en1ey"]
+material = SubResource("StandardMaterial3D_en1ey")
+size = Vector3(0.35, 0.1, 0.15)
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_en1cs"]
+radius = 0.4
+height = 1.7
+
+[node name="Enemy" type="CharacterBody3D" unique_id=1478209931]
+collision_layer = 4
+collision_mask = 7
+script = ExtResource("1_en3my")
+
+[node name="Visual" type="Node3D" parent="." unique_id=1938274651]
+
+[node name="Body" type="MeshInstance3D" parent="Visual" unique_id=1209384756]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.85, 0)
+mesh = SubResource("CapsuleMesh_en1bd")
+
+[node name="Eyes" type="MeshInstance3D" parent="Visual" unique_id=1584930275]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.35, 0.36)
+mesh = SubResource("BoxMesh_en1ey")
+
+[node name="Collision" type="CollisionShape3D" parent="." unique_id=1093847561]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.85, 0)
+shape = SubResource("CapsuleShape3D_en1cs")
+
+[node name="NavigationAgent3D" type="NavigationAgent3D" parent="." unique_id=1847362910]
+path_desired_distance = 0.5
+target_desired_distance = 0.3
+height = 1.7
+radius = 0.4
+
+[node name="Health" type="Node" parent="." unique_id=1293847560]
+script = ExtResource("2_hp4pl")
+max_health = 40
+
+[node name="HealthBar" type="Node3D" parent="." unique_id=1738492019]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.1, 0)
+script = ExtResource("3_hb3dx")

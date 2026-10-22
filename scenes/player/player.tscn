@@ -1,6 +1,7 @@
 [gd_scene format=3]
 
 [ext_resource type="Script" path="res://scenes/player/player.gd" id="1_8afob"]
+[ext_resource type="Script" path="res://scenes/components/health.gd" id="2_hp4pl"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_dovo2"]
 albedo_color = Color(0.2, 0.45, 0.9, 1)
@@ -23,13 +24,16 @@ height = 1.8
 
 [node name="Player" type="CharacterBody3D" unique_id=1235802749]
 collision_layer = 2
+collision_mask = 5
 script = ExtResource("1_8afob")
 
-[node name="Body" type="MeshInstance3D" parent="." unique_id=1944419813]
+[node name="Visual" type="Node3D" parent="." unique_id=1602847311]
+
+[node name="Body" type="MeshInstance3D" parent="Visual" unique_id=1944419813]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.9, 0)
 mesh = SubResource("CapsuleMesh_gmlin")
 
-[node name="Nose" type="MeshInstance3D" parent="." unique_id=646711922]
+[node name="Nose" type="MeshInstance3D" parent="Visual" unique_id=646711922]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.4, 0.4)
 mesh = SubResource("BoxMesh_p47bc")
 
@@ -42,3 +46,7 @@ path_desired_distance = 0.5
 target_desired_distance = 0.3
 height = 1.8
 radius = 0.4
+
+[node name="Health" type="Node" parent="." unique_id=1188043527]
+script = ExtResource("2_hp4pl")
+max_health = 150
