@@ -1,0 +1,67 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scenes/world/dungeon_altar.gd" id="1_altar"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_al001"]
+albedo_color = Color(0.3, 0.28, 0.32, 1)
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_al002"]
+material = SubResource("StandardMaterial3D_al001")
+top_radius = 0.9
+bottom_radius = 1.2
+height = 1.2
+radial_segments = 8
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_al003"]
+albedo_color = Color(0.7, 0.2, 1, 1)
+emission_enabled = true
+emission = Color(0.7, 0.2, 1, 1)
+emission_energy_multiplier = 2.0
+
+[sub_resource type="PrismMesh" id="PrismMesh_al004"]
+material = SubResource("StandardMaterial3D_al003")
+size = Vector3(0.6, 1.0, 0.6)
+
+[sub_resource type="CylinderShape3D" id="CylinderShape3D_al005"]
+height = 3.0
+radius = 1.2
+
+[node name="DungeonAltar" type="StaticBody3D" unique_id=1394857210]
+collision_layer = 9
+collision_mask = 0
+script = ExtResource("1_altar")
+
+[node name="Base" type="MeshInstance3D" parent="." unique_id=1203948571]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.6, 0)
+mesh = SubResource("CylinderMesh_al002")
+
+[node name="Crystal" type="Node3D" parent="." unique_id=1847562039]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.2, 0)
+
+[node name="Top" type="MeshInstance3D" parent="Crystal" unique_id=1564738299]
+mesh = SubResource("PrismMesh_al004")
+
+[node name="Bottom" type="MeshInstance3D" parent="Crystal" unique_id=1092837466]
+transform = Transform3D(1, 0, 0, 0, -1, 0, 0, 0, 1, 0, -1, 0)
+mesh = SubResource("PrismMesh_al004")
+
+[node name="Light" type="OmniLight3D" parent="." unique_id=1738492011]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.5, 0)
+light_color = Color(0.7, 0.3, 1, 1)
+light_energy = 2.5
+omni_range = 8.0
+
+[node name="Collision" type="CollisionShape3D" parent="." unique_id=1475839210]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, 0)
+shape = SubResource("CylinderShape3D_al005")
+
+[node name="Label" type="Label3D" parent="." unique_id=1928374652]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.6, 0)
+pixel_size = 0.007
+billboard = 1
+no_depth_test = true
+modulate = Color(0.85, 0.6, 1, 1)
+font_size = 48
+outline_size = 10
+text = "Dungeon-Altar
+(anklicken: neuer Dungeon)"

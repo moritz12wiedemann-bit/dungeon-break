@@ -1,6 +1,6 @@
 extends CanvasLayer
 ## Bildschirm-Anzeige: Lebensbalken, Erfahrungsbalken mit Stufe, Heiltrank-Knopf,
-## Inventar-Fenster, übrige Gegner, "Gestorben"-Fenster mit Wiederbeleben und Siegesmeldung.
+## Inventar-Fenster, Ort und übrige Gegner, kurze Meldungen und "Gestorben"-Fenster mit Wiederbeleben.
 
 @onready var health_bar: ProgressBar = %HealthBar
 @onready var health_label: Label = %HealthLabel
@@ -10,6 +10,8 @@ extends CanvasLayer
 @onready var potion_cooldown: ColorRect = %PotionCooldown
 @onready var potion_label: Label = %PotionLabel
 @onready var enemies_label: Label = %EnemiesLabel
+@onready var location_label: Label = %LocationLabel
+@onready var toast_label: Label = %ToastLabel
 @onready var message_panel: PanelContainer = %MessagePanel
 @onready var message_label: Label = %MessageLabel
 @onready var message_button: Button = %MessageButton
@@ -19,10 +21,13 @@ extends CanvasLayer
 var _player: Node = null
 ## Was beim Klick auf den Knopf im Meldungsfenster passieren soll.
 var _message_action: Callable
+var _toast_tween: Tween
 
 
 func _ready() -> void:
 	message_panel.hide()
+	toast_label.hide()
+	enemies_label.hide()
 	message_button.pressed.connect(_on_message_button_pressed)
 	potion_button.pressed.connect(_on_potion_pressed)
 	inventory_button.pressed.connect(inventory_panel.toggle)
@@ -52,11 +57,26 @@ func track_player(player: Node) -> void:
 
 
 func set_enemies_left(count: int) -> void:
+	enemies_label.show()
 	enemies_label.text = "Gegner übrig: %d" % count
 
 
-func show_victory() -> void:
-	_show_message("Dungeon gesäubert!", "Nochmal", get_tree().reload_current_scene)
+## Zeigt oben links, wo man gerade ist (z. B. "Stadt").
+func set_location(text: String) -> void:
+	location_label.text = text
+
+
+## Zeigt oben in der Mitte kurz eine Meldung, die danach verblasst.
+func show_toast(text: String, seconds: float = 4.0) -> void:
+	toast_label.text = text
+	toast_label.modulate.a = 1.0
+	toast_label.show()
+	if _toast_tween:
+		_toast_tween.kill()
+	_toast_tween = create_tween()
+	_toast_tween.tween_interval(seconds)
+	_toast_tween.tween_property(toast_label, "modulate:a", 0.0, 1.0)
+	_toast_tween.tween_callback(toast_label.hide)
 
 
 func _show_game_over() -> void:

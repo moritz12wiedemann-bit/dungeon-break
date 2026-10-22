@@ -1,0 +1,260 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scenes/levels/town.gd" id="1_town"]
+[ext_resource type="PackedScene" path="res://scenes/player/player.tscn" id="2_v45ci"]
+[ext_resource type="PackedScene" path="res://scenes/camera/iso_camera.tscn" id="3_48ne7"]
+[ext_resource type="PackedScene" path="res://scenes/ui/hud.tscn" id="4_hud00"]
+[ext_resource type="PackedScene" path="res://scenes/world/dungeon_altar.tscn" id="5_altar"]
+
+[sub_resource type="Environment" id="Environment_tw001"]
+background_mode = 1
+background_color = Color(0.35, 0.45, 0.6, 1)
+ambient_light_source = 2
+ambient_light_color = Color(0.7, 0.72, 0.8, 1)
+ambient_light_energy = 0.6
+tonemap_mode = 2
+
+[sub_resource type="NavigationMesh" id="NavigationMesh_tw001"]
+geometry_parsed_geometry_type = 1
+geometry_collision_mask = 1
+cell_height = 0.1
+agent_height = 1.8
+agent_max_climb = 0.3
+
+[sub_resource type="StandardMaterial3D" id="Mat_ground"]
+albedo_color = Color(0.32, 0.38, 0.22, 1)
+
+[sub_resource type="StandardMaterial3D" id="Mat_path"]
+albedo_color = Color(0.5, 0.45, 0.35, 1)
+
+[sub_resource type="StandardMaterial3D" id="Mat_fence"]
+albedo_color = Color(0.4, 0.28, 0.18, 1)
+
+[sub_resource type="StandardMaterial3D" id="Mat_house"]
+albedo_color = Color(0.75, 0.68, 0.55, 1)
+
+[sub_resource type="StandardMaterial3D" id="Mat_roof"]
+albedo_color = Color(0.55, 0.2, 0.15, 1)
+
+[sub_resource type="StandardMaterial3D" id="Mat_well"]
+albedo_color = Color(0.5, 0.5, 0.52, 1)
+
+[sub_resource type="BoxMesh" id="Box_0"]
+material = SubResource("Mat_ground")
+size = Vector3(40, 1, 40)
+
+[sub_resource type="BoxShape3D" id="Shape_0"]
+size = Vector3(40, 1, 40)
+
+[sub_resource type="PlaneMesh" id="Plane_path"]
+material = SubResource("Mat_path")
+size = Vector2(4, 26)
+
+[sub_resource type="BoxMesh" id="Box_1"]
+material = SubResource("Mat_fence")
+size = Vector3(40, 1.2, 0.5)
+
+[sub_resource type="BoxShape3D" id="Shape_1"]
+size = Vector3(40, 1.2, 0.5)
+
+[sub_resource type="BoxMesh" id="Box_2"]
+material = SubResource("Mat_fence")
+size = Vector3(0.5, 1.2, 40)
+
+[sub_resource type="BoxShape3D" id="Shape_2"]
+size = Vector3(0.5, 1.2, 40)
+
+[sub_resource type="BoxMesh" id="Box_3"]
+material = SubResource("Mat_house")
+size = Vector3(7, 3.5, 6)
+
+[sub_resource type="BoxShape3D" id="Shape_3"]
+size = Vector3(7, 3.5, 6)
+
+[sub_resource type="PrismMesh" id="Prism_roof"]
+material = SubResource("Mat_roof")
+size = Vector3(7.6, 2, 6.6)
+
+[sub_resource type="CylinderMesh" id="Cyl_well"]
+material = SubResource("Mat_well")
+top_radius = 1.3
+bottom_radius = 1.4
+height = 1.0
+
+[sub_resource type="CylinderShape3D" id="CylShape_well"]
+height = 1.0
+radius = 1.4
+
+[node name="Town" type="Node3D" unique_id=1300000001]
+script = ExtResource("1_town")
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=1300332094]
+environment = SubResource("Environment_tw001")
+
+[node name="Sun" type="DirectionalLight3D" parent="." unique_id=1300340001]
+transform = Transform3D(0.8660254, -0.40957603, 0.28678823, 0, 0.57357645, 0.81915206, -0.5, -0.7094065, 0.49673176, 0, 0, 0)
+light_color = Color(1, 0.85, 0.7, 1)
+light_energy = 1.0
+shadow_enabled = true
+
+[node name="NavigationRegion3D" type="NavigationRegion3D" parent="." unique_id=1300347908]
+navigation_mesh = SubResource("NavigationMesh_tw001")
+
+[node name="Geometry" type="Node3D" parent="NavigationRegion3D" unique_id=1300355815]
+
+[node name="Ground" type="StaticBody3D" parent="NavigationRegion3D/Geometry" unique_id=1300007907]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.5, 0)
+collision_mask = 0
+
+[node name="Mesh" type="MeshInstance3D" parent="NavigationRegion3D/Geometry/Ground" unique_id=1300015814]
+mesh = SubResource("Box_0")
+
+[node name="Collision" type="CollisionShape3D" parent="NavigationRegion3D/Geometry/Ground" unique_id=1300023721]
+shape = SubResource("Shape_0")
+
+[node name="Path" type="MeshInstance3D" parent="." unique_id=1300031628]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.01, 1)
+mesh = SubResource("Plane_path")
+
+[node name="FenceNorth" type="StaticBody3D" parent="NavigationRegion3D/Geometry" unique_id=1300039535]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.6, -20)
+collision_mask = 0
+
+[node name="Mesh" type="MeshInstance3D" parent="NavigationRegion3D/Geometry/FenceNorth" unique_id=1300047442]
+mesh = SubResource("Box_1")
+
+[node name="Collision" type="CollisionShape3D" parent="NavigationRegion3D/Geometry/FenceNorth" unique_id=1300055349]
+shape = SubResource("Shape_1")
+
+[node name="FenceSouth" type="StaticBody3D" parent="NavigationRegion3D/Geometry" unique_id=1300063256]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.6, 20)
+collision_mask = 0
+
+[node name="Mesh" type="MeshInstance3D" parent="NavigationRegion3D/Geometry/FenceSouth" unique_id=1300071163]
+mesh = SubResource("Box_1")
+
+[node name="Collision" type="CollisionShape3D" parent="NavigationRegion3D/Geometry/FenceSouth" unique_id=1300079070]
+shape = SubResource("Shape_1")
+
+[node name="FenceWest" type="StaticBody3D" parent="NavigationRegion3D/Geometry" unique_id=1300086977]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -20, 0.6, 0)
+collision_mask = 0
+
+[node name="Mesh" type="MeshInstance3D" parent="NavigationRegion3D/Geometry/FenceWest" unique_id=1300094884]
+mesh = SubResource("Box_2")
+
+[node name="Collision" type="CollisionShape3D" parent="NavigationRegion3D/Geometry/FenceWest" unique_id=1300102791]
+shape = SubResource("Shape_2")
+
+[node name="FenceEast" type="StaticBody3D" parent="NavigationRegion3D/Geometry" unique_id=1300110698]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 20, 0.6, 0)
+collision_mask = 0
+
+[node name="Mesh" type="MeshInstance3D" parent="NavigationRegion3D/Geometry/FenceEast" unique_id=1300118605]
+mesh = SubResource("Box_2")
+
+[node name="Collision" type="CollisionShape3D" parent="NavigationRegion3D/Geometry/FenceEast" unique_id=1300126512]
+shape = SubResource("Shape_2")
+
+[node name="House1" type="StaticBody3D" parent="NavigationRegion3D/Geometry" unique_id=1300134419]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -12, 1.75, -9)
+collision_mask = 0
+
+[node name="Mesh" type="MeshInstance3D" parent="NavigationRegion3D/Geometry/House1" unique_id=1300142326]
+mesh = SubResource("Box_3")
+
+[node name="Collision" type="CollisionShape3D" parent="NavigationRegion3D/Geometry/House1" unique_id=1300150233]
+shape = SubResource("Shape_3")
+
+[node name="Roof" type="MeshInstance3D" parent="NavigationRegion3D/Geometry/House1" unique_id=1300158140]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.75, 0)
+mesh = SubResource("Prism_roof")
+
+[node name="House2" type="StaticBody3D" parent="NavigationRegion3D/Geometry" unique_id=1300166047]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 12, 1.75, -9)
+collision_mask = 0
+
+[node name="Mesh" type="MeshInstance3D" parent="NavigationRegion3D/Geometry/House2" unique_id=1300173954]
+mesh = SubResource("Box_3")
+
+[node name="Collision" type="CollisionShape3D" parent="NavigationRegion3D/Geometry/House2" unique_id=1300181861]
+shape = SubResource("Shape_3")
+
+[node name="Roof" type="MeshInstance3D" parent="NavigationRegion3D/Geometry/House2" unique_id=1300189768]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.75, 0)
+mesh = SubResource("Prism_roof")
+
+[node name="House3" type="StaticBody3D" parent="NavigationRegion3D/Geometry" unique_id=1300197675]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -12, 1.75, 8)
+collision_mask = 0
+
+[node name="Mesh" type="MeshInstance3D" parent="NavigationRegion3D/Geometry/House3" unique_id=1300205582]
+mesh = SubResource("Box_3")
+
+[node name="Collision" type="CollisionShape3D" parent="NavigationRegion3D/Geometry/House3" unique_id=1300213489]
+shape = SubResource("Shape_3")
+
+[node name="Roof" type="MeshInstance3D" parent="NavigationRegion3D/Geometry/House3" unique_id=1300221396]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.75, 0)
+mesh = SubResource("Prism_roof")
+
+[node name="House4" type="StaticBody3D" parent="NavigationRegion3D/Geometry" unique_id=1300229303]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 12, 1.75, 8)
+collision_mask = 0
+
+[node name="Mesh" type="MeshInstance3D" parent="NavigationRegion3D/Geometry/House4" unique_id=1300237210]
+mesh = SubResource("Box_3")
+
+[node name="Collision" type="CollisionShape3D" parent="NavigationRegion3D/Geometry/House4" unique_id=1300245117]
+shape = SubResource("Shape_3")
+
+[node name="Roof" type="MeshInstance3D" parent="NavigationRegion3D/Geometry/House4" unique_id=1300253024]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.75, 0)
+mesh = SubResource("Prism_roof")
+
+[node name="Well" type="StaticBody3D" parent="NavigationRegion3D/Geometry" unique_id=1300260931]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6, 0.5, 2)
+collision_mask = 0
+
+[node name="Mesh" type="MeshInstance3D" parent="NavigationRegion3D/Geometry/Well" unique_id=1300268838]
+mesh = SubResource("Cyl_well")
+
+[node name="Collision" type="CollisionShape3D" parent="NavigationRegion3D/Geometry/Well" unique_id=1300276745]
+shape = SubResource("CylShape_well")
+
+[node name="DungeonAltar" parent="NavigationRegion3D/Geometry" unique_id=1300284652 instance=ExtResource("5_altar")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -12)
+
+[node name="Lights" type="Node3D" parent="." unique_id=1300292559]
+
+[node name="Lamp1" type="OmniLight3D" parent="Lights" unique_id=1300300466]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7, 2.5, -4)
+light_color = Color(1, 0.75, 0.45, 1)
+light_energy = 1.2
+omni_range = 9.0
+
+[node name="Lamp2" type="OmniLight3D" parent="Lights" unique_id=1300308373]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7, 2.5, -4)
+light_color = Color(1, 0.75, 0.45, 1)
+light_energy = 1.2
+omni_range = 9.0
+
+[node name="Lamp3" type="OmniLight3D" parent="Lights" unique_id=1300316280]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7, 2.5, 12)
+light_color = Color(1, 0.75, 0.45, 1)
+light_energy = 1.2
+omni_range = 9.0
+
+[node name="Lamp4" type="OmniLight3D" parent="Lights" unique_id=1300324187]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7, 2.5, 12)
+light_color = Color(1, 0.75, 0.45, 1)
+light_energy = 1.2
+omni_range = 9.0
+
+[node name="Player" parent="." unique_id=1235802749 instance=ExtResource("2_v45ci")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 12)
+
+[node name="IsoCamera" parent="." unique_id=1126317581 node_paths=PackedStringArray("target") instance=ExtResource("3_48ne7")]
+target = NodePath("../Player")
+
+[node name="HUD" parent="." unique_id=1620394857 instance=ExtResource("4_hud00")]

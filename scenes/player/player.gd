@@ -14,7 +14,7 @@ signal revived
 @export var move_speed: float = 6.0
 ## Wie schnell sich die Figur in Laufrichtung dreht.
 @export var turn_speed: float = 12.0
-## Auf welchen Physik-Ebenen ein Mausklick etwas treffen darf (1 = Welt, 3 = Gegner, 4 = Gegenstände).
+## Auf welchen Physik-Ebenen ein Mausklick etwas treffen darf (1 = Welt, 3 = Gegner, 4 = Objekte wie Gegenstände, Altar, Portal).
 @export_flags_3d_physics var click_mask: int = 1 | 4 | 8
 ## Aus dieser Entfernung (Meter) kann man Gegenstände aufheben.
 @export var pickup_range: float = 1.5
@@ -55,8 +55,8 @@ signal revived
 var _gravity: float = ProjectSettings.get_setting("physics/3d/default_gravity")
 ## Der Gegner, den wir gerade angreifen (null = keiner).
 var _attack_target: Node3D = null
-## Der Gegenstand am Boden, zu dem wir laufen, um ihn aufzuheben (null = keiner).
-var _pickup_target: GroundItem = null
+## Gegenstand am Boden oder Objekt (Altar, Portal), zu dem wir laufen, um es zu benutzen (null = keins).
+var _interact_target: Node3D = null
 ## Grundwerte ohne Stufe und Ausrüstung (aus dem Inspektor beim Start gemerkt).
 var _base_max_health: int
 var _base_regen: float
@@ -81,7 +81,9 @@ func _ready() -> void:
 	_base_max_health = health.max_health
 	_base_regen = health.regen_per_second
 	_base_move_speed = move_speed
-	inventory.changed.connect(_recalculate_stats)
+	inventory.changed.connect(recalculate_stats)
+	# Kommt der Spieler aus der Stadt oder einem Dungeon, bekommt er seine Werte zurück.
+	GameState.restore_player(self)
 
 
 func _unhandled_input(event: InputEvent) -> void:
@@ -90,6 +92,8 @@ func _unhandled_input(event: InputEvent) -> void:
 		_pick_target_from_mouse()
 	elif event.is_action_pressed("potion"):
 		drink_potion()
+	elif event.is_action_pressed("town_portal"):
+		teleport_to_town()
 
 
 func _process(delta: float) -> void:
@@ -111,14 +115,18 @@ func _physics_process(delta: float) -> void:
 	if _attack_target and (not is_instance_valid(_attack_target) or _attack_target.is_dead()):
 		_attack_target = null
 		nav_agent.target_position = global_position
-	if _pickup_target and not is_instance_valid(_pickup_target):
-		_pickup_target = null
+	if _interact_target and not is_instance_valid(_interact_target):
+		_interact_target = null
 
 	var horizontal := Vector3.ZERO
-	if _pickup_target and _flat_distance(_pickup_target) <= pickup_range:
-		_try_pickup(_pickup_target)
-		_pickup_target = null
+	if _interact_target and _flat_distance(_interact_target) <= _interact_range(_interact_target):
+		var target := _interact_target
+		_interact_target = null
 		nav_agent.target_position = global_position
+		if target is GroundItem:
+			_try_pickup(target)
+		else:
+			target.interact(self)
 	elif _attack_target and _in_attack_range(_attack_target):
 		# Nah genug: stehen bleiben, zum Gegner drehen, zuschlagen.
 		nav_agent.target_position = global_position
@@ -129,8 +137,8 @@ func _physics_process(delta: float) -> void:
 		if _attack_target:
 			# Noch zu weit weg: zum Gegner hinlaufen.
 			nav_agent.target_position = _attack_target.global_position
-		elif _pickup_target:
-			nav_agent.target_position = _pickup_target.global_position
+		elif _interact_target:
+			nav_agent.target_position = _interact_target.global_position
 		if not nav_agent.is_navigation_finished():
 			var next_point := nav_agent.get_next_path_position()
 			var direction := next_point - global_position
@@ -176,6 +184,16 @@ func drink_potion() -> bool:
 	return true
 
 
+## Teleportiert in die Stadt (Taste T). Geht nicht, wenn man tot oder schon in der Stadt ist.
+func teleport_to_town() -> void:
+	if health.is_dead():
+		return
+	if get_tree().current_scene.scene_file_path == GameState.TOWN_SCENE:
+		DamageNumber.spawn_text(self, "Du bist schon in der Stadt", Color(0.7, 0.8, 1.0))
+		return
+	GameState.go_to_town(self)
+
+
 ## Holt den toten Spieler an derselben Stelle zurück, mit wenig Leben und kurzem Schutz.
 func revive() -> void:
 	if not health.is_dead():
@@ -209,13 +227,13 @@ func _pick_target_from_mouse() -> void:
 	if hit.is_empty():
 		return
 	var collider: Object = hit.collider
-	if collider is GroundItem:
-		# Gegenstände nur mit einem einzelnen Klick aufheben, nicht beim Gedrückthalten.
+	if collider is GroundItem or collider is Interactable:
+		# Aufheben/Benutzen nur mit einem einzelnen Klick, nicht beim Gedrückthalten.
 		if Input.is_action_just_pressed("move"):
 			_attack_target = null
-			_pickup_target = collider
+			_interact_target = collider
 		return
-	_pickup_target = null
+	_interact_target = null
 	if collider is Node and collider.is_in_group("enemies") and not collider.is_dead():
 		_attack_target = collider
 	else:
@@ -225,6 +243,10 @@ func _pick_target_from_mouse() -> void:
 
 func _in_attack_range(target: Node3D) -> bool:
 	return _flat_distance(target) <= attack_range
+
+
+func _interact_range(target: Node3D) -> float:
+	return target.interact_range if target is Interactable else pickup_range
 
 
 func _flat_distance(target: Node3D) -> float:
@@ -250,7 +272,7 @@ func drop_item_from_bag(index: int) -> void:
 
 
 ## Berechnet Leben, Regeneration, Tempo, Rüstung und Schaden aus Grundwert + Stufe + Ausrüstung neu.
-func _recalculate_stats() -> void:
+func recalculate_stats() -> void:
 	var level_bonus := experience.level - 1
 	health.set_max_health(_base_max_health + level_bonus * health_per_level
 		+ int(inventory.get_stat_total("health")))
@@ -279,7 +301,7 @@ func _on_damaged(amount: int) -> void:
 
 
 func _on_leveled_up(new_level: int) -> void:
-	_recalculate_stats()
+	recalculate_stats()
 	health.heal(health.max_health)
 	DamageNumber.spawn_text(self, "Stufe %d!" % new_level, Color(1.0, 0.85, 0.2))
 

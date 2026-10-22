@@ -93,6 +93,17 @@ func is_dead() -> bool:
 	return state == State.DEAD
 
 
+## Macht den Gegner passend zur Dungeon-Stufe stärker. Muss vor add_child() aufgerufen werden.
+## Pro Stufe: +25 % Leben, +15 % Schaden; XP wachsen mit der Stufe mit.
+func apply_level(level: int) -> void:
+	var steps := maxi(level, 1) - 1
+	var hp: Health = get_node("Health")
+	hp.max_health = int(round(hp.max_health * (1.0 + 0.25 * steps)))
+	damage_min = int(round(damage_min * (1.0 + 0.15 * steps)))
+	damage_max = int(round(damage_max * (1.0 + 0.15 * steps)))
+	xp_reward = xp_reward * maxi(level, 1)
+
+
 func _update_chase(delta: float) -> void:
 	if _player == null or _player.is_dead() or _distance_to_player() > leash_range:
 		state = State.RETURN
@@ -194,7 +205,7 @@ func _on_died() -> void:
 
 ## Würfelt Beute aus und verteilt sie um die Leiche herum.
 func _drop_loot() -> void:
-	var item_level: int = _player.experience.level if _player and "experience" in _player else 1
+	var item_level: int = GameState.dungeon_level
 	var items := ItemGenerator.roll_drops(loot_tier, item_level)
 	for i in items.size():
 		var angle := TAU * i / items.size() + randf() * 0.5
