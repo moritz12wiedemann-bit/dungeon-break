@@ -1,0 +1,193 @@
+extends CharacterBody3D
+## Einfacher Nahkampf-Gegner.
+## Steht still, bis der Spieler in die Aggro-Reichweite kommt (und ihn sehen kann).
+## Dann läuft er hin und schlägt zu. Läuft der Spieler weit genug weg,
+## gibt der Gegner auf, geht zu seinem Startpunkt zurück und heilt sich.
+
+## Wird ausgelöst, wenn der Gegner stirbt (das Level zählt damit die übrigen Gegner).
+signal died
+
+enum State { IDLE, CHASE, RETURN, DEAD }
+
+## Laufgeschwindigkeit in Metern pro Sekunde (etwas langsamer als der Spieler).
+@export var move_speed: float = 4.0
+## Ab dieser Entfernung (Meter) bemerkt der Gegner den Spieler.
+@export var aggro_range: float = 8.0
+## Ist der Spieler weiter weg als das, gibt der Gegner die Verfolgung auf.
+@export var leash_range: float = 18.0
+## Auf welchen Physik-Ebenen Wände die Sicht blockieren (1 = Welt).
+@export_flags_3d_physics var sight_mask: int = 1
+
+@export_group("Kampf")
+@export var damage_min: int = 5
+@export var damage_max: int = 9
+## Wie nah der Gegner am Spieler stehen muss, um zu treffen (Meter, Mitte zu Mitte).
+@export var attack_range: float = 1.5
+## Sekunden zwischen zwei Schlägen.
+@export var attack_cooldown: float = 1.2
+
+@onready var nav_agent: NavigationAgent3D = $NavigationAgent3D
+@onready var health: Health = $Health
+@onready var health_bar: Node3D = $HealthBar
+@onready var visual: Node3D = $Visual
+@onready var collision: CollisionShape3D = $Collision
+
+var state: State = State.IDLE
+var _player: Node3D = null
+var _home: Vector3
+var _cooldown_left: float = 0.0
+## Den Weg nicht jedes Bild neu berechnen, sondern ein paar Mal pro Sekunde.
+var _repath_left: float = 0.0
+var _gravity: float = ProjectSettings.get_setting("physics/3d/default_gravity")
+
+
+func _ready() -> void:
+	add_to_group("enemies")
+	_home = global_position
+	nav_agent.target_position = global_position
+	health.changed.connect(health_bar.set_value)
+	health.damaged.connect(_on_damaged)
+	health.died.connect(_on_died)
+	# Kurz zufällig verzögern, damit nicht alle Gegner im selben Bild angreifen.
+	_cooldown_left = randf_range(0.0, attack_cooldown)
+
+
+func _physics_process(delta: float) -> void:
+	if state == State.DEAD:
+		return
+	if _player == null:
+		_player = get_tree().get_first_node_in_group("player")
+	_cooldown_left = maxf(_cooldown_left - delta, 0.0)
+	_repath_left -= delta
+
+	match state:
+		State.IDLE:
+			if _can_notice_player():
+				state = State.CHASE
+		State.CHASE:
+			_update_chase(delta)
+		State.RETURN:
+			if global_position.distance_to(_home) < 0.6:
+				state = State.IDLE
+				health.heal(health.max_health)
+			elif _can_notice_player():
+				state = State.CHASE
+
+	_move_along_path(delta)
+
+
+## Wird vom Spieler aufgerufen, wenn er uns trifft.
+func take_damage(amount: int) -> void:
+	health.take_damage(amount)
+	# Wer geschlagen wird, wehrt sich, auch wenn er den Spieler noch nicht bemerkt hatte.
+	if state != State.DEAD:
+		state = State.CHASE
+
+
+func is_dead() -> bool:
+	return state == State.DEAD
+
+
+func _update_chase(delta: float) -> void:
+	if _player == null or _player.is_dead() or _distance_to_player() > leash_range:
+		state = State.RETURN
+		nav_agent.target_position = _home
+		return
+
+	if _distance_to_player() <= attack_range:
+		nav_agent.target_position = global_position
+		_face_direction(_player.global_position - global_position, delta)
+		if _cooldown_left <= 0.0:
+			_attack()
+	elif _repath_left <= 0.0:
+		_repath_left = 0.2
+		nav_agent.target_position = _player.global_position
+
+
+func _move_along_path(delta: float) -> void:
+	var horizontal := Vector3.ZERO
+	if not nav_agent.is_navigation_finished():
+		var direction := nav_agent.get_next_path_position() - global_position
+		direction.y = 0.0
+		if direction.length() > 0.01:
+			horizontal = direction.normalized() * move_speed
+			_face_direction(direction, delta)
+
+	velocity.x = horizontal.x
+	velocity.z = horizontal.z
+	if is_on_floor():
+		velocity.y = 0.0
+	else:
+		velocity.y -= _gravity * delta
+	move_and_slide()
+
+
+## Bemerkt den Spieler, wenn er nah genug ist und keine Wand dazwischen steht.
+func _can_notice_player() -> bool:
+	if _player == null or _player.is_dead():
+		return false
+	if _distance_to_player() > aggro_range:
+		return false
+	var eye := Vector3(0, 1.2, 0)
+	var query := PhysicsRayQueryParameters3D.create(
+		global_position + eye, _player.global_position + eye, sight_mask)
+	return get_world_3d().direct_space_state.intersect_ray(query).is_empty()
+
+
+func _distance_to_player() -> float:
+	var offset := _player.global_position - global_position
+	offset.y = 0.0
+	return offset.length()
+
+
+func _attack() -> void:
+	_cooldown_left = attack_cooldown
+	_player.take_damage(randi_range(damage_min, damage_max))
+	var tween := create_tween()
+	tween.tween_property(visual, "position:z", 0.4, 0.1)
+	tween.tween_property(visual, "position:z", 0.0, 0.2)
+
+
+func _on_damaged(amount: int) -> void:
+	DamageNumber.spawn(self, amount, Color(1.0, 0.95, 0.6))
+	# Kurz weiß aufblitzen.
+	var flash := StandardMaterial3D.new()
+	flash.albedo_color = Color(1, 1, 1, 0.7)
+	flash.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+	flash.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+	for child in visual.get_children():
+		if child is GeometryInstance3D:
+			child.material_overlay = flash
+	get_tree().create_timer(0.1).timeout.connect(_clear_flash)
+
+
+func _clear_flash() -> void:
+	if not is_instance_valid(visual):
+		return
+	for child in visual.get_children():
+		if child is GeometryInstance3D:
+			child.material_overlay = null
+
+
+func _on_died() -> void:
+	state = State.DEAD
+	remove_from_group("enemies")
+	velocity = Vector3.ZERO
+	# Keine Kollision mehr: man kann über die Leiche laufen und nicht mehr draufklicken.
+	collision.set_deferred("disabled", true)
+	health_bar.hide()
+	died.emit()
+	# Umkippen, im Boden versinken, dann verschwinden.
+	var tween := create_tween()
+	tween.tween_property(visual, "rotation:x", -PI / 2.0, 0.3)
+	tween.tween_property(visual, "position:y", -1.0, 1.0).set_delay(1.5)
+	tween.tween_callback(queue_free)
+
+
+## Dreht die Figur weich in die angegebene Richtung.
+func _face_direction(direction: Vector3, delta: float) -> void:
+	direction.y = 0.0
+	if direction.length() < 0.01:
+		return
+	var target_angle := atan2(direction.x, direction.z)
+	rotation.y = lerp_angle(rotation.y, target_angle, clampf(12.0 * delta, 0.0, 1.0))

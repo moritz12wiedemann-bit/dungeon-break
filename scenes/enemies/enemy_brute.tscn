@@ -1,0 +1,47 @@
+[gd_scene format=3]
+
+[ext_resource type="PackedScene" path="res://scenes/enemies/enemy.tscn" id="1_base1"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_br1bd"]
+albedo_color = Color(0.4, 0.12, 0.45, 1)
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_br1bd"]
+material = SubResource("StandardMaterial3D_br1bd")
+radius = 0.75
+height = 2.6
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_br1cs"]
+radius = 0.75
+height = 2.6
+
+[node name="EnemyBrute" unique_id=1478209931 instance=ExtResource("1_base1")]
+move_speed = 3.2
+aggro_range = 10.0
+leash_range = 22.0
+damage_min = 14
+damage_max = 22
+attack_range = 2.2
+attack_cooldown = 1.8
+
+[node name="Body" parent="Visual" index="0"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.3, 0)
+mesh = SubResource("CapsuleMesh_br1bd")
+
+[node name="Eyes" parent="Visual" index="1"]
+transform = Transform3D(1.6, 0, 0, 0, 1.6, 0, 0, 0, 1.6, 0, 2.05, 0.66)
+
+[node name="Collision" parent="." index="1"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.3, 0)
+shape = SubResource("CapsuleShape3D_br1cs")
+
+[node name="NavigationAgent3D" parent="." index="2"]
+height = 2.6
+radius = 0.75
+
+[node name="Health" parent="." index="3"]
+max_health = 180
+
+[node name="HealthBar" parent="." index="4"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.0, 0)
+size = Vector2(1.8, 0.16)
+hide_when_full = false
