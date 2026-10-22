@@ -17,6 +17,11 @@ enum State { IDLE, CHASE, RETURN, DEAD }
 @export var leash_range: float = 18.0
 ## Auf welchen Physik-Ebenen Wände die Sicht blockieren (1 = Welt).
 @export_flags_3d_physics var sight_mask: int = 1
+## So viele Erfahrungspunkte bekommt der Spieler, wenn er diesen Gegner besiegt.
+@export var xp_reward: int = 20
+## Wie gute Beute der Gegner fallen lässt: 0 = normal, 1 = großer Gegner, 2 = Boss.
+## Die Tabellen dazu stehen in scenes/items/item_generator.gd.
+@export_range(0, 2) var loot_tier: int = 0
 
 @export_group("Kampf")
 @export var damage_min: int = 5
@@ -86,6 +91,17 @@ func take_damage(amount: int) -> void:
 
 func is_dead() -> bool:
 	return state == State.DEAD
+
+
+## Macht den Gegner passend zur Dungeon-Stufe stärker. Muss vor add_child() aufgerufen werden.
+## Pro Stufe: +25 % Leben, +15 % Schaden; XP wachsen mit der Stufe mit.
+func apply_level(level: int) -> void:
+	var steps := maxi(level, 1) - 1
+	var hp: Health = get_node("Health")
+	hp.max_health = int(round(hp.max_health * (1.0 + 0.25 * steps)))
+	damage_min = int(round(damage_min * (1.0 + 0.15 * steps)))
+	damage_max = int(round(damage_max * (1.0 + 0.15 * steps)))
+	xp_reward = xp_reward * maxi(level, 1)
 
 
 func _update_chase(delta: float) -> void:
@@ -176,12 +192,25 @@ func _on_died() -> void:
 	# Keine Kollision mehr: man kann über die Leiche laufen und nicht mehr draufklicken.
 	collision.set_deferred("disabled", true)
 	health_bar.hide()
+	if _player and _player.has_method("gain_xp"):
+		_player.gain_xp(xp_reward)
+	_drop_loot()
 	died.emit()
 	# Umkippen, im Boden versinken, dann verschwinden.
 	var tween := create_tween()
 	tween.tween_property(visual, "rotation:x", -PI / 2.0, 0.3)
 	tween.tween_property(visual, "position:y", -1.0, 1.0).set_delay(1.5)
 	tween.tween_callback(queue_free)
+
+
+## Würfelt Beute aus und verteilt sie um die Leiche herum.
+func _drop_loot() -> void:
+	var item_level: int = GameState.dungeon_level
+	var items := ItemGenerator.roll_drops(loot_tier, item_level)
+	for i in items.size():
+		var angle := TAU * i / items.size() + randf() * 0.5
+		var offset := Vector3(cos(angle), 0, sin(angle)) * randf_range(0.6, 1.4)
+		GroundItem.drop(items[i], global_position + offset, get_tree())
 
 
 ## Dreht die Figur weich in die angegebene Richtung.
