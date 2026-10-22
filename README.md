@@ -9,6 +9,7 @@ Ein Action-RPG im Stil von Diablo 3, gebaut mit **Godot 4.7** (GDScript, Forward
 3. **Linke Maustaste auf den Boden** klicken oder gedrückt halten: die Figur läuft zum Mauszeiger und findet selbst den Weg um Wände herum.
 4. **Linke Maustaste auf einen Gegner**: die Figur läuft hin und schlägt so lange zu, bis er tot ist.
 5. **Taste 1** oder Klick auf den roten Kreis rechts neben dem Lebensbalken: Heiltrank trinken (heilt 40 %, danach 20 Sekunden Abklingzeit).
+6. **Klick auf einen Gegenstand am Boden**: hinlaufen und aufheben. **Taste I**: Inventar öffnen/schließen.
 
 Das alte Testlevel (`scenes/levels/test_level.tscn`) gibt es noch. Zum Starten die Szene im Editor öffnen und **F6** („Aktuelle Szene starten“) drücken.
 
@@ -31,6 +32,14 @@ Vier Räume mit Gängen: Startraum (unten links), zwei Räume mit Gegnern und ei
 
 Werte wie Lebenspunkte, Schaden, Tempo und Reichweiten kannst du im Editor ändern: Gegner (oder Spieler) in der Szene anklicken und rechts im **Inspektor** die Werte anpassen. Die Lebenspunkte stehen im Kind-Knoten `Health`.
 
+## Gegenstände und Inventar
+
+- Besiegte Gegner lassen manchmal Gegenstände fallen. Der Name am Boden hat die Farbe der Seltenheit: **Weiß** normal, **Blau** magisch, **Gelb** selten, **Orange** legendär, **Grün** Set. Ab Gelb leuchtet ein Lichtstrahl.
+- Normale Gegner lassen in etwa jedem dritten Fall etwas fallen, meistens Weißes. Der Brocken (Boss) lässt immer 2–4 Gegenstände fallen, viel öfter gelbe, orange und grüne. Alle Chancen stehen als Tabellen oben in `scenes/items/item_generator.gd`; die Beute-Stufe eines Gegners ist `loot_tier` im Inspektor (0 normal, 1 groß, 2 Boss).
+- Plätze: Helm, Handschuhe, Rüstung, Hose, Schuhe, Waffe. Waffen geben Schaden, alles andere Rüstung. Je seltener, desto mehr Zusatzwerte (Schaden, Rüstung, Leben, Leben pro Sekunde, Laufgeschwindigkeit).
+- Im Inventar: **Linksklick** in der Tasche zieht an (das Alte wandert in die Tasche), **Linksklick** auf Ausrüstung zieht aus, **Rechtsklick** wirft weg. Maus über einen Gegenstand halten zeigt seine Werte.
+- Rüstung verringert Schaden: erlittener Schaden × 100 / (100 + Rüstung). Laufgeschwindigkeit aus Ausrüstung ist auf +25 % begrenzt.
+
 ## Ordnerstruktur
 
 | Ordner | Was liegt dort? |
@@ -38,9 +47,10 @@ Werte wie Lebenspunkte, Schaden, Tempo und Reichweiten kannst du im Editor ände
 | `scenes/levels/` | Levels (Testlevel, später Hub, Overworld, Dungeons) |
 | `scenes/player/` | Spielerfigur: Szene + Skript |
 | `scenes/enemies/` | Gegner: `enemy.tscn` (normaler Gegner) und `enemy_brute.tscn` (stärkere Variante, „erbt“ vom normalen Gegner) |
-| `scenes/components/` | Bausteine, die an Figuren gehängt werden: `health.gd` (Lebenspunkte, Regeneration), `experience.gd` (XP und Stufe) |
+| `scenes/items/` | Gegenstände: Daten (`item_data.gd`), Zufallsgenerator (`item_generator.gd`), Gegenstand am Boden |
+| `scenes/components/` | Bausteine, die an Figuren gehängt werden: `health.gd` (Lebenspunkte, Regeneration), `experience.gd` (XP und Stufe), `inventory.gd` (Tasche und Ausrüstung) |
 | `scenes/camera/` | Iso-Kamera, die dem Spieler folgt |
-| `scenes/ui/` | Bildschirm-Anzeige (HUD), Lebensbalken über Gegnern, Schadenszahlen |
+| `scenes/ui/` | Bildschirm-Anzeige (HUD), Inventar-Fenster, Lebensbalken über Gegnern, Schadenszahlen |
 | `assets/models/` | 3D-Modelle (z. B. KayKit, Kenney, Quaternius) |
 | `assets/textures/` | Texturen und Bilder |
 | `assets/materials/` | Materialien |
@@ -54,7 +64,8 @@ Skripte liegen direkt neben ihrer Szene (z. B. `player.tscn` + `player.gd`). So 
 | --- | --- | --- |
 | 1 | Welt | Boden, Wände. Blockiert auch die Sicht der Gegner. |
 | 2 | Spieler | Die Spielerfigur |
-| 3 | Gegner | Alle Gegner. Mausklicks treffen Welt und Gegner. |
+| 3 | Gegner | Alle Gegner. |
+| 4 | Gegenstände | Gegenstände am Boden. Mausklicks treffen Welt, Gegner und Gegenstände. |
 
 ## Wichtig
 

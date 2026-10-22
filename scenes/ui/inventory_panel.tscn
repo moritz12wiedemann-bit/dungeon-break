@@ -1,0 +1,78 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scenes/ui/inventory_panel.gd" id="1_invpn"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_inv01"]
+bg_color = Color(0.06, 0.05, 0.04, 0.94)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.55, 0.4, 0.2, 1)
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_right = 4
+corner_radius_bottom_left = 4
+content_margin_left = 16.0
+content_margin_top = 12.0
+content_margin_right = 16.0
+content_margin_bottom = 12.0
+
+[node name="InventoryPanel" type="PanelContainer" unique_id=1629384710]
+anchors_preset = 6
+anchor_left = 1.0
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_left = -720.0
+offset_top = -230.0
+offset_right = -16.0
+offset_bottom = 230.0
+grow_horizontal = 0
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_inv01")
+script = ExtResource("1_invpn")
+
+[node name="VBox" type="VBoxContainer" parent="." unique_id=1928374651]
+theme_override_constants/separation = 10
+
+[node name="Title" type="Label" parent="VBox" unique_id=1203984756]
+theme_override_colors/font_color = Color(0.95, 0.8, 0.5, 1)
+theme_override_font_sizes/font_size = 22
+text = "Inventar"
+horizontal_alignment = 1
+
+[node name="HBox" type="HBoxContainer" parent="VBox" unique_id=1564738290]
+theme_override_constants/separation = 20
+
+[node name="Left" type="VBoxContainer" parent="VBox/HBox" unique_id=1837465920]
+theme_override_constants/separation = 12
+
+[node name="EquipmentTitle" type="Label" parent="VBox/HBox/Left" unique_id=1102938475]
+text = "Ausrüstung"
+
+[node name="EquipmentGrid" type="GridContainer" parent="VBox/HBox/Left" unique_id=1475820394]
+unique_name_in_owner = true
+columns = 2
+
+[node name="StatsLabel" type="Label" parent="VBox/HBox/Left" unique_id=1394857201]
+unique_name_in_owner = true
+theme_override_colors/font_color = Color(0.85, 0.82, 0.75, 1)
+theme_override_font_sizes/font_size = 14
+text = "Werte"
+
+[node name="Right" type="VBoxContainer" parent="VBox/HBox" unique_id=1748392016]
+theme_override_constants/separation = 12
+
+[node name="BagTitle" type="Label" parent="VBox/HBox/Right" unique_id=1293847562]
+text = "Tasche"
+
+[node name="BagGrid" type="GridContainer" parent="VBox/HBox/Right" unique_id=1657483920]
+unique_name_in_owner = true
+columns = 6
+
+[node name="Hint" type="Label" parent="VBox" unique_id=1938475611]
+theme_override_colors/font_color = Color(0.6, 0.57, 0.5, 1)
+theme_override_font_sizes/font_size = 12
+text = "Linksklick: anziehen / ausziehen   ·   Rechtsklick: wegwerfen   ·   I: schließen"
+horizontal_alignment = 1

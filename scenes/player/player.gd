@@ -14,8 +14,10 @@ signal revived
 @export var move_speed: float = 6.0
 ## Wie schnell sich die Figur in Laufrichtung dreht.
 @export var turn_speed: float = 12.0
-## Auf welchen Physik-Ebenen ein Mausklick etwas treffen darf (1 = Welt, 3 = Gegner).
-@export_flags_3d_physics var click_mask: int = 1 | 4
+## Auf welchen Physik-Ebenen ein Mausklick etwas treffen darf (1 = Welt, 3 = Gegner, 4 = Gegenstände).
+@export_flags_3d_physics var click_mask: int = 1 | 4 | 8
+## Aus dieser Entfernung (Meter) kann man Gegenstände aufheben.
+@export var pickup_range: float = 1.5
 
 @export_group("Kampf")
 ## Schaden pro Schlag (zufällig zwischen den beiden Werten).
@@ -47,11 +49,22 @@ signal revived
 @onready var nav_agent: NavigationAgent3D = $NavigationAgent3D
 @onready var health: Health = $Health
 @onready var experience: Experience = $Experience
+@onready var inventory: Inventory = $Inventory
 @onready var visual: Node3D = $Visual
 
 var _gravity: float = ProjectSettings.get_setting("physics/3d/default_gravity")
 ## Der Gegner, den wir gerade angreifen (null = keiner).
 var _attack_target: Node3D = null
+## Der Gegenstand am Boden, zu dem wir laufen, um ihn aufzuheben (null = keiner).
+var _pickup_target: GroundItem = null
+## Grundwerte ohne Stufe und Ausrüstung (aus dem Inspektor beim Start gemerkt).
+var _base_max_health: int
+var _base_regen: float
+var _base_move_speed: float
+## Rüstung aus der Ausrüstung. Verringert erlittenen Schaden: Schaden × 100 / (100 + Rüstung).
+var armor: float = 0.0
+## Zusätzlicher Schaden aus Stufe und Ausrüstung.
+var bonus_damage: int = 0
 var _cooldown_left: float = 0.0
 ## Sekunden, bis der Heiltrank wieder benutzt werden kann (0 = bereit).
 var potion_cooldown_left: float = 0.0
@@ -65,6 +78,10 @@ func _ready() -> void:
 	health.damaged.connect(_on_damaged)
 	health.died.connect(_on_died)
 	experience.leveled_up.connect(_on_leveled_up)
+	_base_max_health = health.max_health
+	_base_regen = health.regen_per_second
+	_base_move_speed = move_speed
+	inventory.changed.connect(_recalculate_stats)
 
 
 func _unhandled_input(event: InputEvent) -> void:
@@ -86,16 +103,23 @@ func _physics_process(delta: float) -> void:
 	_cooldown_left = maxf(_cooldown_left - delta, 0.0)
 
 	# Maustaste gedrückt halten = Ziel folgt laufend dem Mauszeiger (wie in Diablo).
-	if Input.is_action_pressed("move"):
+	# Nicht, wenn die Maus gerade über einem Fenster (z. B. Inventar) steht.
+	if Input.is_action_pressed("move") and get_viewport().gui_get_hovered_control() == null:
 		_pick_target_from_mouse()
 
 	# Ist der angegriffene Gegner inzwischen tot oder verschwunden, vergessen wir ihn.
 	if _attack_target and (not is_instance_valid(_attack_target) or _attack_target.is_dead()):
 		_attack_target = null
 		nav_agent.target_position = global_position
+	if _pickup_target and not is_instance_valid(_pickup_target):
+		_pickup_target = null
 
 	var horizontal := Vector3.ZERO
-	if _attack_target and _in_attack_range(_attack_target):
+	if _pickup_target and _flat_distance(_pickup_target) <= pickup_range:
+		_try_pickup(_pickup_target)
+		_pickup_target = null
+		nav_agent.target_position = global_position
+	elif _attack_target and _in_attack_range(_attack_target):
 		# Nah genug: stehen bleiben, zum Gegner drehen, zuschlagen.
 		nav_agent.target_position = global_position
 		_face_direction(_attack_target.global_position - global_position, delta)
@@ -105,6 +129,8 @@ func _physics_process(delta: float) -> void:
 		if _attack_target:
 			# Noch zu weit weg: zum Gegner hinlaufen.
 			nav_agent.target_position = _attack_target.global_position
+		elif _pickup_target:
+			nav_agent.target_position = _pickup_target.global_position
 		if not nav_agent.is_navigation_finished():
 			var next_point := nav_agent.get_next_path_position()
 			var direction := next_point - global_position
@@ -127,7 +153,8 @@ func _physics_process(delta: float) -> void:
 func take_damage(amount: int) -> void:
 	if _protection_left > 0.0:
 		return
-	health.take_damage(amount)
+	var reduced := int(round(amount * 100.0 / (100.0 + armor)))
+	health.take_damage(maxi(reduced, 1))
 
 
 ## Wird von Gegnern aufgerufen, wenn sie sterben.
@@ -182,6 +209,13 @@ func _pick_target_from_mouse() -> void:
 	if hit.is_empty():
 		return
 	var collider: Object = hit.collider
+	if collider is GroundItem:
+		# Gegenstände nur mit einem einzelnen Klick aufheben, nicht beim Gedrückthalten.
+		if Input.is_action_just_pressed("move"):
+			_attack_target = null
+			_pickup_target = collider
+		return
+	_pickup_target = null
 	if collider is Node and collider.is_in_group("enemies") and not collider.is_dead():
 		_attack_target = collider
 	else:
@@ -190,15 +224,46 @@ func _pick_target_from_mouse() -> void:
 
 
 func _in_attack_range(target: Node3D) -> bool:
+	return _flat_distance(target) <= attack_range
+
+
+func _flat_distance(target: Node3D) -> float:
 	var offset := target.global_position - global_position
 	offset.y = 0.0
-	return offset.length() <= attack_range
+	return offset.length()
+
+
+func _try_pickup(ground_item: GroundItem) -> void:
+	if inventory.add_item(ground_item.item):
+		ground_item.queue_free()
+	else:
+		DamageNumber.spawn_text(self, "Inventar voll!", Color(1, 0.4, 0.4))
+
+
+## Wirft den Gegenstand aus Platz `index` der Tasche neben dem Spieler auf den Boden.
+func drop_item_from_bag(index: int) -> void:
+	var item := inventory.remove_item(index)
+	if item == null:
+		return
+	var offset := Vector3(randf_range(-1.0, 1.0), 0, randf_range(-1.0, 1.0)).normalized() * 1.2
+	GroundItem.drop(item, global_position + offset, get_tree())
+
+
+## Berechnet Leben, Regeneration, Tempo, Rüstung und Schaden aus Grundwert + Stufe + Ausrüstung neu.
+func _recalculate_stats() -> void:
+	var level_bonus := experience.level - 1
+	health.set_max_health(_base_max_health + level_bonus * health_per_level
+		+ int(inventory.get_stat_total("health")))
+	health.regen_per_second = _base_regen + inventory.get_stat_total("regen")
+	# Höchstens +25 % Laufgeschwindigkeit aus Ausrüstung.
+	move_speed = _base_move_speed * (1.0 + minf(inventory.get_stat_total("move_speed"), 25.0) / 100.0)
+	armor = inventory.get_stat_total("armor")
+	bonus_damage = level_bonus * damage_per_level + int(inventory.get_stat_total("damage"))
 
 
 func _attack(target: Node3D) -> void:
 	_cooldown_left = attack_cooldown
-	var bonus := (experience.level - 1) * damage_per_level
-	target.take_damage(randi_range(damage_min, damage_max) + bonus)
+	target.take_damage(randi_range(damage_min, damage_max) + bonus_damage)
 	_play_lunge()
 
 
@@ -214,7 +279,7 @@ func _on_damaged(amount: int) -> void:
 
 
 func _on_leveled_up(new_level: int) -> void:
-	health.set_max_health(health.max_health + health_per_level)
+	_recalculate_stats()
 	health.heal(health.max_health)
 	DamageNumber.spawn_text(self, "Stufe %d!" % new_level, Color(1.0, 0.85, 0.2))
 

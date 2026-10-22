@@ -19,6 +19,9 @@ enum State { IDLE, CHASE, RETURN, DEAD }
 @export_flags_3d_physics var sight_mask: int = 1
 ## So viele Erfahrungspunkte bekommt der Spieler, wenn er diesen Gegner besiegt.
 @export var xp_reward: int = 20
+## Wie gute Beute der Gegner fallen lässt: 0 = normal, 1 = großer Gegner, 2 = Boss.
+## Die Tabellen dazu stehen in scenes/items/item_generator.gd.
+@export_range(0, 2) var loot_tier: int = 0
 
 @export_group("Kampf")
 @export var damage_min: int = 5
@@ -180,12 +183,23 @@ func _on_died() -> void:
 	health_bar.hide()
 	if _player and _player.has_method("gain_xp"):
 		_player.gain_xp(xp_reward)
+	_drop_loot()
 	died.emit()
 	# Umkippen, im Boden versinken, dann verschwinden.
 	var tween := create_tween()
 	tween.tween_property(visual, "rotation:x", -PI / 2.0, 0.3)
 	tween.tween_property(visual, "position:y", -1.0, 1.0).set_delay(1.5)
 	tween.tween_callback(queue_free)
+
+
+## Würfelt Beute aus und verteilt sie um die Leiche herum.
+func _drop_loot() -> void:
+	var item_level: int = _player.experience.level if _player and "experience" in _player else 1
+	var items := ItemGenerator.roll_drops(loot_tier, item_level)
+	for i in items.size():
+		var angle := TAU * i / items.size() + randf() * 0.5
+		var offset := Vector3(cos(angle), 0, sin(angle)) * randf_range(0.6, 1.4)
+		GroundItem.drop(items[i], global_position + offset, get_tree())
 
 
 ## Dreht die Figur weich in die angegebene Richtung.

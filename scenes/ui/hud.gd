@@ -1,6 +1,6 @@
 extends CanvasLayer
 ## Bildschirm-Anzeige: Lebensbalken, Erfahrungsbalken mit Stufe, Heiltrank-Knopf,
-## übrige Gegner, "Gestorben"-Fenster mit Wiederbeleben und Siegesmeldung.
+## Inventar-Fenster, übrige Gegner, "Gestorben"-Fenster mit Wiederbeleben und Siegesmeldung.
 
 @onready var health_bar: ProgressBar = %HealthBar
 @onready var health_label: Label = %HealthLabel
@@ -13,6 +13,8 @@ extends CanvasLayer
 @onready var message_panel: PanelContainer = %MessagePanel
 @onready var message_label: Label = %MessageLabel
 @onready var message_button: Button = %MessageButton
+@onready var inventory_button: Button = %InventoryButton
+@onready var inventory_panel: PanelContainer = %InventoryPanel
 
 var _player: Node = null
 ## Was beim Klick auf den Knopf im Meldungsfenster passieren soll.
@@ -23,6 +25,7 @@ func _ready() -> void:
 	message_panel.hide()
 	message_button.pressed.connect(_on_message_button_pressed)
 	potion_button.pressed.connect(_on_potion_pressed)
+	inventory_button.pressed.connect(inventory_panel.toggle)
 
 
 func _process(_delta: float) -> void:
@@ -42,6 +45,7 @@ func track_player(player: Node) -> void:
 	player.experience.changed.connect(_on_player_xp_changed)
 	player.died.connect(_show_game_over)
 	player.revived.connect(message_panel.hide)
+	inventory_panel.track_player(player)
 	_on_player_health_changed(player.health.current, player.health.max_health)
 	var xp: Experience = player.experience
 	_on_player_xp_changed(xp.level, xp.xp, xp.xp_for_next_level())
