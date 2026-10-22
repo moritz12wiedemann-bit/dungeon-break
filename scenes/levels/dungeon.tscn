@@ -5,12 +5,6 @@
 [ext_resource type="PackedScene" path="res://scenes/camera/iso_camera.tscn" id="3_48ne7"]
 [ext_resource type="PackedScene" path="res://scenes/ui/hud.tscn" id="4_hud00"]
 
-[sub_resource type="StandardMaterial3D" id="Mat_floor"]
-albedo_color = Color(0.3, 0.28, 0.26, 1)
-
-[sub_resource type="StandardMaterial3D" id="Mat_wall"]
-albedo_color = Color(0.45, 0.42, 0.4, 1)
-
 [sub_resource type="Environment" id="Environment_dn001"]
 background_mode = 1
 background_color = Color(0.02, 0.02, 0.03, 1)
@@ -29,8 +23,6 @@ agent_max_climb = 0.3
 
 [node name="Dungeon" type="Node3D" unique_id=1928374101]
 script = ExtResource("1_dngn")
-floor_material = SubResource("Mat_floor")
-wall_material = SubResource("Mat_wall")
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=1928374102]
 environment = SubResource("Environment_dn001")
@@ -45,6 +37,8 @@ shadow_enabled = true
 navigation_mesh = SubResource("NavigationMesh_dn001")
 
 [node name="Geometry" type="Node3D" parent="NavigationRegion3D" unique_id=1928374105]
+
+[node name="Decor" type="Node3D" parent="."]
 
 [node name="Lights" type="Node3D" parent="." unique_id=1928374106]
 

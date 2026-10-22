@@ -1,0 +1,19 @@
+[gd_scene format=3]
+
+[ext_resource type="PackedScene" path="res://assets/models/kaykit/skeletons/Skeleton_Warrior.gltf" id="1_model"]
+[ext_resource type="PackedScene" path="res://assets/models/kaykit/skeletons/Skeleton_Axe.gltf" id="2_wpn_r"]
+[ext_resource type="PackedScene" path="res://assets/models/kaykit/skeletons/Skeleton_Shield_Large_A.gltf" id="3_wpn_l"]
+
+[node name="Skeleton_Warrior" instance=ExtResource("1_model")]
+
+[node name="HandRight" type="BoneAttachment3D" parent="Rig/Skeleton3D"]
+bone_name = "handslot.r"
+bone_idx = 13
+
+[node name="Skeleton_Axe" parent="Rig/Skeleton3D/HandRight" instance=ExtResource("2_wpn_r")]
+
+[node name="HandLeft" type="BoneAttachment3D" parent="Rig/Skeleton3D"]
+bone_name = "handslot.l"
+bone_idx = 8
+
+[node name="Skeleton_Shield_Large_A" parent="Rig/Skeleton3D/HandLeft" instance=ExtResource("3_wpn_l")]

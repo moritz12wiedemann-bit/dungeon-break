@@ -10,19 +10,30 @@ Ein Action-RPG im Stil von Diablo 3, gebaut mit **Godot 4.7** (GDScript, Forward
 4. **Linke Maustaste auf einen Gegner**: die Figur läuft hin und schlägt so lange zu, bis er tot ist.
 5. **Taste 1** oder Klick auf den roten Kreis rechts neben dem Lebensbalken: Heiltrank trinken (heilt 40 %, danach 20 Sekunden Abklingzeit).
 6. **Klick auf einen Gegenstand am Boden**: hinlaufen und aufheben. **Taste I**: Inventar öffnen/schließen.
-7. **Klick auf den Dungeon-Altar** (lila Kristall in der Stadt): neuer Dungeon. **Taste T**: aus dem Dungeon zurück in die Stadt.
+7. **Klick auf den Dungeon-Altar** (Schrein mit lila Kristall vor dem Gittertor in der Stadt): neuer Dungeon. **Taste T**: aus dem Dungeon zurück in die Stadt.
 
 Das alte Testlevel (`scenes/levels/test_level.tscn`) gibt es noch. Zum Starten die Szene im Editor öffnen und **F6** („Aktuelle Szene starten“) drücken.
 
 ## Stadt und Dungeons
 
 - **Stadt** (`scenes/levels/town.tscn`): sicherer Ort ohne Gegner. Der **Dungeon-Altar** öffnet bei jedem Klick einen neuen Dungeon.
-- **Dungeon** (`scenes/levels/dungeon.tscn`): wird jedes Mal **zufällig erzeugt** (6–8 Räume, Gänge, Säulen). Der Startraum ist leer, der Boss-Raum ist am anderen Ende. In den Räumen dazwischen stehen Gegner, manchmal ein großer lila „Brocken“.
+- **Dungeon** (`scenes/levels/dungeon.tscn`): wird jedes Mal **zufällig erzeugt** (6–8 Räume, Gänge, Säulen). Der Startraum ist leer, der Boss-Raum ist am anderen Ende. In den Räumen dazwischen stehen Skelette, manchmal ein großer Skelett-Krieger („Brocken“).
 - Die Gegner sind so stark wie deine Stufe beim Betreten (pro Stufe +25 % Leben, +15 % Schaden, mehr XP).
-- Besiegst du den **Boss** (große dunkelrote Kapsel), erscheint ein blaues **Portal**. Anklicken bringt dich in die Stadt.
+- Besiegst du den **Boss** (riesiger Skelett-Magier mit lila Leuchten), erscheint ein blaues **Portal**. Anklicken bringt dich in die Stadt.
 - **Taste T** bringt dich jederzeit aus dem Dungeon in die Stadt (der Dungeon ist dann verloren, der Altar macht einen neuen).
 - Stufe, Erfahrung, Inventar und Leben bleiben beim Wechsel erhalten (`scenes/game/game_state.gd`, als Autoload „GameState“ eingetragen). Beim Beenden des Spiels wird noch nichts gespeichert.
 - Wie die Karten erzeugt werden, steht in `scenes/levels/dungeon_generator.gd`. Anzahl Gegner pro Raum und Chance auf Brocken: Dungeon-Szene öffnen, oberen Knoten `Dungeon` anklicken, Inspektor.
+
+## Grafik (Platzhalter-Modelle)
+
+Alle 3D-Modelle sind **CC0** (frei nutzbar, auch kommerziell, keine Namensnennung nötig) von **Kay Lousberg (KayKit)**. Sie sind ein einheitlicher Platzhalter-Stil, bis die endgültige Optik feststeht. Woher was kommt: [CREDITS.md](CREDITS.md).
+
+- **Figuren** (`scenes/characters/`): Spieler = Ritter, normale Gegner = Skelett-Diener mit Schwert, Brocken = Skelett-Krieger mit Axt und Schild, Boss = Skelett-Magier. Jede Figur ist eine kleine Szene, die das Modell lädt und Waffen an die Hand hängt (`HandRight`/`HandLeft`).
+- **Animationen** spielt der Baustein `scenes/components/character_animator.gd` (Kind-Knoten `Animator` bei Spieler und Gegnern): Stehen, Laufen, Schlagen, Treffer, Tod, Aufstehen. Welche Animation wofür benutzt wird, steht im Inspektor. Alle verfügbaren Animationen siehst du, wenn du ein Modell (z. B. `assets/models/kaykit/adventurers/Knight.gltf`) im Editor öffnest und den `AnimationPlayer` anklickst.
+- **Anderes Gegner-Modell**: Gegner-Szene öffnen, oberen Knoten anklicken, im Inspektor unter „Aussehen“ eine andere Szene aus `scenes/characters/` bei `Model Scene` hineinziehen. Das Modell erscheint erst beim Spielen, nicht im Editor.
+- **Dungeon**: Boden, Wände, Säulen, Fackeln, Banner, Kisten und Fässer werden beim Start aus dem Baukasten `assets/models/kaykit/dungeon/` zusammengesetzt (`scenes/levels/dungeon.gd`). Hinten (oben/links im Bild) sind die Wände hoch, vorn (unten/rechts) niedrig, damit sie die Figur nicht verdecken. Höhen und Fackeln pro Raum: oberen Knoten `Dungeon` anklicken, Inspektor.
+- **Stadt**: Häuser, Brunnen, Zaun, Bäume, Laternen und Deko stehen als normale Knoten in `town.tscn` (unter `Decor`, `Paths` und bei den Häusern unter `NavigationRegion3D/Geometry`). Du kannst sie im Editor frei verschieben. Wenn du ein Haus verschiebst, verschiebe den ganzen Haus-Knoten (er enthält Modell und Kollision).
+- Ungenutzte Modelle für später: Barbar, Magier und Schurke in `assets/models/kaykit/adventurers/` (für Klassen) und der komplette Dungeon-Baukasten (über 200 Teile).
 
 ## Gegner und Kampf
 
@@ -55,14 +66,15 @@ Werte wie Lebenspunkte, Schaden, Tempo und Reichweiten kannst du im Editor ände
 | --- | --- |
 | `scenes/levels/` | Stadt, zufälliger Dungeon samt Kartengenerator, altes Testlevel |
 | `scenes/player/` | Spielerfigur: Szene + Skript |
+| `scenes/characters/` | 3D-Figuren (Modell + Waffen in der Hand) für Spieler und Gegner |
 | `scenes/enemies/` | Gegner: `enemy.tscn` (normal), `enemy_brute.tscn` (Brocken, „erbt“ vom normalen), `enemy_boss.tscn` (Boss, erbt vom Brocken) |
 | `scenes/world/` | Benutzbare Objekte: Dungeon-Altar, Portal in die Stadt (`interactable.gd` ist die gemeinsame Grundlage) |
 | `scenes/game/` | `game_state.gd`: Spielstand, der Szenenwechsel überlebt |
 | `scenes/items/` | Gegenstände: Daten (`item_data.gd`), Zufallsgenerator (`item_generator.gd`), Gegenstand am Boden |
-| `scenes/components/` | Bausteine, die an Figuren gehängt werden: `health.gd` (Lebenspunkte, Regeneration), `experience.gd` (XP und Stufe), `inventory.gd` (Tasche und Ausrüstung) |
+| `scenes/components/` | Bausteine, die an Figuren gehängt werden: `health.gd` (Lebenspunkte, Regeneration), `experience.gd` (XP und Stufe), `inventory.gd` (Tasche und Ausrüstung), `character_animator.gd` (Animationen) |
 | `scenes/camera/` | Iso-Kamera, die dem Spieler folgt |
 | `scenes/ui/` | Bildschirm-Anzeige (HUD), Inventar-Fenster, Lebensbalken über Gegnern, Schadenszahlen |
-| `assets/models/` | 3D-Modelle (z. B. KayKit, Kenney, Quaternius) |
+| `assets/models/kaykit/` | 3D-Modelle von KayKit: `adventurers` (Helden, Waffen), `skeletons` (Gegner), `dungeon` (Dungeon-Baukasten), `town` (Häuser, Bäume, Deko), `halloween` (Altar-Tor, Portal-Bogen, Wege, Laternen) |
 | `assets/textures/` | Texturen und Bilder |
 | `assets/materials/` | Materialien |
 | `assets/audio/` | Musik und Soundeffekte |
