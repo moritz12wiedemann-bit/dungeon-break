@@ -12,6 +12,7 @@ config_version=5
 
 config/name="Dungeon Break"
 config/features=PackedStringArray("4.7", "Forward Plus")
+run/main_scene="res://scenes/levels/test_level.tscn"
 config/icon="res://icon.svg"
 
 [display]
@@ -26,3 +27,21 @@ window/stretch/aspect="expand"
 [rendering]
 
 rendering_device/driver.windows="d3d12"
+
+[input]
+
+move={
+"deadzone": 0.2,
+"events": [Object(InputEventMouseButton,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"button_mask":0,"position":Vector2(0, 0),"global_position":Vector2(0, 0),"factor":1.0,"button_index":1,"canceled":false,"pressed":true,"double_click":false,"script":null)
+]
+}
+
+[layer_names]
+
+3d_physics/layer_1="Welt"
+3d_physics/layer_2="Spieler"
+3d_physics/layer_3="Gegner"
+
+[navigation]
+
+3d/default_cell_height=0.1
