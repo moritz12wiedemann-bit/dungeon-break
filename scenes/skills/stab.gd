@@ -1,7 +1,8 @@
 extends RefCounted
 ## Krieger: Stich. Kurzer Stich nach vorne, trifft nur einen Gegner, aber mit viel Schaden.
+## Kostet keinen Zorn, sondern bringt RAGE_ON_HIT Zorn, wenn er trifft (aufgeladen: egal wie viele).
 ## Erweiterung 1 "Sturmstich": geht im Laufen (siehe "moving_upgrade"), stirbt der Gegner,
-## kommt die Hälfte des Zorns zurück.
+## gibt es zusätzlich RAGE_ON_KILL Zorn.
 ## Erweiterung 2 "Aufgeladener Stich": Taste halten (bis 2 s), voll aufgeladen dreifacher Schaden
 ## und dreimal so lang und breit; trifft dann alle Gegner in seiner Bahn.
 
@@ -10,6 +11,8 @@ const HALF_ANGLE := deg_to_rad(35.0)
 const DAMAGE := 3.0
 ## Schaden, Länge und Breite bei voller Aufladung (3.0 = dreimal so viel).
 const CHARGE_MAX_FACTOR := 3.0
+const RAGE_ON_HIT := 10.0
+const RAGE_ON_KILL := 5.0
 
 
 static func cast(player, aim: Vector3, target: Node3D, upgrade: int, charge: float) -> bool:
@@ -45,11 +48,14 @@ static func cast(player, aim: Vector3, target: Node3D, upgrade: int, charge: flo
 			hits.append(victim)
 		for enemy in hits:
 			enemy.take_damage(player.roll_damage(DAMAGE * factor))
+		if not hits.is_empty():
+			player.restore_mana(RAGE_ON_HIT)
 		return true
 	if victim == null:
 		return true
 	victim.take_damage(player.roll_damage(DAMAGE * factor))
+	player.restore_mana(RAGE_ON_HIT)
 	if upgrade == 1 and victim.is_dead():
-		player.restore_mana.call_deferred(data.mana / 2.0)
-		DamageNumber.spawn_text(player, "+%d %s" % [int(data.mana / 2.0), PlayerClasses.resource_name(GameState.player_class)], Color(0.85, 0.3, 0.3))
+		player.restore_mana(RAGE_ON_KILL)
+		DamageNumber.spawn_text(player, "+%d %s" % [int(RAGE_ON_KILL), PlayerClasses.resource_name(GameState.player_class)], Color(1.0, 0.62, 0.15))
 	return true

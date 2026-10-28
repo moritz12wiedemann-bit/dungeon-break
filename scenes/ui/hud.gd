@@ -98,7 +98,7 @@ func _apply_class_resource() -> void:
 	var fill: StyleBoxFlat = mana_bar.get_theme_stylebox("fill").duplicate()
 	fill.bg_color = PlayerClasses.resource_color(GameState.player_class)
 	mana_bar.add_theme_stylebox_override("fill", fill)
-	mana_bar.tooltip_text = "%s (für Fähigkeiten)" % PlayerClasses.resource_name(GameState.player_class)
+	mana_bar.tooltip_text = "%s (für Fähigkeiten; kommt durch Treffen)" % PlayerClasses.resource_name(GameState.player_class)
 
 
 ## Nur zum Testen: Knopf über "Inventar", der sofort eine Stufe aufsteigen lässt.

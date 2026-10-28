@@ -20,6 +20,8 @@ extends Node
 @export var death_animation: String = "Death"
 ## Animation beim Wiederbeleben (leer = direkt wieder stehen).
 @export var revive_animation: String = "Revive"
+## So lange (Sekunden) dauert die zuletzt gestartete Aktion (z. B. ein Schlag) wirklich.
+var last_action_duration: float = 0.0
 ## Überblendzeit zwischen zwei Animationen in Sekunden.
 @export var blend_time: float = 0.15
 
@@ -71,6 +73,7 @@ func play_action(anim_name: String, max_duration: float = 0.0, fit: bool = false
 	# Läuft dieselbe Animation schon, von vorn beginnen.
 	_player.seek(0.0, true)
 	_action_left = length / speed
+	last_action_duration = _action_left
 
 
 ## Kurze Geste (Trank trinken, aufheben ...), nur wenn die Figur gerade steht und nichts anderes tut.

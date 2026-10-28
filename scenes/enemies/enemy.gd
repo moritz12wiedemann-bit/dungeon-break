@@ -10,7 +10,7 @@ signal died
 enum State { IDLE, CHASE, RETURN, DEAD }
 
 ## Laufgeschwindigkeit in Metern pro Sekunde (etwas langsamer als der Spieler).
-@export var move_speed: float = 2.4
+@export var move_speed: float = 3.0
 ## Ab dieser Entfernung (Meter) bemerkt der Gegner den Spieler.
 @export var aggro_range: float = 8.0
 ## Ist der Spieler weiter weg als das, gibt der Gegner die Verfolgung auf.

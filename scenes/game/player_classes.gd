@@ -57,8 +57,8 @@ const CLASSES := {
 		"name": "Krieger",
 		"text": "Nahkampf. Ausgewogen zwischen Schaden und Standfestigkeit.",
 		"icon": preload("res://assets/icons/class_krieger.svg"),
-		# Statt Mana hat der Krieger Zorn (dunkelrote Leiste).
-		"resource": {"name": "Zorn", "color": Color(0.42, 0.03, 0.1)},
+		# Statt Mana hat der Krieger Zorn (orange Leiste). Startet leer, kommt nur durch Treffen.
+		"resource": {"name": "Zorn", "color": Color(1.0, 0.62, 0.15), "start_full": false},
 		# Standardangriff (Linksklick), den jede Klasse von Anfang an hat.
 		"basic_attack": "krieger_schlag",
 		# Die beiden Unterklassen (Namen und Fähigkeiten kommen später).
@@ -74,6 +74,7 @@ const SKILLS := {
 	"krieger_schlag": {
 		"name": "Schlag",
 		"text": "Standardangriff: Linksklick auf einen Gegner, die Figur läuft hin und schlägt zu.",
+		"rage_gain": "2 pro Treffer",
 		"icon": preload("res://assets/icons/skill_attack.svg"),
 		# Der Standardangriff wird direkt vom Spieler ausgeführt (Klick auf Gegner).
 		"basic_attack": true,
@@ -88,7 +89,8 @@ const SKILLS := {
 		"script": preload("res://scenes/skills/slash.gd"),
 		"ring": 0,
 		"sector": "base",
-		"mana": 25,
+		"mana": 0,
+		"rage_gain": "5 pro getroffenem Gegner",
 		"cooldown": 8.0,
 		"cast_time": 0.35,
 		"upgrades": [
@@ -111,7 +113,8 @@ const SKILLS := {
 		"script": preload("res://scenes/skills/stab.gd"),
 		"ring": 0,
 		"sector": "base",
-		"mana": 20,
+		"mana": 0,
+		"rage_gain": "10, wenn er trifft",
 		"cooldown": 8.0,
 		"cast_time": 0.3,
 		"moving_upgrade": 1,
@@ -120,7 +123,7 @@ const SKILLS := {
 		"upgrades": [
 			{
 				"name": "Sturmstich",
-				"text": "Der Stich geht auch im Laufen. Stirbt der Gegner, bekommst du die Hälfte des Zorns zurück.",
+				"text": "Der Stich geht auch im Laufen. Stirbt der Gegner, bekommst du 5 Zorn extra.",
 				"icon": preload("res://assets/icons/upgrade_stab_run.svg"),
 			},
 			{
@@ -132,7 +135,7 @@ const SKILLS := {
 	},
 	"krieger_tausend": {
 		"name": "1000 Schläge",
-		"text": "Gedrückt halten: Die Figur bleibt stehen und schlägt immer wieder in Richtung Mauszeiger. Der erste Schlag macht 50 % Schaden, jeder Schlag gibt einen Stack 1000 Schläge (+10 % Schaden, bis 30 Stacks). Ohne zu schlagen gehen alle 0,5 Sekunden 2 Stacks verloren.",
+		"text": "Gedrückt halten: Die Figur bleibt stehen und schlägt immer wieder in Richtung Mauszeiger. Der erste Schlag macht 50 % Schaden, jeder Schlag gibt einen Stack 1000 Schläge (+10 % Schaden, bis 30 Stacks). Keine Abklingzeit, schlägt so schnell wie dein Angriffstempo. Ohne zu schlagen geht alle 0,5 Sekunden 1 Stack verloren.",
 		"icon": preload("res://assets/icons/skill_thousand.svg"),
 		"script": preload("res://scenes/skills/thousand_blows.gd"),
 		"ring": 1,
@@ -223,7 +226,9 @@ static func describe_skill(skill_id: String, upgrade: int = 0, class_id: String 
 		lines[0] += "  (%s)" % RINGS[data.ring].name
 	lines.append(data.text)
 	if data.mana > 0:
-		lines.append("%s: %d%s" % [resource_name(class_id), data.mana, " pro Schlag" if data.get("channel", false) else ""])
+		lines.append("Kostet %d %s%s" % [data.mana, resource_name(class_id), " pro Schlag" if data.get("channel", false) else ""])
+	if data.has("rage_gain"):
+		lines.append("Bringt %s %s" % [resource_name(class_id), data.rage_gain])
 	if data.cooldown > 0.0:
 		lines.append("Abklingzeit: %s s" % str(data.cooldown))
 	if upgrade > 0 and upgrade <= data.upgrades.size():

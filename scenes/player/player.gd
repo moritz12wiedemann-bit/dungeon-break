@@ -13,7 +13,7 @@ signal died
 signal revived
 
 ## Laufgeschwindigkeit in Metern pro Sekunde.
-@export var move_speed: float = 3.0
+@export var move_speed: float = 4.5
 ## Wie schnell sich die Figur in Laufrichtung dreht.
 @export var turn_speed: float = 12.0
 ## Auf welchen Physik-Ebenen ein Mausklick etwas treffen darf (1 = Welt, 3 = Gegner, 4 = Objekte wie Gegenstände, Altar, Portal).
@@ -49,8 +49,12 @@ signal revived
 ## Maximales Mana bzw. Zorn beim Krieger (Fähigkeiten kosten das).
 ## Im Code heißt es immer "mana", im Spiel so wie bei der Klasse angegeben (PlayerClasses).
 @export var max_mana: int = 100
-## So viel kommt pro Sekunde zurück.
-@export var mana_regen: float = 1.0
+## So viel kommt pro Sekunde von selbst zurück (Zorn: 0, der kommt nur durch Treffen).
+@export var mana_regen: float = 0.0
+## So viel Zorn bringt ein normaler Schlag, der trifft.
+@export var mana_per_hit: float = 2.0
+## An dieser Stelle der Schlag-Animation (0 = Anfang, 1 = Ende) trifft das Schwert.
+@export var hit_moment: float = 0.45
 
 @export_group("Wiederbeleben")
 ## Mit welchem Anteil der maximalen Lebenspunkte man wiederbelebt wird.
@@ -98,7 +102,7 @@ var buffs: Dictionary = {}
 ## Alle so viele Sekunden verfallen Stacks, wenn man den Buff nicht mehr auffrischt ...
 const BUFF_DECAY_EVERY := 0.5
 ## ... und zwar so viele.
-const BUFF_DECAY_AMOUNT := 2
+const BUFF_DECAY_AMOUNT := 1
 
 
 func _ready() -> void:
@@ -112,7 +116,8 @@ func _ready() -> void:
 	_base_regen = health.regen_per_second
 	_base_move_speed = move_speed
 	_base_attack_cooldown = attack_cooldown
-	mana = max_mana
+	# Mana ist am Anfang voll, Zorn leer (siehe PlayerClasses, "start_full").
+	mana = max_mana if PlayerClasses.CLASSES[GameState.player_class].get("resource", {}).get("start_full", true) else 0.0
 	inventory.changed.connect(recalculate_stats)
 	GameState.progress_changed.connect(recalculate_stats)
 	# Kommt der Spieler aus der Stadt oder einem Dungeon, bekommt er seine Werte zurück.
@@ -609,9 +614,26 @@ func _stat_total(stat: String) -> float:
 
 func _attack(target: Node3D) -> void:
 	_cooldown_left = attack_cooldown
-	target.take_damage(roll_damage())
 	# Die Animation dauert so lange wie die Pause bis zum nächsten Schlag.
 	animator.play_attack(attack_cooldown, true)
+	# Der Schaden kommt erst, wenn das Schwert in der Animation trifft.
+	var damage := roll_damage()
+	hit_later(func():
+		if is_instance_valid(target) and not target.is_dead():
+			target.take_damage(damage)
+			restore_mana(mana_per_hit))
+
+
+## Ruft `on_hit` auf, wenn das Schwert in der gerade gestarteten Schlag-Animation trifft
+## (nach hit_moment der Animationsdauer). Nicht mehr, wenn der Spieler inzwischen tot ist.
+func hit_later(on_hit: Callable) -> void:
+	var delay := animator.last_action_duration * hit_moment
+	if delay <= 0.0:
+		on_hit.call()
+		return
+	get_tree().create_timer(delay, false).timeout.connect(func():
+		if is_instance_valid(self) and not is_dead():
+			on_hit.call())
 
 
 func _on_damaged(amount: int) -> void:

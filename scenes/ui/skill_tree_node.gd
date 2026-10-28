@@ -26,6 +26,13 @@ func _init(node_icon: Texture2D, node_radius: float) -> void:
 	mouse_exited.connect(func(): _hovered = false; queue_redraw())
 
 
+## Ändert die Größe (beim Zoomen).
+func set_radius(new_radius: float) -> void:
+	radius = new_radius
+	size = Vector2.ONE * radius * 2.0
+	queue_redraw()
+
+
 ## Setzt die Mitte des Knotens auf `point` (im Skillbaum).
 func place_at(point: Vector2) -> void:
 	position = point - size / 2.0
@@ -64,12 +71,12 @@ func _draw() -> void:
 			background = Color(0.12, 0.1, 0.08).lerp(ring_color, 0.18)
 			icon_tint = Color.WHITE
 			# Leuchten um gelernte Knoten.
-			draw_circle(center, radius + 5.0, Color(ring_color, 0.18))
-			draw_circle(center, radius + 2.5, Color(ring_color, 0.3))
+			draw_circle(center, radius * 1.28, Color(ring_color, 0.18))
+			draw_circle(center, radius * 1.14, Color(ring_color, 0.3))
 	if _hovered:
 		border = border.lightened(0.35)
 	draw_circle(center, radius, background)
 	if icon:
 		var inset := radius * 0.62
 		draw_texture_rect(icon, Rect2(center - Vector2.ONE * inset, Vector2.ONE * inset * 2.0), false, icon_tint)
-	draw_arc(center, radius, 0.0, TAU, 48, border, 3.0 if state == State.LEARNED else 2.0, true)
+	draw_arc(center, radius, 0.0, TAU, 48, border, maxf(radius / 7.0, 1.5) if state == State.LEARNED else maxf(radius / 10.0, 1.2), true)

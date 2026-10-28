@@ -14,14 +14,19 @@ var _passives_box: HFlowContainer
 
 func _init() -> void:
 	super("Magischer Ältester")
-	# Groß in der Mitte statt links am Rand.
-	set_anchors_preset(Control.PRESET_CENTER)
-	grow_horizontal = Control.GROW_DIRECTION_BOTH
+	# Fast der ganze Bildschirm (mit kleinem Rand).
+	set_anchors_preset(Control.PRESET_FULL_RECT)
+	offset_left = 16
+	offset_top = 16
+	offset_right = -16
+	offset_bottom = -16
+	content.size_flags_vertical = Control.SIZE_EXPAND_FILL
 
 
 func _build() -> void:
 	var row := HBoxContainer.new()
 	row.add_theme_constant_override("separation", 16)
+	row.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	content.add_child(row)
 	_tree.skill_clicked.connect(_on_skill_clicked)
 	_tree.upgrade_clicked.connect(_on_upgrade_clicked)
@@ -38,7 +43,8 @@ func _build() -> void:
 	side.add_child(_class_text)
 	_points_label = make_label("", 18, Color(0.6, 0.85, 1.0))
 	side.add_child(_points_label)
-	var help := make_label("Linksklick: lernen bzw. Erweiterung wählen\nRechtsklick: verlernen (Punkt zurück)\n\n"
+	var help := make_label("Linksklick: lernen bzw. Erweiterung wählen\nRechtsklick: verlernen (Punkt zurück)\n"
+		+ "Mausrad: zoomen, Ziehen: verschieben\n\n"
 		+ "Jede Fähigkeit hat zwei Erweiterungen, es gilt immer nur eine.\n\n"
 		+ "Gelernte Fähigkeiten legst du auf die Skill-Leiste, indem du unten auf einen Platz klickst.", 12, Color(0.7, 0.68, 0.62))
 	help.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
@@ -55,11 +61,13 @@ func _build() -> void:
 	var spacer := Control.new()
 	spacer.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	side.add_child(spacer)
+	side.add_child(make_button("Ansicht zurücksetzen", _tree.reset_view))
 	side.add_child(make_button("Alle Punkte zurücksetzen", _reset))
 
 
 func open(for_player: Node, from: Node3D) -> void:
 	_tree.build(GameState.player_class)
+	_tree.reset_view()
 	super(for_player, from)
 
 
@@ -85,12 +93,9 @@ func refresh() -> void:
 		_passives_box.add_child(button)
 
 
+## Bleibt bildschirmfüllend (nicht wie andere Fenster auf den Inhalt schrumpfen).
 func _recenter() -> void:
-	reset_size()
-	offset_left = -size.x / 2.0
-	offset_right = size.x / 2.0
-	offset_top = -size.y / 2.0
-	offset_bottom = size.y / 2.0
+	pass
 
 
 func _free_points() -> int:
