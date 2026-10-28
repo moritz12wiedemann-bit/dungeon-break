@@ -3,7 +3,7 @@
 [ext_resource type="Script" path="res://scenes/enemies/enemy.gd" id="1_en3my"]
 [ext_resource type="Script" path="res://scenes/components/health.gd" id="2_hp4pl"]
 [ext_resource type="Script" path="res://scenes/ui/health_bar_3d.gd" id="3_hb3dx"]
-[ext_resource type="PackedScene" path="res://scenes/characters/zombie.tscn" id="4_model"]
+[ext_resource type="PackedScene" path="res://scenes/characters/puglin.tscn" id="4_model"]
 [ext_resource type="Script" path="res://scenes/components/character_animator.gd" id="5_anim0"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_en1cs"]
@@ -38,6 +38,5 @@ script = ExtResource("3_hb3dx")
 
 [node name="Animator" type="Node" parent="."]
 script = ExtResource("5_anim0")
-idle_animation = "Zombie_Idle"
-move_animation_speed = 5.4
-attack_animations = PackedStringArray("Zombie_Attack")
+move_animation_speed = 3.3
+attack_animations = PackedStringArray("Sword_Attack", "Melee_Hook")

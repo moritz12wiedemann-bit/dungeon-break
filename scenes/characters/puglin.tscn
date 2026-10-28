@@ -1,0 +1,10 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scenes/characters/monster.gd" id="1_mons"]
+
+[node name="Puglin" type="Node3D"]
+script = ExtResource("1_mons")
+kind = "Puglin"
+color_variant = 1
+glow = 1.0
+size = 1.5

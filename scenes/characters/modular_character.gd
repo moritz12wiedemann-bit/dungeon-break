@@ -8,7 +8,7 @@ extends Node3D
 ## gibt der Figur Waffen in die Hände und hängt die Animationen an.
 ##
 ## Eine fertige Zusammenstellung ("Vorlage") ist einfach eine Szene in scenes/characters/,
-## die nur aus diesem Knoten besteht, z. B. hero.tscn oder zombie.tscn.
+## die nur aus diesem Knoten besteht, z. B. hero.tscn oder smith.tscn.
 ## Alles lässt sich im Godot-Editor rechts im Inspektor umstellen, die Figur ändert sich sofort.
 
 const CHARACTER_DIR := "res://assets/models/quaternius/characters/"
@@ -32,12 +32,16 @@ const RANGER_COLORS := {"Grün": "T_Ranger_BaseColor.png", "Leder": "T_Ranger_3_
 
 ## Dinge, die die Figur in der Hand halten kann: Name -> [Modell, Lage in der Hand].
 ## Die Lage ist relativ zum Handknochen (hand_r/hand_l): Drehung in Grad, dann Verschiebung.
+## Am Handknochen zeigt +Y in Richtung der Finger, +Z zur Daumenseite (bei locker hängendem Arm
+## nach vorn) und -X von der Handfläche weg nach außen (linke Hand).
 const HELD_ITEMS := {
 	"Nichts": [],
-	"Schwert": ["Sword_Bronze", Vector3(-90, 0, 0), Vector3(0, 0.09, -0.1)],
-	"Axt": ["Axe_Bronze", Vector3(-90, 0, 0), Vector3(0, 0.09, -0.1)],
-	"Spitzhacke": ["Pickaxe_Bronze", Vector3(-90, 0, 0), Vector3(0, 0.09, -0.12)],
-	"Schild": ["Shield_Wooden", Vector3(0, 0, 0), Vector3(0, 0.05, 0.05)],
+	# Klinge zur Daumenseite (nach vorn), Schneide zeigt in Schlagrichtung.
+	"Schwert": ["Sword_Bronze", Vector3(0, 90, 90), Vector3(0, 0.09, 0.1)],
+	"Axt": ["Axe_Bronze", Vector3(0, -90, -90), Vector3(0, 0.09, 0.1)],
+	"Spitzhacke": ["Pickaxe_Bronze", Vector3(0, -90, -90), Vector3(0, 0.09, 0.12)],
+	# Schild sitzt außen am Unterarm, die Vorderseite zeigt zur Seite (für die linke Hand gedacht).
+	"Schild": ["Shield_Wooden", Vector3(0, -90, 0), Vector3(-0.04, -0.06, 0)],
 	"Buch": ["Book_7", Vector3(0, 0, 90), Vector3(0.04, 0.1, 0)],
 	# Krug, Kerzenhalter und Trank stehen aufrecht, wenn der Arm locker herunterhängt.
 	"Krug": ["Mug", Vector3(0, 0, 180), Vector3(0, 0.1, 0)],
@@ -257,6 +261,12 @@ func _hold(skeleton: Skeleton3D, bone: String, item: String) -> void:
 
 
 func _add_animations() -> void:
+	attach_animations(_model, start_animation)
+
+
+## Hängt einen AnimationPlayer mit allen Animationen aus Animations.gltf an ein Modell
+## mit dem Quaternius-Skelett (Menschen und Monster aus dem Bestiary).
+static func attach_animations(model: Node3D, start: String) -> AnimationPlayer:
 	if _animations == null:
 		var source: Node = load(CHARACTER_DIR + "Animations.gltf").instantiate()
 		var player: AnimationPlayer = source.find_child("AnimationPlayer", true, false)
@@ -267,10 +277,11 @@ func _add_animations() -> void:
 				_animations.get_animation(anim_name).loop_mode = Animation.LOOP_LINEAR
 	var animation_player := AnimationPlayer.new()
 	animation_player.name = "AnimationPlayer"
-	_model.add_child(animation_player)
+	model.add_child(animation_player)
 	animation_player.root_node = NodePath("..")
 	animation_player.add_animation_library("", _animations)
-	if start_animation != "" and animation_player.has_animation(start_animation):
-		animation_player.play(start_animation)
+	if start != "" and animation_player.has_animation(start):
+		animation_player.play(start)
 		# Nicht alle Figuren im Gleichtakt.
 		animation_player.seek(randf() * animation_player.current_animation_length)
+	return animation_player

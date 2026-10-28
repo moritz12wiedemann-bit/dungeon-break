@@ -1,7 +1,8 @@
 [gd_scene format=3]
 
 [ext_resource type="Script" path="res://scenes/world/dungeon_altar.gd" id="1_altar"]
-[ext_resource type="Script" path="res://scenes/world/placeholder.gd" id="2_place"]
+[ext_resource type="PackedScene" path="res://assets/models/quaternius/dungeon/Pedestal.gltf" id="2_place"]
+[ext_resource type="PackedScene" path="res://assets/models/quaternius/dungeon/Arch.gltf" id="5_arch"]
 [ext_resource type="PackedScene" path="res://assets/models/quaternius/props/CandleStick_Triple.gltf" id="3_candl"]
 [ext_resource type="PackedScene" path="res://assets/models/quaternius/props/CandleStick_Stand.gltf" id="4_stand"]
 
@@ -28,17 +29,15 @@ collision_mask = 0
 script = ExtResource("1_altar")
 
 [node name="Shrine" type="Node3D" parent="."]
-script = ExtResource("2_place")
-size = Vector3(1.4, 1.1, 1.4)
+
+[node name="Pedestal" parent="Shrine" instance=ExtResource("2_place")]
+transform = Transform3D(0.65, 0, 0, 0, 0.6, 0, 0, 0, 0.65, 0, 0, 0)
 
 [node name="Candles" parent="Shrine" instance=ExtResource("3_candl")]
-transform = Transform3D(1.5, 0, 0, 0, 1.5, 0, 0, 0, 1.5, 0, 1.1, 0)
+transform = Transform3D(1.5, 0, 0, 0, 1.5, 0, 0, 0, 1.5, 0, 1.31, 0)
 
-[node name="Gate" type="Node3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -1.8)
-script = ExtResource("2_place")
-kind = "Bogen"
-size = Vector3(4.6, 4.8, 0.8)
+[node name="Gate" parent="." instance=ExtResource("5_arch")]
+transform = Transform3D(1.15, 0, 0, 0, 1.15, 0, 0, 0, 1.15, 0, 0, -1.8)
 
 [node name="CandleLeft" parent="." instance=ExtResource("4_stand")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.6, 0, 0.6)

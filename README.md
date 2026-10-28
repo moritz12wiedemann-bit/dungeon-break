@@ -54,18 +54,19 @@ Das alte Testlevel (`scenes/levels/test_level.tscn`) gibt es noch. Zum Starten d
 
 ## Grafik
 
-Alle 3D-Modelle und Animationen sind **CC0** (frei nutzbar, auch kommerziell) von **Quaternius**. Woher was kommt und was noch fehlt: [CREDITS.md](CREDITS.md).
-**Alles Graue im Spiel ist ein Platzhalter** (`scenes/world/placeholder.gd`) für etwas, wofür es noch kein Modell gibt: Häuser, Bäume, Felsen, Wege, Zäune, Dungeon-Wände und -Böden, Altar-Sockel, Portalbogen.
+Alle 3D-Modelle und Animationen sind von **Quaternius**, fast alle **CC0** (frei nutzbar, auch kommerziell). Ausnahme: die Monster (Bestiary) stehen unter der Quaternius Asset License: im Spiel frei nutzbar, aber die Modell-Dateien selbst darf man nicht als Asset-Pack weitergeben. Woher was kommt: [CREDITS.md](CREDITS.md).
+Was es in den Packs nicht gab (Brunnen, Kirche, Windmühle, Turm, Fahnen ...), ist vorerst einfach weggelassen.
 
-- **Figuren sind ein Baukasten** (`scenes/characters/modular_character.gd`). Jede Figur ist eine kleine Szene in `scenes/characters/` (z. B. `hero.tscn`, `zombie.tscn`, `smith.tscn`). Szene öffnen, oberen Knoten anklicken, im Inspektor umstellen, die Figur ändert sich sofort:
+- **Figuren sind ein Baukasten** (`scenes/characters/modular_character.gd`). Jede Figur ist eine kleine Szene in `scenes/characters/` (z. B. `hero.tscn`, `smith.tscn`). Szene öffnen, oberen Knoten anklicken, im Inspektor umstellen, die Figur ändert sich sofort:
   - *Körper*: Mann/Frau, Hautfarbe, Frisur (Glatze, Kurz, Kurz (fein), Gescheitelt, Lang, Dutt), Bart, Haarfarbe, Größe.
   - *Kleidung*: für Oberteil, Arme, Hose und Schuhe jeweils „Bauer“ oder „Waldläufer“, dazu Kapuze, Gürtel, Schulterpanzer, Armschienen, Farbvariante (Bauer: Braun/Oliv, Waldläufer: Grün/Leder) und eine Tönung über alles.
   - *In den Händen*: Schwert, Axt, Spitzhacke, Schild, Buch, Krug, Kerzenhalter, Trank.
+- **Monster** (`scenes/characters/monster.gd`): Puglin und Imp aus dem Bestiary, je 3 Farbvarianten, Tönung, Leuchten, Größe. Vorlagen `puglin.tscn` (normale Gegner), `imp.tscn` (große Gegner), `imp_boss.tscn` (Boss). Sie haben dasselbe Skelett wie die Menschen und benutzen dieselben Animationen.
 - **Animationen**: 41 Stück aus der Universal Animation Library 1 und 2 (Liste in `tools/build_quaternius_animations.py`). Welche wofür benutzt wird, steht beim Kind-Knoten `Animator` von Spieler und Gegnern im Inspektor (`scenes/components/character_animator.gd`).
 - **Anderes Gegner-Aussehen**: Gegner-Szene öffnen, oberen Knoten anklicken, im Inspektor unter „Aussehen“ eine andere Szene aus `scenes/characters/` bei `Model Scene` hineinziehen.
-- **Dungeon**: Boden, Wände und Säulen sind graue Kästen, Fackeln, Banner, Fässer, Kisten und Kleinkram kommen aus dem Fantasy Props MegaKit (`scenes/levels/dungeon.gd`, Listen `PROPS`, `CLUTTER`, `BANNERS`). Hinten (oben/links im Bild) sind die Wände hoch, vorn (unten/rechts) niedrig.
-- **Stadt**: alles steht als normale Knoten in `town.tscn` (unter `Decor`, `Paths` und bei den Häusern unter `NavigationRegion3D/Geometry`). Wenn du ein Haus verschiebst, verschiebe den Haus-Knoten (Kollision) und den grauen Platzhalter unter `Decor`.
-- **Neue Modelle aus den Packs einbauen**: Die Original-Packs werden mit den Skripten in `tools/` umgewandelt (Texturen verkleinert, Teile zusammengefasst). Alle 94 Möbel/Gegenstände liegen schon in `assets/models/quaternius/props/`.
+- **Dungeon**: Boden, Wände und Säulen aus dem Modular Dungeon, Fackeln, Banner, Fässer, Kisten und Kleinkram aus Modular Dungeon und Fantasy Props MegaKit (`scenes/levels/dungeon.gd`, Listen `PROPS`, `CLUTTER`, `BANNERS`). Hinten (oben/links im Bild) sind die Wände hoch, vorn (unten/rechts) niedrig.
+- **Stadt**: alles steht als normale Knoten in `town.tscn` (unter `Decor`, `Paths` und bei den Häusern unter `NavigationRegion3D/Geometry`). Bäume, Felsen und Wege kommen aus dem Stylized Nature MegaKit, Zäune und Häuser aus dem Medieval Village MegaKit. Die Häuser sind eigene Szenen in `scenes/world/houses/`, zusammengesetzt aus Wand-, Dach-, Tür- und Fensterteilen (`tools/build_town_houses.py`). Wenn du ein Haus verschiebst, verschiebe den Haus-Knoten (Kollision) und das Haus unter `Decor`.
+- **Neue Modelle aus den Packs einbauen**: Die Original-Packs werden mit den Skripten in `tools/` umgewandelt (Texturen verkleinert, Teile zusammengefasst). Alle 94 Möbel/Gegenstände aus dem Fantasy Props MegaKit und alle Teile des Modular Dungeon liegen schon im Projekt, aus Village und Nature nur die benutzten (Listen `VILLAGE` und `NATURE` in `tools/build_quaternius_props.py`).
 
 ## Gegner und Kampf
 
@@ -106,7 +107,7 @@ Werte wie Lebenspunkte, Schaden, Tempo und Reichweiten kannst du im Editor ände
 | `scenes/components/` | Bausteine, die an Figuren gehängt werden: `health.gd` (Lebenspunkte, Regeneration), `experience.gd` (XP und Stufe), `inventory.gd` (Tasche und Ausrüstung), `character_animator.gd` (Animationen) |
 | `scenes/camera/` | Iso-Kamera, die dem Spieler folgt |
 | `scenes/ui/` | Bildschirm-Anzeige (HUD), Inventar-Fenster, Lebensbalken über Gegnern, Schadenszahlen |
-| `assets/models/quaternius/` | 3D-Modelle von Quaternius: `characters` (Figuren-Teile, Animationen), `props` (Möbel, Waffen, Kisten, Deko) |
+| `assets/models/quaternius/` | 3D-Modelle von Quaternius: `characters` (Figuren-Teile, Animationen), `monsters` (Bestiary), `props` (Möbel, Waffen, Kisten, Deko), `dungeon` (Modular Dungeon), `village` (Häuser-Teile, Zäune), `nature` (Bäume, Felsen, Wege) |
 | `tools/` | Python-Skripte, die die Quaternius-Packs ins Projekt umwandeln; `tools/ci/` macht beim Test-Build Bildschirmfotos |
 | `assets/textures/` | Texturen und Bilder |
 | `assets/materials/` | Materialien |

@@ -3,7 +3,7 @@ extends Node
 ## lädt nacheinander Figuren-Galerie, Stadt und Dungeon und speichert Bildschirmfotos.
 ## Ordner kommt aus der Umgebungsvariable SHOT_DIR.
 
-const PRESETS := ["hero", "zombie", "undead_warrior", "boss", "smith", "merchant", "mystic", "elder"]
+const PRESETS := ["hero", "puglin", "imp", "imp_boss", "smith", "merchant", "mystic", "elder"]
 
 var _dir := ""
 
@@ -28,12 +28,12 @@ func _run() -> void:
 	await _frames(20)
 	_shot("figuren_stehen")
 	for figure in gallery.get_children():
-		if figure is ModularCharacter:
+		if figure.has_method("get_animation_player"):
 			figure.get_animation_player().play("Jog")
 	await _frames(12)
 	_shot("figuren_laufen")
 	for figure in gallery.get_children():
-		if figure is ModularCharacter:
+		if figure.has_method("get_animation_player"):
 			figure.get_animation_player().play("Sword_Attack")
 	await _frames(10)
 	_shot("figuren_angriff")
