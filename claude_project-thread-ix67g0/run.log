@@ -24,6 +24,7 @@ SHOT stadt_spieler
 SHOT stadt_uebersicht
 SHOT stadt_nah
 SHOT inventar_schmuck
+SHOT tooltip_vergleich
 SHOT dungeon_spieler
 SHOT dungeon_nah
 CAPTURE DONE
