@@ -40,6 +40,12 @@ signal revived
 ## Abklingzeit des Tranks in Sekunden.
 @export var potion_cooldown: float = 20.0
 
+@export_group("Mana")
+## Maximales Mana. Wird noch nicht benutzt (kommt mit den Fähigkeiten).
+@export var max_mana: int = 100
+## So viel Mana kommt pro Sekunde zurück.
+@export var mana_regen: float = 4.0
+
 @export_group("Wiederbeleben")
 ## Mit welchem Anteil der maximalen Lebenspunkte man wiederbelebt wird.
 @export var revive_health_ratio: float = 0.25
@@ -69,6 +75,8 @@ var _cooldown_left: float = 0.0
 ## Sekunden, bis der Heiltrank wieder benutzt werden kann (0 = bereit).
 var potion_cooldown_left: float = 0.0
 var _protection_left: float = 0.0
+## Aktuelles Mana (0 bis max_mana).
+var mana: float = 0.0
 
 
 func _ready() -> void:
@@ -81,15 +89,16 @@ func _ready() -> void:
 	_base_max_health = health.max_health
 	_base_regen = health.regen_per_second
 	_base_move_speed = move_speed
+	mana = max_mana
 	inventory.changed.connect(recalculate_stats)
 	# Kommt der Spieler aus der Stadt oder einem Dungeon, bekommt er seine Werte zurück.
 	GameState.restore_player(self)
 
 
 func _unhandled_input(event: InputEvent) -> void:
-	# Ein einzelner Klick setzt sofort ein neues Ziel.
+	# Ein einzelner Klick setzt sofort ein neues Ziel und zeigt eine kleine Markierung am Boden.
 	if event.is_action_pressed("move"):
-		_pick_target_from_mouse()
+		_pick_target_from_mouse(true)
 	elif event.is_action_pressed("potion"):
 		drink_potion()
 	elif event.is_action_pressed("town_portal"):
@@ -99,6 +108,8 @@ func _unhandled_input(event: InputEvent) -> void:
 func _process(delta: float) -> void:
 	potion_cooldown_left = maxf(potion_cooldown_left - delta, 0.0)
 	_protection_left = maxf(_protection_left - delta, 0.0)
+	if not health.is_dead():
+		mana = minf(mana + mana_regen * delta, max_mana)
 
 
 func _physics_process(delta: float) -> void:
@@ -208,13 +219,19 @@ func revive() -> void:
 	revived.emit()
 
 
+## Bringt den toten Spieler mit vollem Leben zurück in die Stadt.
+func restart_in_town() -> void:
+	GameState.go_to_town(self, true)
+
+
 func is_dead() -> bool:
 	return health.is_dead()
 
 
 ## Schickt einen Strahl von der Kamera durch den Mauszeiger in die Welt.
 ## Trifft er einen Gegner, wird der angegriffen. Trifft er den Boden, laufen wir dorthin.
-func _pick_target_from_mouse() -> void:
+## `show_marker`: bei einem Klick auf den Boden die kleine Klick-Markierung zeigen.
+func _pick_target_from_mouse(show_marker: bool = false) -> void:
 	if health.is_dead():
 		return
 	var camera := get_viewport().get_camera_3d()
@@ -241,6 +258,8 @@ func _pick_target_from_mouse() -> void:
 	else:
 		_attack_target = null
 		nav_agent.target_position = hit.position
+		if show_marker:
+			ClickMarker.spawn(get_tree(), hit.position)
 
 
 func _in_attack_range(target: Node3D) -> bool:

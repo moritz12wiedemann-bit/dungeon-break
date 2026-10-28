@@ -29,6 +29,13 @@ corner_radius_top_right = 3
 corner_radius_bottom_right = 3
 corner_radius_bottom_left = 3
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_manaf"]
+bg_color = Color(0.15, 0.35, 0.9, 1)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_potn1"]
 bg_color = Color(0.55, 0.08, 0.1, 1)
 border_width_left = 2
@@ -76,9 +83,9 @@ anchor_top = 1.0
 anchor_right = 0.5
 anchor_bottom = 1.0
 offset_left = -180.0
-offset_top = -72.0
+offset_top = -86.0
 offset_right = 140.0
-offset_bottom = -44.0
+offset_bottom = -58.0
 grow_horizontal = 2
 grow_vertical = 0
 mouse_filter = 2
@@ -95,6 +102,39 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_constants/outline_size = 4
+text = "100 / 100"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="ManaBar" type="ProgressBar" parent="." unique_id=1748392012]
+unique_name_in_owner = true
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -180.0
+offset_top = -55.0
+offset_right = 140.0
+offset_bottom = -41.0
+grow_horizontal = 2
+grow_vertical = 0
+mouse_filter = 2
+tooltip_text = "Mana (wird später für Fähigkeiten gebraucht)"
+theme_override_styles/background = SubResource("StyleBoxFlat_bg001")
+theme_override_styles/fill = SubResource("StyleBoxFlat_manaf")
+value = 100.0
+show_percentage = false
+
+[node name="ManaLabel" type="Label" parent="ManaBar" unique_id=1748392013]
+unique_name_in_owner = true
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/outline_size = 4
+theme_override_font_sizes/font_size = 10
 text = "100 / 100"
 horizontal_alignment = 1
 vertical_alignment = 1
@@ -139,9 +179,9 @@ anchor_top = 1.0
 anchor_right = 0.5
 anchor_bottom = 1.0
 offset_left = 150.0
-offset_top = -72.0
+offset_top = -80.0
 offset_right = 202.0
-offset_bottom = -20.0
+offset_bottom = -28.0
 grow_horizontal = 2
 grow_vertical = 0
 clip_children = 2
@@ -238,9 +278,9 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -150.0
+offset_left = -190.0
 offset_top = -70.0
-offset_right = 150.0
+offset_right = 190.0
 offset_bottom = 70.0
 grow_horizontal = 2
 grow_vertical = 2
@@ -256,6 +296,14 @@ theme_override_font_sizes/font_size = 28
 text = "Du bist gestorben!"
 horizontal_alignment = 1
 
-[node name="MessageButton" type="Button" parent="MessagePanel/VBox" unique_id=1837465029]
+[node name="Buttons" type="HBoxContainer" parent="MessagePanel/VBox" unique_id=1837465030]
+theme_override_constants/separation = 12
+alignment = 1
+
+[node name="MessageButton" type="Button" parent="MessagePanel/VBox/Buttons" unique_id=1837465029]
 unique_name_in_owner = true
 text = "Wiederbeleben"
+
+[node name="SecondButton" type="Button" parent="MessagePanel/VBox/Buttons" unique_id=1837465031]
+unique_name_in_owner = true
+text = "In der Stadt neu starten"

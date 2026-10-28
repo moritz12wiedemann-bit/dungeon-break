@@ -28,9 +28,11 @@ func enter_new_dungeon(player: Node) -> void:
 	get_tree().change_scene_to_file.call_deferred(DUNGEON_SCENE)
 
 
-## Bringt den Spieler in die Stadt.
-func go_to_town(player: Node) -> void:
+## Bringt den Spieler in die Stadt. `full_health`: dort mit vollem Leben ankommen (z. B. nach dem Tod).
+func go_to_town(player: Node, full_health: bool = false) -> void:
 	save_player(player)
+	if full_health:
+		_health = -1
 	get_tree().change_scene_to_file.call_deferred(TOWN_SCENE)
 
 
@@ -53,4 +55,5 @@ func restore_player(player: Node) -> void:
 	player.inventory.bag = _bag.duplicate()
 	player.inventory.equipped = _equipped.duplicate()
 	player.recalculate_stats()
-	player.health.current = clampi(_health, 1, player.health.max_health)
+	# -1 = voll geheilt (siehe go_to_town).
+	player.health.current = player.health.max_health if _health < 0 else clampi(_health, 1, player.health.max_health)

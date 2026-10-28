@@ -1,9 +1,13 @@
 extends CanvasLayer
 ## Bildschirm-Anzeige: Lebensbalken, Erfahrungsbalken mit Stufe, Heiltrank-Knopf,
-## Inventar-Fenster, Ort und übrige Gegner, kurze Meldungen und "Gestorben"-Fenster mit Wiederbeleben.
+## Manabalken, Inventar-Fenster, Ort und übrige Gegner, kurze Meldungen und
+## "Gestorben"-Fenster (Wiederbeleben oder in der Stadt neu starten).
+## Escape schließt das oberste offene Fenster.
 
 @onready var health_bar: ProgressBar = %HealthBar
 @onready var health_label: Label = %HealthLabel
+@onready var mana_bar: ProgressBar = %ManaBar
+@onready var mana_label: Label = %ManaLabel
 @onready var xp_bar: ProgressBar = %XpBar
 @onready var xp_label: Label = %XpLabel
 @onready var potion_button: Button = %PotionButton
@@ -15,12 +19,14 @@ extends CanvasLayer
 @onready var message_panel: PanelContainer = %MessagePanel
 @onready var message_label: Label = %MessageLabel
 @onready var message_button: Button = %MessageButton
+@onready var second_button: Button = %SecondButton
 @onready var inventory_button: Button = %InventoryButton
 @onready var inventory_panel: PanelContainer = %InventoryPanel
 
 var _player: Node = null
 ## Was beim Klick auf den Knopf im Meldungsfenster passieren soll.
 var _message_action: Callable
+var _second_action: Callable
 var _toast_tween: Tween
 
 
@@ -29,6 +35,7 @@ func _ready() -> void:
 	toast_label.hide()
 	enemies_label.hide()
 	message_button.pressed.connect(_on_message_button_pressed)
+	second_button.pressed.connect(_on_second_button_pressed)
 	potion_button.pressed.connect(_on_potion_pressed)
 	inventory_button.pressed.connect(inventory_panel.toggle)
 
@@ -41,6 +48,22 @@ func _process(_delta: float) -> void:
 	var ratio := clampf(left / _player.potion_cooldown, 0.0, 1.0)
 	potion_cooldown.anchor_top = 1.0 - ratio
 	potion_label.text = str(ceili(left)) if left > 0.0 else "1"
+	mana_bar.max_value = _player.max_mana
+	mana_bar.value = _player.mana
+	mana_label.text = "%d / %d" % [int(_player.mana), _player.max_mana]
+
+
+func _unhandled_input(event: InputEvent) -> void:
+	if event.is_action_pressed("ui_cancel") and close_top_window():
+		get_viewport().set_input_as_handled()
+
+
+## Schließt das oberste offene Fenster (z. B. Inventar). Gibt false zurück, wenn keins offen war.
+func close_top_window() -> bool:
+	if inventory_panel.visible:
+		inventory_panel.hide()
+		return true
+	return false
 
 
 ## Verbindet die Anzeige mit dem Spieler.
@@ -80,13 +103,19 @@ func show_toast(text: String, seconds: float = 4.0) -> void:
 
 
 func _show_game_over() -> void:
-	_show_message("Du bist gestorben!", "Wiederbeleben", _player.revive)
+	_show_message("Du bist gestorben!", "Wiederbeleben", _player.revive,
+		"In der Stadt neu starten", _player.restart_in_town)
 
 
-func _show_message(text: String, button_text: String, action: Callable) -> void:
+## Zeigt das Meldungsfenster in der Mitte. Der zweite Knopf ist optional.
+func _show_message(text: String, button_text: String, action: Callable,
+		second_text: String = "", second_action: Callable = Callable()) -> void:
 	message_label.text = text
 	message_button.text = button_text
 	_message_action = action
+	second_button.text = second_text
+	second_button.visible = second_text != ""
+	_second_action = second_action
 	message_panel.show()
 
 
@@ -115,3 +144,9 @@ func _on_message_button_pressed() -> void:
 	message_panel.hide()
 	if _message_action.is_valid():
 		_message_action.call()
+
+
+func _on_second_button_pressed() -> void:
+	message_panel.hide()
+	if _second_action.is_valid():
+		_second_action.call()
