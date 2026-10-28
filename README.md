@@ -16,7 +16,8 @@ Bei jedem Push auf `main` baut die GitHub Action `.github/workflows/web.yml` aut
 4. **Linke Maustaste auf einen Gegner**: die Figur läuft hin und schlägt so lange zu, bis er tot ist.
 5. **Taste 1** oder Klick auf den roten Kreis rechts neben dem Lebensbalken: Heiltrank trinken (heilt 40 %, danach 20 Sekunden Abklingzeit).
 6. **Klick auf einen Gegenstand am Boden**: hinlaufen und aufheben. **Taste I**: Inventar öffnen/schließen.
-7. **Klick auf den Dungeon-Altar** (Schrein mit lila Kristall vor dem Gittertor in der Stadt): neuer Dungeon. **Taste T**: aus dem Dungeon zurück in die Stadt.
+7. **Klick auf den Dungeon-Altar** (Schrein mit lila Kristall vor dem Gittertor in der Stadt): Monsterstufe wählen, neuer Dungeon. **Taste T**: aus dem Dungeon zurück in die Stadt.
+8. **Escape** schließt das oberste offene Fenster.
 
 Das alte Testlevel (`scenes/levels/test_level.tscn`) gibt es noch. Zum Starten die Szene im Editor öffnen und **F6** („Aktuelle Szene starten“) drücken.
 
@@ -29,6 +30,27 @@ Das alte Testlevel (`scenes/levels/test_level.tscn`) gibt es noch. Zum Starten d
 - **Taste T** bringt dich jederzeit aus dem Dungeon in die Stadt (der Dungeon ist dann verloren, der Altar macht einen neuen).
 - Stufe, Erfahrung, Inventar und Leben bleiben beim Wechsel erhalten (`scenes/game/game_state.gd`, als Autoload „GameState“ eingetragen). Beim Beenden des Spiels wird noch nichts gespeichert.
 - Wie die Karten erzeugt werden, steht in `scenes/levels/dungeon_generator.gd`. Anzahl Gegner pro Raum und Chance auf Brocken: Dungeon-Szene öffnen, oberen Knoten `Dungeon` anklicken, Inspektor.
+
+## Stadt-Figuren, Gold, Orbs und Endlos-Modus
+
+- **Altäre**: Der lila Dungeon-Altar und der rote Endlos-Altar öffnen ein Fenster, in dem man die **Monsterstufe 1–100** wählt (`scenes/ui/altar_window.gd`). Höhere Stufe = stärkere Monster, mehr XP, bessere Beute.
+- **Endlos-Modus** (`scenes/levels/endless.gd`): offene Arena, Monster tauchen immer schneller um dich herum auf und jagen dich. Alle 8 Kills +1 Monsterstufe. Beute (Gold, Gegenstände, Orbs) fällt erst nach dem Tod neben dir zu Boden. Zahlen im Inspektor der Szene `endless.tscn`.
+- **Gold** fällt von Gegnern und aus **Schatzkisten** (`scenes/world/chest.gd`) und wird beim Drüberlaufen automatisch aufgehoben, ebenso Orbs (`scenes/items/ground_pickup.gd`). Alle Beute-Zahlen und Preise: `scenes/items/loot.gd`.
+- **Schmied** (neben dem Dungeon-Altar): Gegenstände zerlegen → Altmetall, bei guten Gegenständen manchmal ein Orb.
+- **Händler** (am Markt): 3 Gegenstände zum Kaufen, neue Ware nach jedem Boss-Sieg. Verkaufen bringt 25 % des Kaufpreises.
+- **Mystikerin**: Augment-Karten für Gold kaufen und mit **Arcana** ausrüsten (Start 3, für Gold erhöhbar). Die Karten sind Platzhalter (`scenes/game/augment_cards.gd`).
+- **Magischer Ältester**: Unterklasse wählen und Fähigkeiten leveln (1 Punkt pro Stufe). Alles noch Platzhalter ohne Wirkung (`scenes/ui/elder_window.gd`).
+- Die Fenster der Figuren erben von `scenes/ui/game_window.gd`, die Figuren selbst von `scenes/world/npc.gd`.
+
+## Gegenstände und Orbs
+
+- Jeder Wert hat einen **Bereich**, der in Klammern dahinter steht, z. B. „+7 Rüstung (5–10)“. Tabellen in `scenes/items/item_generator.gd`.
+- Die **Seltenheit** hängt an der Zahl der Werte: 1 = Normal (weiß), 2 = Magisch (blau), 3 = Selten (gelb), 4 = Legendär (orange). **Set**-Gegenstände (grün) haben auch 4 Werte und sind eine Alternative zu Legendär.
+- Im Inventar (Taste I) gibt es den aufklappbaren Reiter **Materialien**. Orbs dort rechtsklicken, dann einen Gegenstand anklicken:
+  - **Orb der Erweiterung**: fügt einen zufälligen Wert hinzu, Seltenheit steigt (höchstens Legendär).
+  - **Orb der Läuterung**: entfernt einen zufälligen Wert (nie den Grundwert), Seltenheit sinkt.
+  - **Orb des Wandels**: würfelt alle Werte in ihren Bereichen neu.
+  - Set-Gegenstände kann man nur neu würfeln. Jeder startet mit 5 von jedem Orb.
 
 ## Grafik (Platzhalter-Modelle)
 
