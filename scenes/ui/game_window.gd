@@ -44,7 +44,7 @@ func _init(title: String) -> void:
 	_title.add_theme_font_size_override("font_size", 22)
 	header.add_child(_title)
 	var close := Button.new()
-	close.text = "✕"
+	close.text = "X"
 	close.focus_mode = Control.FOCUS_NONE
 	close.tooltip_text = "Schließen (Esc)"
 	close.pressed.connect(hide)

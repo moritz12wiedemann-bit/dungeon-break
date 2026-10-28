@@ -69,12 +69,12 @@ text = "Tasche"
 
 [node name="BagGrid" type="GridContainer" parent="VBox/HBox/Right" unique_id=1657483920]
 unique_name_in_owner = true
-columns = 6
+columns = 8
 
 [node name="MaterialsToggle" type="Button" parent="VBox" unique_id=1938475612]
 unique_name_in_owner = true
 focus_mode = 0
-text = "▾ Materialien"
+text = "[–] Materialien"
 alignment = 0
 flat = true
 

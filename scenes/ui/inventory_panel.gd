@@ -111,22 +111,22 @@ func refresh() -> void:
 		_bag_slots[i].set_item(inventory.bag[i], orb_active)
 	for id in _material_slots:
 		_material_slots[id].set_count(inventory.get_material_count(id), id == _selected_orb)
-	stats_label.text = "Stufe %d\nLeben: %d\nSchaden: %d–%d\nRüstung: %d\nLeben/Sek.: %.1f\nAngriffe/Sek.: %.2f\nTempo: %.1f m/s\nGold: %d" % [
+	stats_label.text = "Stufe %d  ·  Gold %d\nLeben %d  (+%.1f/s)\nSchaden %d–%d  ·  %.2f/s\nRüstung %d  ·  Tempo %.1f" % [
 		_player.experience.level,
+		_player.inventory.gold,
 		_player.health.max_health,
+		_player.health.regen_per_second,
 		_player.damage_min + _player.bonus_damage,
 		_player.damage_max + _player.bonus_damage,
-		_player.armor,
-		_player.health.regen_per_second,
 		1.0 / _player.attack_cooldown,
+		_player.armor,
 		_player.move_speed,
-		_player.inventory.gold,
 	]
 
 
 func _toggle_materials() -> void:
 	materials_box.visible = not materials_box.visible
-	materials_toggle.text = ("▾ " if materials_box.visible else "▸ ") + "Materialien"
+	materials_toggle.text = ("[–] " if materials_box.visible else "[+] ") + "Materialien"
 	if not materials_box.visible:
 		cancel_orb()
 	reset_size()
@@ -162,7 +162,7 @@ func _try_apply_orb(item: ItemData) -> bool:
 	if error != "":
 		_show_status(error, true)
 	else:
-		_show_status("%s benutzt: %s → %s" % [GameMaterials.display_name(id), old_name, item.item_name])
+		_show_status("%s benutzt: %s wird zu %s" % [GameMaterials.display_name(id), old_name, item.item_name])
 	refresh()
 	return true
 
