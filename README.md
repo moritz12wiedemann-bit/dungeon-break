@@ -24,7 +24,7 @@ Das alte Testlevel (`scenes/levels/test_level.tscn`) gibt es noch. Zum Starten d
 ## Stadt und Dungeons
 
 - **Stadt** (`scenes/levels/town.tscn`): sicherer Ort ohne Gegner. Der **Dungeon-Altar** öffnet bei jedem Klick einen neuen Dungeon.
-- **Dungeon** (`scenes/levels/dungeon.tscn`): wird jedes Mal **zufällig erzeugt** (6–8 Räume, Gänge, Säulen). Der Startraum ist leer, der Boss-Raum ist am anderen Ende. In den Räumen dazwischen stehen Skelette, manchmal ein großer Skelett-Krieger („Brocken“).
+- **Dungeon „Kalksteintempel“** (`scenes/levels/dungeon.tscn`): wird jedes Mal **zufällig erzeugt** (18–22 große Räume, kurze Gänge, Säulen). Der Startraum ist leer, der Boss-Raum ist weit weg. In den Räumen dazwischen stehen Puglins, manchmal ein großer roter Imp („Brocken“).
 - Die Gegner sind so stark wie deine Stufe beim Betreten (pro Stufe +25 % Leben, +15 % Schaden, mehr XP).
 - Besiegst du den **Boss** (blauer Riesen-Imp mit Leuchten), erscheint ein blaues **Portal**. Anklicken bringt dich in die Stadt.
 - **Taste T** bringt dich jederzeit aus dem Dungeon in die Stadt (der Dungeon ist dann verloren, der Altar macht einen neuen).

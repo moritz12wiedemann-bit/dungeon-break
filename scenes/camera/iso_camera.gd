@@ -13,8 +13,8 @@ extends Node3D
 ## So viel ändert ein Mausrad-Schritt.
 @export var zoom_step: float = 0.08
 
-## Zoom bleibt beim Wechsel Stadt ↔ Dungeon erhalten.
-static var _saved_zoom: float = 1.0
+## Zoom bleibt beim Wechsel Stadt ↔ Dungeon erhalten. Start: 0,72 (etwa ein Viertel näher als früher).
+static var _saved_zoom: float = 0.72
 
 @onready var camera: Camera3D = $Pivot/Camera3D
 ## Abstand der Kamera bei Zoom 1.0 (aus der Szene).
