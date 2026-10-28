@@ -123,7 +123,10 @@ static func _add_comparison(box: VBoxContainer, new_item: ItemData, worn: ItemDa
 		if new_item.stats.has(stat) or (worn and worn.stats.has(stat)):
 			stats.append(stat)
 	box.add_child(HSeparator.new())
-	box.add_child(_line("Beim Anziehen:", Color(0.75, 0.7, 0.6), 12))
+	var heading := "Beim Anziehen:"
+	if worn and worn.slot == ItemData.Slot.RING:
+		heading = "Beim Anziehen (statt %s):" % worn.item_name
+	box.add_child(_line(heading, Color(0.75, 0.7, 0.6), 12))
 	var changed := false
 	for stat in stats:
 		var diff := new_item.get_stat(stat) - (worn.get_stat(stat) if worn else 0.0)
