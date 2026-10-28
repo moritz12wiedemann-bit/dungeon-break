@@ -8,5 +8,4 @@ body = "Frau"
 hair = "Dutt"
 hair_color = Color(0.55, 0.3, 0.12, 1)
 peasant_color = "Oliv"
-right_hand = "Krug"
 start_animation = "Talk"
