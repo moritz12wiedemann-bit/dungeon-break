@@ -30,7 +30,6 @@ var _second_action: Callable
 var _toast_tween: Tween
 ## Fenster der Stadt-Figuren: Name → GameWindow (siehe open_window).
 var _windows: Dictionary = {}
-var _gold_label := Label.new()
 ## Ist das gesetzt, ruft der Tod des Spielers das hier auf statt das normale "Gestorben"-Fenster
 ## (der Endlos-Modus zeigt dort seine Belohnung).
 var death_handler: Callable
@@ -50,18 +49,6 @@ func _ready() -> void:
 		add_child(window)
 	# Fenster unter dem Meldungsfenster ("Gestorben") halten.
 	move_child(message_panel, -1)
-	_gold_label.add_theme_color_override("font_color", Color(1.0, 0.85, 0.3))
-	_gold_label.add_theme_constant_override("outline_size", 4)
-	_gold_label.add_theme_font_size_override("font_size", 16)
-	_gold_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	_gold_label.set_anchors_preset(Control.PRESET_CENTER_BOTTOM)
-	_gold_label.offset_left = 212
-	_gold_label.offset_right = 360
-	_gold_label.offset_top = -88
-	_gold_label.offset_bottom = -64
-	add_child(_gold_label)
-	# Ganz nach hinten, damit Fenster darüber liegen.
-	move_child(_gold_label, 0)
 	message_panel.hide()
 	toast_label.hide()
 	enemies_label.hide()
@@ -111,8 +98,6 @@ func track_player(player: Node) -> void:
 	player.died.connect(_show_game_over)
 	player.revived.connect(message_panel.hide)
 	inventory_panel.track_player(player)
-	player.inventory.changed.connect(_update_gold)
-	_update_gold()
 	_on_player_health_changed(player.health.current, player.health.max_health)
 	var xp: Experience = player.experience
 	_on_player_xp_changed(xp.level, xp.xp, xp.xp_for_next_level())
@@ -125,10 +110,6 @@ func open_window(window_name: String, player: Node, source: Node3D) -> void:
 			_windows[other].hide()
 	if _windows.has(window_name):
 		_windows[window_name].open(player, source)
-
-
-func _update_gold() -> void:
-	_gold_label.text = "Gold: %d" % _player.inventory.gold
 
 
 func set_enemies_left(count: int) -> void:
