@@ -54,6 +54,7 @@ func _ready() -> void:
 	move_child(minimap, 0)
 	add_child(skill_bar)
 	move_child(skill_bar, 1)
+	_add_level_up_button()
 	for window in _windows.values():
 		add_child(window)
 	# Fenster unter dem Meldungsfenster ("Gestorben") halten.
@@ -83,6 +84,26 @@ func _process(_delta: float) -> void:
 func _unhandled_input(event: InputEvent) -> void:
 	if event.is_action_pressed("ui_cancel") and close_top_window():
 		get_viewport().set_input_as_handled()
+
+
+## Nur zum Testen: Knopf über "Inventar", der sofort eine Stufe aufsteigen lässt.
+func _add_level_up_button() -> void:
+	var button := Button.new()
+	button.text = "Test: Stufe +1"
+	button.tooltip_text = "Nur zum Testen: sofort eine Stufe aufsteigen"
+	button.focus_mode = Control.FOCUS_NONE
+	button.set_anchors_preset(Control.PRESET_BOTTOM_RIGHT)
+	button.grow_horizontal = Control.GROW_DIRECTION_BEGIN
+	button.grow_vertical = Control.GROW_DIRECTION_BEGIN
+	button.offset_left = -136
+	button.offset_right = -16
+	button.offset_top = -112
+	button.offset_bottom = -82
+	button.pressed.connect(func():
+		var xp: Experience = _player.experience
+		if not xp.is_max_level():
+			xp.add_xp(xp.xp_for_next_level() - xp.xp))
+	add_child(button)
 
 
 ## Schließt das oberste offene Fenster (z. B. Inventar). Gibt false zurück, wenn keins offen war.

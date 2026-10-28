@@ -17,7 +17,9 @@ var equipped: Dictionary = {}
 ## Materialien und Orbs: Name (siehe GameMaterials) → Anzahl. Liegen nicht in der Tasche.
 var materials: Dictionary = GameMaterials.STARTING.duplicate()
 ## Gold zum Kaufen beim Händler und bei der Mystikerin.
-var gold: int = 0
+## Zum Testen startet man mit 1000 Gold (START_GOLD).
+const START_GOLD := 1000
+var gold: int = START_GOLD
 
 
 func _ready() -> void:
