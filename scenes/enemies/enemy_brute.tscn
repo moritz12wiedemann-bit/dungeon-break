@@ -17,6 +17,7 @@ damage_min = 14
 damage_max = 22
 attack_range = 2.2
 attack_cooldown = 1.8
+crowd_radius = 0.5
 model_scene = ExtResource("2_model")
 
 [node name="Collision" parent="." index="1"]

@@ -42,6 +42,12 @@ enum State { IDLE, CHASE, RETURN, DEAD }
 ## Sekunden zwischen zwei Schlägen.
 @export var attack_cooldown: float = 1.2
 
+@export_group("Gedränge")
+## Wie viel Platz der Gegner gegenüber anderen Gegnern braucht (Meter, Radius).
+## Bewusst kleiner als die Figur: Gegner drängeln sich nur leicht, und den Spieler
+## blockieren sie gar nicht (er läuft durch sie hindurch).
+@export var crowd_radius: float = 0.3
+
 @onready var nav_agent: NavigationAgent3D = $NavigationAgent3D
 @onready var health: Health = $Health
 @onready var health_bar: Node3D = $HealthBar
@@ -142,8 +148,10 @@ func _move_along_path(delta: float) -> void:
 		var direction := nav_agent.get_next_path_position() - global_position
 		direction.y = 0.0
 		if direction.length() > 0.01:
-			horizontal = direction.normalized() * move_speed
+			direction = _steer_around_allies(direction.normalized())
+			horizontal = direction * move_speed
 			_face_direction(direction, delta)
+	horizontal += _crowd_push()
 
 	velocity.x = horizontal.x
 	velocity.z = horizontal.z
@@ -152,6 +160,55 @@ func _move_along_path(delta: float) -> void:
 	else:
 		velocity.y -= _gravity * delta
 	move_and_slide()
+
+
+## Steht ein anderer Gegner im Weg (z. B. weil er schon vorne am Spieler zuschlägt),
+## seitlich an ihm vorbeilaufen, damit auch hintere Gegner an den Spieler herankommen.
+func _steer_around_allies(direction: Vector3) -> Vector3:
+	var steer := Vector3.ZERO
+	for other in get_tree().get_nodes_in_group("enemies"):
+		if other == self:
+			continue
+		var offset: Vector3 = other.global_position - global_position
+		offset.y = 0.0
+		var distance := offset.length()
+		var reach: float = crowd_radius + other.crowd_radius + 0.8
+		if distance < 0.01 or distance > reach:
+			continue
+		var ahead := offset.dot(direction)
+		if ahead <= 0.0:
+			continue
+		# Seitlicher Abstand zur eigenen Laufrichtung: liegt der andere nicht im Weg, egal.
+		var side := direction.cross(Vector3.UP)
+		var lateral := offset.dot(side)
+		if absf(lateral) > crowd_radius + other.crowd_radius + 0.15:
+			continue
+		# Zur Seite ausweichen, auf der weniger vom anderen ist. Liegt er genau mittig,
+		# entscheidet die eigene Nummer, damit nicht alle zur selben Seite gehen.
+		var away := -signf(lateral) if absf(lateral) > 0.05 else (1.0 if get_instance_id() % 2 == 0 else -1.0)
+		steer += side * away * (1.0 - distance / reach) * 2.5
+	if steer == Vector3.ZERO:
+		return direction
+	return (direction + steer).normalized()
+
+
+## Leichtes Auseinanderschieben, wenn sich zwei Gegner überlappen (kleine "Hitbox" untereinander).
+func _crowd_push() -> Vector3:
+	var push := Vector3.ZERO
+	for other in get_tree().get_nodes_in_group("enemies"):
+		if other == self:
+			continue
+		var offset: Vector3 = global_position - other.global_position
+		offset.y = 0.0
+		var distance := offset.length()
+		var min_distance: float = crowd_radius + other.crowd_radius
+		if distance >= min_distance:
+			continue
+		if distance < 0.01:
+			offset = Vector3(randf_range(-1, 1), 0, randf_range(-1, 1))
+			distance = 0.01
+		push += offset.normalized() * (min_distance - distance) / min_distance * move_speed
+	return push.limit_length(move_speed)
 
 
 ## Bemerkt den Spieler, wenn er nah genug ist und keine Wand dazwischen steht.
