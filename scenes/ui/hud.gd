@@ -33,6 +33,8 @@ var _windows: Dictionary = {}
 ## Ist das gesetzt, ruft der Tod des Spielers das hier auf statt das normale "Gestorben"-Fenster
 ## (der Endlos-Modus zeigt dort seine Belohnung).
 var death_handler: Callable
+## Karte oben rechts (nur im Dungeon sichtbar, siehe setup_minimap).
+var minimap := Minimap.new()
 
 
 func _ready() -> void:
@@ -45,6 +47,9 @@ func _ready() -> void:
 		"mystic": preload("res://scenes/ui/mystic_window.gd").new(),
 		"elder": preload("res://scenes/ui/elder_window.gd").new(),
 	}
+	add_child(minimap)
+	# Ganz nach hinten, damit Inventar und Fenster darüber liegen.
+	move_child(minimap, 0)
 	for window in _windows.values():
 		add_child(window)
 	# Fenster unter dem Meldungsfenster ("Gestorben") halten.
@@ -110,6 +115,11 @@ func open_window(window_name: String, player: Node, source: Node3D) -> void:
 			_windows[other].hide()
 	if _windows.has(window_name):
 		_windows[window_name].open(player, source)
+
+
+## Zeigt oben rechts die Karte des Dungeons. `boss` darf null sein.
+func setup_minimap(generator: DungeonGenerator, cell_size: float, player: Node3D, boss: Node3D) -> void:
+	minimap.setup(generator, cell_size, player, boss)
 
 
 func set_enemies_left(count: int) -> void:

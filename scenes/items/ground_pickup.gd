@@ -5,7 +5,7 @@ extends Node3D
 
 const COIN_MODEL := "res://assets/models/quaternius/props/Coin_Pile_2.gltf"
 ## Aus dieser Entfernung (Meter) wird es aufgehoben.
-const PICKUP_RANGE := 1.3
+const PICKUP_RANGE := 2.6
 
 ## "" = Gold, sonst der Name des Materials (siehe GameMaterials).
 var material_id: String = ""

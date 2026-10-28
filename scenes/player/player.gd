@@ -17,7 +17,10 @@ signal revived
 ## Auf welchen Physik-Ebenen ein Mausklick etwas treffen darf (1 = Welt, 3 = Gegner, 4 = Objekte wie Gegenstände, Altar, Portal).
 @export_flags_3d_physics var click_mask: int = 1 | 4 | 8
 ## Aus dieser Entfernung (Meter) kann man Gegenstände aufheben.
-@export var pickup_range: float = 1.5
+@export var pickup_range: float = 3.0
+## So nah (Bildschirm-Pixel) muss der Mauszeiger an einem Gegner, Gegenstand oder einer Truhe sein,
+## damit ein Klick ihn trifft, auch wenn man knapp daneben klickt.
+@export var click_tolerance: float = 36.0
 
 @export_group("Kampf")
 ## Schaden pro Schlag (zufällig zwischen den beiden Werten).
@@ -231,8 +234,9 @@ func is_dead() -> bool:
 	return health.is_dead()
 
 
-## Schickt einen Strahl von der Kamera durch den Mauszeiger in die Welt.
-## Trifft er einen Gegner, wird der angegriffen. Trifft er den Boden, laufen wir dorthin.
+## Was liegt unter dem Mauszeiger? Erst Gegner, Gegenstände und Truhen (auch hinter Säulen
+## und Wänden, die Welt wird dabei ignoriert), dann der Boden.
+## Trifft es einen Gegner, wird der angegriffen. Trifft es den Boden, laufen wir dorthin.
 ## `show_marker`: bei einem Klick auf den Boden die kleine Klick-Markierung zeigen.
 func _pick_target_from_mouse(show_marker: bool = false) -> void:
 	if health.is_dead():
@@ -244,11 +248,7 @@ func _pick_target_from_mouse(show_marker: bool = false) -> void:
 	var from := camera.project_ray_origin(mouse_pos)
 	var to := from + camera.project_ray_normal(mouse_pos) * 1000.0
 
-	var query := PhysicsRayQueryParameters3D.create(from, to, click_mask)
-	var hit := get_world_3d().direct_space_state.intersect_ray(query)
-	if hit.is_empty():
-		return
-	var collider: Object = hit.collider
+	var collider := _pick_object(camera, mouse_pos, from, to)
 	if collider is GroundItem or collider is Interactable:
 		# Aufheben/Benutzen nur mit einem einzelnen Klick, nicht beim Gedrückthalten.
 		if Input.is_action_just_pressed("move"):
@@ -256,13 +256,56 @@ func _pick_target_from_mouse(show_marker: bool = false) -> void:
 			_interact_target = collider
 		return
 	_interact_target = null
-	if collider is Node and collider.is_in_group("enemies") and not collider.is_dead():
+	if collider:
 		_attack_target = collider
-	else:
-		_attack_target = null
-		nav_agent.target_position = hit.position
-		if show_marker:
-			ClickMarker.spawn(get_tree(), hit.position)
+		return
+	var query := PhysicsRayQueryParameters3D.create(from, to, click_mask & 1)
+	var hit := get_world_3d().direct_space_state.intersect_ray(query)
+	if hit.is_empty():
+		return
+	_attack_target = null
+	nav_agent.target_position = hit.position
+	if show_marker:
+		ClickMarker.spawn(get_tree(), hit.position)
+
+
+## Gegner, Gegenstand oder Objekt (Truhe, Altar, Portal, Figur) unter dem Mauszeiger, sonst null.
+## Zuerst ein Strahl nur gegen Gegner und Objekte (Säulen und Wände stören also nicht).
+## Verfehlt er alles, zählt das Nächste, das höchstens `click_tolerance` Pixel neben dem Mauszeiger ist.
+func _pick_object(camera: Camera3D, mouse_pos: Vector2, from: Vector3, to: Vector3) -> Node3D:
+	var query := PhysicsRayQueryParameters3D.create(from, to, click_mask & ~1)
+	var hit := get_world_3d().direct_space_state.intersect_ray(query)
+	if not hit.is_empty() and _is_clickable(hit.collider):
+		return hit.collider
+	var best: Node3D = null
+	var best_distance := click_tolerance
+	var candidates: Array[Node] = []
+	candidates.append_array(get_tree().get_nodes_in_group("enemies"))
+	candidates.append_array(get_tree().get_nodes_in_group("ground_items"))
+	candidates.append_array(get_tree().get_nodes_in_group("interactables"))
+	for node in candidates:
+		if not node is Node3D or not _is_clickable(node):
+			continue
+		# Mitte der Figur bzw. des Gegenstands und (bei Gegenständen und Truhen) das Namensschild.
+		var points: Array[float] = [1.0] if node.is_in_group("enemies") else [0.4, 0.8]
+		for height in points:
+			var world_point: Vector3 = node.global_position + Vector3(0, height, 0)
+			if camera.is_position_behind(world_point):
+				continue
+			var distance := camera.unproject_position(world_point).distance_to(mouse_pos)
+			if distance < best_distance:
+				best_distance = distance
+				best = node
+	return best
+
+
+func _is_clickable(node: Object) -> bool:
+	if node is GroundItem:
+		return true
+	if node is Interactable:
+		# Offene Truhen liegen nicht mehr auf der Objekt-Ebene.
+		return node.collision_layer & 8 != 0
+	return node is Node and node.is_in_group("enemies") and not node.is_dead()
 
 
 func _in_attack_range(target: Node3D) -> bool:

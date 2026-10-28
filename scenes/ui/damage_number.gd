@@ -22,9 +22,9 @@ static func spawn_text(owner_node: Node3D, text_to_show: String, color: Color) -
 func _ready() -> void:
 	billboard = BaseMaterial3D.BILLBOARD_ENABLED
 	no_depth_test = true
-	font_size = 64
-	outline_size = 12
-	pixel_size = 0.008
+	font_size = 48
+	outline_size = 10
+	pixel_size = 0.0055
 	var tween := create_tween().set_parallel()
 	tween.tween_property(self, "position:y", position.y + 1.0, 0.7).set_ease(Tween.EASE_OUT)
 	tween.tween_property(self, "modulate:a", 0.0, 0.4).set_delay(0.3)

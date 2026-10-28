@@ -31,7 +31,7 @@ func _ready() -> void:
 	# Welt (damit niemand durchläuft) + Objekte (damit man sie anklicken kann).
 	collision_layer = 1 | 8
 	collision_mask = 0
-	interact_range = 2.2
+	interact_range = 3.0
 	var model: Node3D = load(MODEL).instantiate()
 	model.scale = Vector3.ONE * 1.1
 	add_child(model)

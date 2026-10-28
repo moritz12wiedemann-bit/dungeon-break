@@ -54,9 +54,9 @@ const BANNERS := ["Banner_1", "Banner_2"]
 ## Wie viele normale Gegner pro Raum (zufällig dazwischen).
 ## Name oben links (der erste Dungeon ist der Kalksteintempel).
 @export var dungeon_name: String = "Kalksteintempel"
-@export var enemies_per_room_min: int = 2
-@export var enemies_per_room_max: int = 4
-## Chance, dass in einem Raum zusätzlich ein großer Gegner steht.
+@export var enemies_per_room_min: int = 4
+@export var enemies_per_room_max: int = 8
+## Chance, dass in einem Raum zusätzlich ein großer Gegner steht (wird zweimal gewürfelt).
 @export_range(0.0, 1.0) var brute_chance: float = 0.35
 ## Chance, dass in einem Raum eine Schatzkiste steht (mindestens eine gibt es immer).
 @export_range(0.0, 1.0) var chest_chance: float = 0.4
@@ -79,6 +79,8 @@ var _enemies_left: int = 0
 var _decor_rng := RandomNumberGenerator.new()
 var _batch := ModelBatch.new()
 var _floor_material: StandardMaterial3D
+## Der Boss (für die Karte oben rechts; im Endlos-Modus null).
+var _boss: Node3D = null
 ## Kästchen, auf denen schon Deko steht.
 var _used_cells: Dictionary = {}
 
@@ -97,6 +99,7 @@ func _ready() -> void:
 
 	_spawn_enemies()
 	_place_lights()
+	hud.setup_minimap(_generator, cell_size, player, _boss)
 
 	hud.track_player(player)
 	_setup_hud()
@@ -428,12 +431,13 @@ func _spawn_enemies() -> void:
 		var count := _rng.randi_range(enemies_per_room_min, enemies_per_room_max)
 		for n in count:
 			_spawn(ENEMY_SCENE, _generator.random_cell_in(rooms[i], _rng))
-		if _rng.randf() < brute_chance:
-			_spawn(BRUTE_SCENE, _generator.random_cell_in(rooms[i], _rng, 2))
+		for roll in 2:
+			if _rng.randf() < brute_chance:
+				_spawn(BRUTE_SCENE, _generator.random_cell_in(rooms[i], _rng, 2))
 	var boss_room := _generator.boss_room()
-	var boss := _spawn(BOSS_SCENE, boss_room.get_center())
-	boss.died.connect(_on_boss_died.bind(boss))
-	for n in 3:
+	_boss = _spawn(BOSS_SCENE, boss_room.get_center())
+	_boss.died.connect(_on_boss_died.bind(_boss))
+	for n in 6:
 		_spawn(ENEMY_SCENE, _generator.random_cell_in(boss_room, _rng, 2))
 
 

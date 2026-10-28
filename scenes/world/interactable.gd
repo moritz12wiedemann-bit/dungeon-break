@@ -8,5 +8,10 @@ extends StaticBody3D
 @export var interact_range: float = 2.5
 
 
+func _init() -> void:
+	# Damit der Spieler es auch anklicken kann, wenn er knapp daneben klickt (siehe player.gd).
+	add_to_group("interactables")
+
+
 func interact(_player: Node) -> void:
 	pass
