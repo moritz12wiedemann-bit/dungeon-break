@@ -60,6 +60,8 @@ func _ready() -> void:
 	_gold_label.offset_top = -88
 	_gold_label.offset_bottom = -64
 	add_child(_gold_label)
+	# Ganz nach hinten, damit Fenster darüber liegen.
+	move_child(_gold_label, 0)
 	message_panel.hide()
 	toast_label.hide()
 	enemies_label.hide()

@@ -48,8 +48,8 @@ func _make_row(id: String) -> Control:
 	var card: Dictionary = AugmentCards.CARDS[id]
 	var row := HBoxContainer.new()
 	row.add_theme_constant_override("separation", 10)
-	var cost := make_label("◆".repeat(card.arcana), 16, Color(0.75, 0.55, 1.0))
-	cost.custom_minimum_size.x = 44
+	var cost := make_label("%d Arcana" % card.arcana, 14, Color(0.75, 0.55, 1.0))
+	cost.custom_minimum_size.x = 70
 	cost.tooltip_text = "Kostet %d Arcana" % card.arcana
 	cost.mouse_filter = Control.MOUSE_FILTER_PASS
 	row.add_child(cost)

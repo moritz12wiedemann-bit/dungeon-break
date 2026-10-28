@@ -23,8 +23,8 @@ func _build() -> void:
 	content.add_child(_level_label)
 	var row := HBoxContainer.new()
 	row.add_theme_constant_override("separation", 6)
-	row.add_child(make_button("−10", _change.bind(-10)))
-	row.add_child(make_button("−1", _change.bind(-1)))
+	row.add_child(make_button("-10", _change.bind(-10)))
+	row.add_child(make_button("-1", _change.bind(-1)))
 	_slider.min_value = 1
 	_slider.max_value = GameState.MAX_MONSTER_LEVEL
 	_slider.step = 1

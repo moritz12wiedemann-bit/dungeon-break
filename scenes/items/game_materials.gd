@@ -15,7 +15,7 @@ const ORBS := [ORB_ADD, ORB_REMOVE, ORB_REROLL]
 const INFO := {
 	ORB_ADD: {
 		"name": "Orb der Erweiterung",
-		"text": "Fügt einem Gegenstand einen zufälligen neuen Wert hinzu.\nDie Seltenheit steigt (Normal → Magisch → Selten → Legendär).",
+		"text": "Fügt einem Gegenstand einen zufälligen neuen Wert hinzu.\nDie Seltenheit steigt (Normal, Magisch, Selten, Legendär).",
 		"icon": preload("res://assets/icons/orb_add.svg"),
 		"usable": true,
 	},
