@@ -1,7 +1,8 @@
 class_name GroundPickup
 extends Node3D
 ## Gold oder ein Material (z. B. ein Orb), das am Boden liegt.
-## Wird automatisch aufgehoben, sobald der Spieler darüber läuft (kein Klick nötig).
+## Gold wird automatisch aufgehoben, sobald der Spieler darüber läuft.
+## Orbs und andere Materialien muss man anklicken (der Spieler läuft hin, siehe player.gd).
 
 const COIN_MODEL := "res://assets/models/quaternius/props/Coin_Pile_2.gltf"
 ## Aus dieser Entfernung (Meter) wird es aufgehoben.
@@ -35,6 +36,8 @@ static func _drop(id: String, count: int, where: Vector3, tree: SceneTree) -> Gr
 
 func _ready() -> void:
 	add_child(_visual)
+	if material_id != "":
+		add_to_group("ground_pickups")
 	var label := Label3D.new()
 	label.billboard = BaseMaterial3D.BILLBOARD_ENABLED
 	label.no_depth_test = true
@@ -84,7 +87,7 @@ func _orb_color() -> Color:
 
 
 func _physics_process(_delta: float) -> void:
-	if _collected:
+	if _collected or material_id != "":
 		return
 	if _player == null:
 		_player = get_tree().get_first_node_in_group("player")
@@ -96,6 +99,14 @@ func _physics_process(_delta: float) -> void:
 	offset.y = 0.0
 	if offset.length() <= PICKUP_RANGE:
 		_collect()
+
+
+## Aufheben durch Anklicken (für Orbs und Materialien).
+func collect_by(player: Node3D) -> void:
+	if _collected:
+		return
+	_player = player
+	_collect()
 
 
 func _collect() -> void:

@@ -117,7 +117,7 @@ const SKILLS := {
 			},
 			{
 				"name": "Aufgeladener Stich",
-				"text": "Taste gedrückt halten zum Aufladen (bis zu 2 Sekunden). Voll aufgeladen macht der Stich doppelten Schaden.",
+				"text": "Taste gedrückt halten zum Aufladen (bis zu 2 Sekunden). Voll aufgeladen ist der Stich dreimal so lang und breit und macht dreifachen Schaden.",
 				"icon": preload("res://assets/icons/upgrade_stab_charge.svg"),
 			},
 		],

@@ -178,6 +178,9 @@ func _physics_process(delta: float) -> void:
 		if target is GroundItem:
 			animator.play_gesture("PickUp")
 			_try_pickup(target)
+		elif target is GroundPickup:
+			animator.play_gesture("PickUp")
+			target.collect_by(self)
 		else:
 			animator.play_gesture("Interact")
 			target.interact(self)
@@ -399,7 +402,7 @@ func _pick_target_from_mouse(show_marker: bool = false) -> void:
 	var to := from + camera.project_ray_normal(mouse_pos) * 1000.0
 
 	var collider := _pick_object(camera, mouse_pos, from, to)
-	if collider is GroundItem or collider is Interactable:
+	if collider is GroundItem or collider is Interactable or collider is GroundPickup:
 		# Aufheben/Benutzen nur mit einem einzelnen Klick, nicht beim Gedrückthalten.
 		if Input.is_action_just_pressed("move"):
 			_attack_target = null
@@ -454,6 +457,7 @@ func _pick_object(camera: Camera3D, mouse_pos: Vector2, from: Vector3, to: Vecto
 	var candidates: Array[Node] = []
 	candidates.append_array(get_tree().get_nodes_in_group("enemies"))
 	candidates.append_array(get_tree().get_nodes_in_group("ground_items"))
+	candidates.append_array(get_tree().get_nodes_in_group("ground_pickups"))
 	candidates.append_array(get_tree().get_nodes_in_group("interactables"))
 	for node in candidates:
 		if not node is Node3D or not _is_clickable(node):
@@ -474,7 +478,7 @@ func _pick_object(camera: Camera3D, mouse_pos: Vector2, from: Vector3, to: Vecto
 
 
 func _is_clickable(node: Object) -> bool:
-	if node is GroundItem:
+	if node is GroundItem or node is GroundPickup:
 		return true
 	if node is Interactable:
 		# Offene Truhen liegen nicht mehr auf der Objekt-Ebene.

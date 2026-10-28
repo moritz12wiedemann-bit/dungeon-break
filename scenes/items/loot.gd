@@ -6,10 +6,10 @@ extends RefCounted
 ## Pro Beute-Stufe (0 = normaler Gegner, 1 = großer Gegner, 2 = Boss, 3 = Kiste):
 ## Chance auf Gold, Gold-Faktor, Chance auf einen Orb, Anzahl Orbs.
 const DROPS := [
-	{"gold_chance": 0.6, "gold": 1.0, "orb_chance": 0.04, "orbs": 1},
-	{"gold_chance": 1.0, "gold": 3.0, "orb_chance": 0.15, "orbs": 1},
-	{"gold_chance": 1.0, "gold": 12.0, "orb_chance": 1.0, "orbs": 2},
-	{"gold_chance": 1.0, "gold": 6.0, "orb_chance": 0.6, "orbs": 1},
+	{"gold_chance": 0.6, "gold": 1.0, "orb_chance": 0.01, "orbs": 1},
+	{"gold_chance": 1.0, "gold": 3.0, "orb_chance": 0.05, "orbs": 1},
+	{"gold_chance": 1.0, "gold": 12.0, "orb_chance": 0.5, "orbs": 1},
+	{"gold_chance": 1.0, "gold": 6.0, "orb_chance": 0.2, "orbs": 1},
 ]
 const CHEST_TIER := 3
 ## Gold pro Haufen auf Stufe 1 (wird mit Faktor und Stufe größer).
@@ -30,10 +30,10 @@ const SELL_RATIO := 0.25
 ## Zerlegen: Altmetall [min, max] und Chance auf einen Orb je Seltenheit.
 const SALVAGE := {
 	ItemData.Rarity.NORMAL: [1, 2, 0.0],
-	ItemData.Rarity.MAGIC: [2, 3, 0.1],
-	ItemData.Rarity.RARE: [3, 5, 0.3],
-	ItemData.Rarity.LEGENDARY: [6, 8, 1.0],
-	ItemData.Rarity.SET: [6, 8, 1.0],
+	ItemData.Rarity.MAGIC: [2, 3, 0.03],
+	ItemData.Rarity.RARE: [3, 5, 0.1],
+	ItemData.Rarity.LEGENDARY: [6, 8, 0.35],
+	ItemData.Rarity.SET: [6, 8, 0.35],
 }
 
 

@@ -27,7 +27,7 @@ extends "res://scenes/levels/dungeon.gd"
 ## Pro so vielen Kills ein Gegenstand wie vom Boss.
 @export var kills_per_boss_item: int = 25
 ## Pro so vielen Kills ein Orb.
-@export var kills_per_orb: int = 10
+@export var kills_per_orb: int = 30
 
 var _monster_level: int = 1
 var _kills: int = 0
