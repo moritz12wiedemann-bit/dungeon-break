@@ -24,6 +24,7 @@ func _run() -> void:
 
 	var gallery := _gallery()
 	tree.root.add_child(gallery)
+	(gallery.get_node("Camera") as Camera3D).make_current()
 	await _frames(20)
 	_shot("figuren_stehen")
 	for figure in gallery.get_children():
@@ -77,10 +78,9 @@ func _gallery() -> Node3D:
 		gallery.add_child(figure)
 	var camera := Camera3D.new()
 	camera.fov = 40
+	camera.name = "Camera"
 	gallery.add_child(camera)
-	camera.position = Vector3(0, 2.2, 10.5)
-	camera.look_at(Vector3(0, 1.1, 0))
-	camera.make_current()
+	camera.look_at_from_position(Vector3(0, 1.8, 7.5), Vector3(0, 1.0, 0))
 	return gallery
 
 
