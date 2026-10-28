@@ -39,9 +39,10 @@ const HELD_ITEMS := {
 	"Spitzhacke": ["Pickaxe_Bronze", Vector3(-90, 0, 0), Vector3(0, 0.09, -0.12)],
 	"Schild": ["Shield_Wooden", Vector3(0, 0, 0), Vector3(0, 0.05, 0.05)],
 	"Buch": ["Book_7", Vector3(0, 0, 90), Vector3(0.04, 0.1, 0)],
-	"Krug": ["Mug", Vector3(0, 0, 90), Vector3(0.05, 0.09, 0)],
-	"Kerzenhalter": ["CandleStick", Vector3(0, 0, 90), Vector3(0.04, 0.09, 0)],
-	"Trank": ["Potion_2", Vector3(0, 0, 90), Vector3(0.04, 0.08, 0)],
+	# Krug, Kerzenhalter und Trank stehen aufrecht, wenn der Arm locker herunterhängt.
+	"Krug": ["Mug", Vector3(0, 0, 180), Vector3(0, 0.1, 0)],
+	"Kerzenhalter": ["CandleStick", Vector3(0, 0, 180), Vector3(0, 0.1, 0)],
+	"Trank": ["Potion_2", Vector3(0, 0, 180), Vector3(0, 0.12, 0)],
 }
 
 ## Diese Animationen wiederholen sich endlos (alle anderen laufen einmal ab).

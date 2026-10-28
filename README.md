@@ -52,16 +52,20 @@ Das alte Testlevel (`scenes/levels/test_level.tscn`) gibt es noch. Zum Starten d
   - **Orb des Wandels**: würfelt alle Werte in ihren Bereichen neu.
   - Set-Gegenstände kann man nur neu würfeln. Jeder startet mit 5 von jedem Orb.
 
-## Grafik (Platzhalter-Modelle)
+## Grafik
 
-Alle 3D-Modelle sind **CC0** (frei nutzbar, auch kommerziell, keine Namensnennung nötig) von **Kay Lousberg (KayKit)**. Sie sind ein einheitlicher Platzhalter-Stil, bis die endgültige Optik feststeht. Woher was kommt: [CREDITS.md](CREDITS.md).
+Alle 3D-Modelle und Animationen sind **CC0** (frei nutzbar, auch kommerziell) von **Quaternius**. Woher was kommt und was noch fehlt: [CREDITS.md](CREDITS.md).
+**Alles Graue im Spiel ist ein Platzhalter** (`scenes/world/placeholder.gd`) für etwas, wofür es noch kein Modell gibt: Häuser, Bäume, Felsen, Wege, Zäune, Dungeon-Wände und -Böden, Altar-Sockel, Portalbogen.
 
-- **Figuren** (`scenes/characters/`): Spieler = Ritter, normale Gegner = Skelett-Diener mit Schwert, Brocken = Skelett-Krieger mit Axt und Schild, Boss = Skelett-Magier. Jede Figur ist eine kleine Szene, die das Modell lädt und Waffen an die Hand hängt (`HandRight`/`HandLeft`).
-- **Animationen** spielt der Baustein `scenes/components/character_animator.gd` (Kind-Knoten `Animator` bei Spieler und Gegnern): Stehen, Laufen, Schlagen, Treffer, Tod, Aufstehen. Welche Animation wofür benutzt wird, steht im Inspektor. Alle verfügbaren Animationen siehst du, wenn du ein Modell (z. B. `assets/models/kaykit/adventurers/Knight.gltf`) im Editor öffnest und den `AnimationPlayer` anklickst.
-- **Anderes Gegner-Modell**: Gegner-Szene öffnen, oberen Knoten anklicken, im Inspektor unter „Aussehen“ eine andere Szene aus `scenes/characters/` bei `Model Scene` hineinziehen. Das Modell erscheint erst beim Spielen, nicht im Editor.
-- **Dungeon**: Boden, Wände, Säulen, Fackeln, Banner, Kisten und Fässer werden beim Start aus dem Baukasten `assets/models/kaykit/dungeon/` zusammengesetzt (`scenes/levels/dungeon.gd`). Hinten (oben/links im Bild) sind die Wände hoch, vorn (unten/rechts) niedrig, damit sie die Figur nicht verdecken. Höhen und Fackeln pro Raum: oberen Knoten `Dungeon` anklicken, Inspektor.
-- **Stadt**: Häuser, Brunnen, Zaun, Bäume, Laternen und Deko stehen als normale Knoten in `town.tscn` (unter `Decor`, `Paths` und bei den Häusern unter `NavigationRegion3D/Geometry`). Du kannst sie im Editor frei verschieben. Wenn du ein Haus verschiebst, verschiebe den ganzen Haus-Knoten (er enthält Modell und Kollision).
-- Ungenutzte Modelle für später: Barbar, Magier und Schurke in `assets/models/kaykit/adventurers/` (für Klassen) und der komplette Dungeon-Baukasten (über 200 Teile).
+- **Figuren sind ein Baukasten** (`scenes/characters/modular_character.gd`). Jede Figur ist eine kleine Szene in `scenes/characters/` (z. B. `hero.tscn`, `zombie.tscn`, `smith.tscn`). Szene öffnen, oberen Knoten anklicken, im Inspektor umstellen, die Figur ändert sich sofort:
+  - *Körper*: Mann/Frau, Hautfarbe, Frisur (Glatze, Kurz, Kurz (fein), Gescheitelt, Lang, Dutt), Bart, Haarfarbe, Größe.
+  - *Kleidung*: für Oberteil, Arme, Hose und Schuhe jeweils „Bauer“ oder „Waldläufer“, dazu Kapuze, Gürtel, Schulterpanzer, Armschienen, Farbvariante (Bauer: Braun/Oliv, Waldläufer: Grün/Leder) und eine Tönung über alles.
+  - *In den Händen*: Schwert, Axt, Spitzhacke, Schild, Buch, Krug, Kerzenhalter, Trank.
+- **Animationen**: 41 Stück aus der Universal Animation Library 1 und 2 (Liste in `tools/build_quaternius_animations.py`). Welche wofür benutzt wird, steht beim Kind-Knoten `Animator` von Spieler und Gegnern im Inspektor (`scenes/components/character_animator.gd`).
+- **Anderes Gegner-Aussehen**: Gegner-Szene öffnen, oberen Knoten anklicken, im Inspektor unter „Aussehen“ eine andere Szene aus `scenes/characters/` bei `Model Scene` hineinziehen.
+- **Dungeon**: Boden, Wände und Säulen sind graue Kästen, Fackeln, Banner, Fässer, Kisten und Kleinkram kommen aus dem Fantasy Props MegaKit (`scenes/levels/dungeon.gd`, Listen `PROPS`, `CLUTTER`, `BANNERS`). Hinten (oben/links im Bild) sind die Wände hoch, vorn (unten/rechts) niedrig.
+- **Stadt**: alles steht als normale Knoten in `town.tscn` (unter `Decor`, `Paths` und bei den Häusern unter `NavigationRegion3D/Geometry`). Wenn du ein Haus verschiebst, verschiebe den Haus-Knoten (Kollision) und den grauen Platzhalter unter `Decor`.
+- **Neue Modelle aus den Packs einbauen**: Die Original-Packs werden mit den Skripten in `tools/` umgewandelt (Texturen verkleinert, Teile zusammengefasst). Alle 94 Möbel/Gegenstände liegen schon in `assets/models/quaternius/props/`.
 
 ## Gegner und Kampf
 
@@ -94,7 +98,7 @@ Werte wie Lebenspunkte, Schaden, Tempo und Reichweiten kannst du im Editor ände
 | --- | --- |
 | `scenes/levels/` | Stadt, zufälliger Dungeon samt Kartengenerator, altes Testlevel |
 | `scenes/player/` | Spielerfigur: Szene + Skript |
-| `scenes/characters/` | 3D-Figuren (Modell + Waffen in der Hand) für Spieler und Gegner |
+| `scenes/characters/` | Figuren-Vorlagen (Baukasten `modular_character.gd`) für Spieler, Gegner und Stadtbewohner |
 | `scenes/enemies/` | Gegner: `enemy.tscn` (normal), `enemy_brute.tscn` (Brocken, „erbt“ vom normalen), `enemy_boss.tscn` (Boss, erbt vom Brocken) |
 | `scenes/world/` | Benutzbare Objekte: Dungeon-Altar, Portal in die Stadt (`interactable.gd` ist die gemeinsame Grundlage) |
 | `scenes/game/` | `game_state.gd`: Spielstand, der Szenenwechsel überlebt |
@@ -102,7 +106,8 @@ Werte wie Lebenspunkte, Schaden, Tempo und Reichweiten kannst du im Editor ände
 | `scenes/components/` | Bausteine, die an Figuren gehängt werden: `health.gd` (Lebenspunkte, Regeneration), `experience.gd` (XP und Stufe), `inventory.gd` (Tasche und Ausrüstung), `character_animator.gd` (Animationen) |
 | `scenes/camera/` | Iso-Kamera, die dem Spieler folgt |
 | `scenes/ui/` | Bildschirm-Anzeige (HUD), Inventar-Fenster, Lebensbalken über Gegnern, Schadenszahlen |
-| `assets/models/kaykit/` | 3D-Modelle von KayKit: `adventurers` (Helden, Waffen), `skeletons` (Gegner), `dungeon` (Dungeon-Baukasten), `town` (Häuser, Bäume, Deko), `halloween` (Altar-Tor, Portal-Bogen, Wege, Laternen) |
+| `assets/models/quaternius/` | 3D-Modelle von Quaternius: `characters` (Figuren-Teile, Animationen), `props` (Möbel, Waffen, Kisten, Deko) |
+| `tools/` | Python-Skripte, die die Quaternius-Packs ins Projekt umwandeln; `tools/ci/` macht beim Test-Build Bildschirmfotos |
 | `assets/textures/` | Texturen und Bilder |
 | `assets/materials/` | Materialien |
 | `assets/audio/` | Musik und Soundeffekte |
