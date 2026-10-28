@@ -16,7 +16,7 @@ Bei jedem Push auf `main` baut die GitHub Action `.github/workflows/web.yml` aut
 4. **Linke Maustaste auf einen Gegner**: die Figur läuft hin und schlägt so lange zu, bis er tot ist.
 5. **Taste 1** oder Klick auf den roten Kreis rechts neben dem Lebensbalken: Heiltrank trinken (heilt 40 %, danach 20 Sekunden Abklingzeit).
 6. **Klick auf einen Gegenstand am Boden**: hinlaufen und aufheben. **Taste I**: Inventar öffnen/schließen.
-7. **Klick auf den Dungeon-Altar** (Schrein mit lila Kristall vor dem Gittertor in der Stadt): Monsterstufe wählen, neuer Dungeon. **Taste T**: aus dem Dungeon zurück in die Stadt.
+7. **Klick auf den Dungeon-Altar** (Schrein mit schwebender lila Kugel am Nordende des Stadtplatzes): Monsterstufe wählen, neuer Dungeon. **Taste T**: aus dem Dungeon zurück in die Stadt.
 8. **Escape** schließt das oberste offene Fenster.
 
 Das alte Testlevel (`scenes/levels/test_level.tscn`) gibt es noch. Zum Starten die Szene im Editor öffnen und **F6** („Aktuelle Szene starten“) drücken.
@@ -26,7 +26,7 @@ Das alte Testlevel (`scenes/levels/test_level.tscn`) gibt es noch. Zum Starten d
 - **Stadt** (`scenes/levels/town.tscn`): sicherer Ort ohne Gegner. Der **Dungeon-Altar** öffnet bei jedem Klick einen neuen Dungeon.
 - **Dungeon** (`scenes/levels/dungeon.tscn`): wird jedes Mal **zufällig erzeugt** (6–8 Räume, Gänge, Säulen). Der Startraum ist leer, der Boss-Raum ist am anderen Ende. In den Räumen dazwischen stehen Skelette, manchmal ein großer Skelett-Krieger („Brocken“).
 - Die Gegner sind so stark wie deine Stufe beim Betreten (pro Stufe +25 % Leben, +15 % Schaden, mehr XP).
-- Besiegst du den **Boss** (riesiger Skelett-Magier mit lila Leuchten), erscheint ein blaues **Portal**. Anklicken bringt dich in die Stadt.
+- Besiegst du den **Boss** (blauer Riesen-Imp mit Leuchten), erscheint ein blaues **Portal**. Anklicken bringt dich in die Stadt.
 - **Taste T** bringt dich jederzeit aus dem Dungeon in die Stadt (der Dungeon ist dann verloren, der Altar macht einen neuen).
 - Stufe, Erfahrung, Inventar und Leben bleiben beim Wechsel erhalten (`scenes/game/game_state.gd`, als Autoload „GameState“ eingetragen). Beim Beenden des Spiels wird noch nichts gespeichert.
 - Wie die Karten erzeugt werden, steht in `scenes/levels/dungeon_generator.gd`. Anzahl Gegner pro Raum und Chance auf Brocken: Dungeon-Szene öffnen, oberen Knoten `Dungeon` anklicken, Inspektor.
@@ -65,7 +65,7 @@ Was es in den Packs nicht gab (Brunnen, Kirche, Windmühle, Turm, Fahnen ...), i
 - **Animationen**: 41 Stück aus der Universal Animation Library 1 und 2 (Liste in `tools/build_quaternius_animations.py`). Welche wofür benutzt wird, steht beim Kind-Knoten `Animator` von Spieler und Gegnern im Inspektor (`scenes/components/character_animator.gd`).
 - **Anderes Gegner-Aussehen**: Gegner-Szene öffnen, oberen Knoten anklicken, im Inspektor unter „Aussehen“ eine andere Szene aus `scenes/characters/` bei `Model Scene` hineinziehen.
 - **Dungeon**: Boden, Wände und Säulen aus dem Modular Dungeon, Fackeln, Banner, Fässer, Kisten und Kleinkram aus Modular Dungeon und Fantasy Props MegaKit (`scenes/levels/dungeon.gd`, Listen `PROPS`, `CLUTTER`, `BANNERS`). Hinten (oben/links im Bild) sind die Wände hoch, vorn (unten/rechts) niedrig.
-- **Stadt**: alles steht als normale Knoten in `town.tscn` (unter `Decor`, `Paths` und bei den Häusern unter `NavigationRegion3D/Geometry`). Bäume, Felsen und Wege kommen aus dem Stylized Nature MegaKit, Zäune und Häuser aus dem Medieval Village MegaKit. Die Häuser sind eigene Szenen in `scenes/world/houses/`, zusammengesetzt aus Wand-, Dach-, Tür- und Fensterteilen (`tools/build_town_houses.py`). Wenn du ein Haus verschiebst, verschiebe den Haus-Knoten (Kollision) und das Haus unter `Decor`.
+- **Stadt**: `town.tscn` wird von `tools/build_town.py` geschrieben (Häuser, Figuren, Altäre, Möbel, Zaun, Laternen). Aufbau: Eingang im Süden, die Straße führt auf den gepflasterten Marktplatz mit dem Händler; am Nordende stehen Dungeon- und Endlos-Altar, links davon die Schmiede (Schmied), rechts die Taverne (Mystikerin), am Westrand das Haus des Ältesten. Boden und Wald baut `scenes/levels/town.gd` beim Start: Pflaster (Medieval Village) auf den Flächen aus `paved_areas`, sonst dunkle Erde, draußen Wiese mit Bäumen, Büschen, Farnen, Blumen und Pilzen (Stylized Nature). Zum Umbauen am besten `build_town.py` ändern und neu ausführen. Die Häuser sind eigene Szenen in `scenes/world/houses/` (`tools/build_town_houses.py`).
 - **Neue Modelle aus den Packs einbauen**: Die Original-Packs werden mit den Skripten in `tools/` umgewandelt (Texturen verkleinert, Teile zusammengefasst). Alle 94 Möbel/Gegenstände aus dem Fantasy Props MegaKit und alle Teile des Modular Dungeon liegen schon im Projekt, aus Village und Nature nur die benutzten (Listen `VILLAGE` und `NATURE` in `tools/build_quaternius_props.py`).
 
 ## Gegner und Kampf

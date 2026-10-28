@@ -5,7 +5,7 @@ extends Interactable
 
 ## Welches Fenster sich öffnet: "altar" = Dungeon, "endless" = Endlos-Modus.
 @export var window_name: String = "altar"
-## Farbe von Kristall und Licht.
+## Farbe der schwebenden Kugel und des Lichts.
 @export var crystal_color: Color = Color(0.7, 0.2, 1.0)
 ## Schrift über dem Altar.
 @export_multiline var title_text: String = "Dungeon-Altar\n(anklicken: neuer Dungeon)"
@@ -28,8 +28,7 @@ func _ready() -> void:
 
 
 func _process(delta: float) -> void:
-	crystal.rotate_y(delta * 0.8)
-	crystal.position.y = _crystal_height + sin(Time.get_ticks_msec() / 500.0) * 0.1
+	crystal.position.y = _crystal_height + sin(Time.get_ticks_msec() / 600.0) * 0.06
 
 
 func interact(player: Node) -> void:

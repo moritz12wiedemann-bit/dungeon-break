@@ -9,7 +9,7 @@
 background_mode = 1
 background_color = Color(0.02, 0.02, 0.03, 1)
 ambient_light_source = 2
-ambient_light_color = Color(0.45, 0.45, 0.6, 1)
+ambient_light_color = Color(0.55, 0.53, 0.5, 1)
 ambient_light_energy = 0.35
 tonemap_mode = 2
 glow_enabled = true
@@ -29,7 +29,7 @@ environment = SubResource("Environment_dn001")
 
 [node name="Moon" type="DirectionalLight3D" parent="." unique_id=1928374103]
 transform = Transform3D(0.8660254, -0.40957603, 0.28678823, 0, 0.57357645, 0.81915206, -0.5, -0.7094065, 0.49673176, 0, 0, 0)
-light_color = Color(0.6, 0.65, 0.9, 1)
+light_color = Color(0.8, 0.78, 0.75, 1)
 light_energy = 0.4
 shadow_enabled = true
 

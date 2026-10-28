@@ -22,18 +22,21 @@ from PIL import Image
 TEX_SIZE = 1024
 
 # Teile aus dem Medieval Village MegaKit, aus denen die Häuser gebaut werden (tools/build_town_houses.py),
-# und Zäune/Wagen für die Stadt.
+# dazu Zaun und Pflaster für die Stadt.
 VILLAGE = [
     "Wall_Plaster_Straight", "Wall_Plaster_Door_Round", "Wall_Plaster_Window_Wide_Round",
     "Wall_UnevenBrick_Straight", "Wall_UnevenBrick_Door_Round", "Wall_UnevenBrick_Window_Wide_Round",
     "Corner_Exterior_Wood", "Corner_Exterior_Brick", "Door_1_Round", "Window_Wide_Round1",
     "WindowShutters_Wide_Round_Open", "Roof_RoundTiles_4x4", "Roof_RoundTiles_6x6", "Roof_RoundTiles_6x8",
     "Roof_Front_Brick4", "Roof_Front_Brick6", "Prop_Chimney", "Prop_WoodenFence_Single",
+    "Floor_UnevenBrick",
 ]
 NATURE = [
     "CommonTree_1", "CommonTree_2", "CommonTree_3", "CommonTree_4", "CommonTree_5",
     "Pine_1", "Pine_2", "Pine_3", "Pine_5", "Rock_Medium_1", "Rock_Medium_2", "Rock_Medium_3",
-    "RockPath_Round_Wide",
+    "Bush_Common", "Bush_Common_Flowers", "Fern_1", "Plant_1", "Plant_7", "Grass_Common_Short",
+    "Grass_Common_Tall", "Grass_Wispy_Short", "Flower_3_Group", "Flower_4_Group", "Clover_1",
+    "Mushroom_Common", "Pebble_Round_1", "Pebble_Round_3",
 ]
 LISTS = {"VILLAGE": VILLAGE, "NATURE": NATURE}
 

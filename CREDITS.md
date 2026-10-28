@@ -21,8 +21,8 @@ Nicht erlaubt ist, die Modelle selbst als Asset-Pack weiterzugeben oder zu verka
 | Universal Animation Library 2 | Schwert-Kombos, Blocken, Schild, Trinken, Truhe öffnen, Aufstehen, Arme verschränken, Laterne, Holzhacken, Zombie | `characters/Animations.gltf` |
 | Bestiary - Dungeon Monsters Kit (QAL) | Monster: Puglin und Imp, je 3 Farbvarianten | `monsters/` |
 | Updated Modular Dungeon (Mai 2019) | Dungeon-Boden, -Wände, Säulen, Torbogen, Sockel, dazu Fässer, Kisten, Tische, Totenköpfe ... (alle 47 Modelle) | `dungeon/` |
-| Medieval Village MegaKit | Teile für die Häuser (Wände mit Tür/Fenster, Ecken, Dächer, Giebel, Schornstein), Holzzaun | `village/` |
-| Stylized Nature MegaKit | Laub- und Nadelbäume, Felsen, Steinweg-Platten | `nature/` |
+| Medieval Village MegaKit | Teile für die Häuser (Wände mit Tür/Fenster, Ecken, Dächer, Giebel, Schornstein), Holzzaun, Pflaster | `village/` |
+| Stylized Nature MegaKit | Laub- und Nadelbäume, Felsen, Büsche, Farne, Gras, Blumen, Pilze, Kiesel | `nature/` |
 | Fantasy Props MegaKit | alle 94 Modelle: Fässer, Kisten, Truhe, Möbel, Fackel, Laterne, Banner, Kerzen, Waffen (Schwert, Axt, Spitzhacke, Schild), Münzen, Tränke, Bücher, Marktstand ... | `props/` |
 
 (Alle Ordner liegen unter `assets/models/quaternius/`.)
@@ -51,11 +51,12 @@ Normal- und ORM-Maps weggelassen, damit die Web-Version klein bleibt. Die Modell
 | Dungeon: Fässer, Kisten, Tische | Fantasy Props MegaKit + Modular Dungeon |
 | Stadt: Häuser (Schmiede, Taverne, Wohnhäuser) | Medieval Village MegaKit (in `scenes/world/houses/` zusammengesetzt) |
 | Stadt: Zäune, Laternenpfähle | Medieval Village MegaKit (Laterne aus dem Fantasy Props MegaKit) |
-| Stadt: Bäume, Felsen, Steinweg | Stylized Nature MegaKit |
+| Stadt: Pflaster | Medieval Village MegaKit (`Floor_UnevenBrick`) |
+| Stadt: Bäume, Büsche, Farne, Gras, Blumen, Pilze, Kiesel | Stylized Nature MegaKit |
 | Stadt: Fässer, Kisten, Bank, Eimer, Waffenständer, Marktstände, Handkarren, Beutel | Fantasy Props MegaKit |
 | Altar: Sockel und Torbogen, Portalbogen | Modular Dungeon |
 | Altar: Kerzenständer | Fantasy Props MegaKit |
-| Kristall am Altar, Portal-Ring, Fackel-Flammen, Leuchtflecken der Beute, Wiese | im Spiel selbst gebaut (einfache Formen) |
+| Kugel über dem Altar, Portal-Ring, Fackel-Flammen, Leuchtflecken der Beute, Erde- und Wiesen-Bodenplatten | im Spiel selbst gebaut (einfache Formen) |
 
 ## Was fehlt (vorerst weggelassen)
 

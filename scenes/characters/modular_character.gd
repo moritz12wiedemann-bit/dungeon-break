@@ -36,8 +36,9 @@ const RANGER_COLORS := {"Grün": "T_Ranger_BaseColor.png", "Leder": "T_Ranger_3_
 ## nach vorn) und -X von der Handfläche weg nach außen (linke Hand).
 const HELD_ITEMS := {
 	"Nichts": [],
-	# Klinge zur Daumenseite (nach vorn), Schneide zeigt in Schlagrichtung.
-	"Schwert": ["Sword_Bronze", Vector3(0, 90, 90), Vector3(0, 0.09, 0.1)],
+	# Klinge zur Daumenseite (nach vorn), 40 Grad zu den Fingern geneigt, damit sie beim Laufen
+	# nach vorn zeigt und nicht zum Kopf. Schneide zeigt in Schlagrichtung.
+	"Schwert": ["Sword_Bronze", Vector3(0, 90, 50), Vector3(0, 0.154, 0.077)],
 	"Axt": ["Axe_Bronze", Vector3(0, -90, -90), Vector3(0, 0.09, 0.1)],
 	"Spitzhacke": ["Pickaxe_Bronze", Vector3(0, -90, -90), Vector3(0, 0.09, 0.12)],
 	# Schild sitzt außen am Unterarm, die Vorderseite zeigt zur Seite (für die linke Hand gedacht).

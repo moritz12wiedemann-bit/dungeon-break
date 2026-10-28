@@ -1,52 +1,46 @@
 [gd_scene format=3]
 
 [ext_resource type="Script" path="res://scenes/levels/town.gd" id="1_town"]
-[ext_resource type="PackedScene" path="res://scenes/player/player.tscn" id="2_v45ci"]
-[ext_resource type="PackedScene" path="res://scenes/camera/iso_camera.tscn" id="3_48ne7"]
-[ext_resource type="PackedScene" path="res://scenes/ui/hud.tscn" id="4_hud00"]
-[ext_resource type="PackedScene" path="res://scenes/world/dungeon_altar.tscn" id="5_altar"]
-[ext_resource type="Script" path="res://scenes/world/npc.gd" id="46_npc00"]
-[ext_resource type="PackedScene" path="res://assets/models/quaternius/props/Bag.gltf" id="q_Bag"]
-[ext_resource type="PackedScene" path="res://assets/models/quaternius/props/Barrel.gltf" id="q_Barrel"]
-[ext_resource type="PackedScene" path="res://assets/models/quaternius/props/Bench.gltf" id="q_Bench"]
-[ext_resource type="PackedScene" path="res://assets/models/quaternius/props/Bucket_Wooden_1.gltf" id="q_Bucket_Wooden_1"]
-[ext_resource type="PackedScene" path="res://assets/models/quaternius/props/Crate_Metal.gltf" id="q_Crate_Metal"]
-[ext_resource type="PackedScene" path="res://assets/models/quaternius/props/Crate_Wooden.gltf" id="q_Crate_Wooden"]
-[ext_resource type="PackedScene" path="res://assets/models/quaternius/props/FarmCrate_Apple.gltf" id="q_FarmCrate_Apple"]
-[ext_resource type="PackedScene" path="res://assets/models/quaternius/props/Lantern_Wall.gltf" id="q_Lantern_Wall"]
-[ext_resource type="PackedScene" path="res://assets/models/quaternius/props/Stall_Empty.gltf" id="q_Stall_Empty"]
-[ext_resource type="PackedScene" path="res://assets/models/quaternius/props/WeaponStand.gltf" id="q_WeaponStand"]
-[ext_resource type="PackedScene" path="res://scenes/characters/smith.tscn" id="npc_smith"]
-[ext_resource type="PackedScene" path="res://scenes/characters/merchant.tscn" id="npc_merchant"]
-[ext_resource type="PackedScene" path="res://scenes/characters/mystic.tscn" id="npc_mystic"]
-[ext_resource type="PackedScene" path="res://scenes/characters/elder.tscn" id="npc_elder"]
+[ext_resource type="PackedScene" path="res://scenes/player/player.tscn" id="2_player"]
+[ext_resource type="PackedScene" path="res://scenes/camera/iso_camera.tscn" id="3_iso_camera"]
+[ext_resource type="PackedScene" path="res://scenes/ui/hud.tscn" id="4_hud"]
+[ext_resource type="PackedScene" path="res://scenes/world/dungeon_altar.tscn" id="5_dungeon_altar"]
+[ext_resource type="Script" path="res://scenes/world/npc.gd" id="6_npc"]
+[ext_resource type="PackedScene" path="res://scenes/characters/smith.tscn" id="7_smith"]
+[ext_resource type="PackedScene" path="res://scenes/characters/mystic.tscn" id="8_mystic"]
+[ext_resource type="PackedScene" path="res://scenes/characters/elder.tscn" id="9_elder"]
+[ext_resource type="PackedScene" path="res://scenes/characters/merchant.tscn" id="10_merchant"]
+[ext_resource type="PackedScene" path="res://scenes/world/houses/smithy.tscn" id="11_smithy"]
+[ext_resource type="PackedScene" path="res://scenes/world/houses/tavern.tscn" id="12_tavern"]
+[ext_resource type="PackedScene" path="res://scenes/world/houses/house_brick.tscn" id="13_house_brick"]
+[ext_resource type="PackedScene" path="res://scenes/world/houses/house_small.tscn" id="14_house_small"]
+[ext_resource type="PackedScene" path="res://scenes/world/houses/house_large.tscn" id="15_house_large"]
+[ext_resource type="PackedScene" path="res://assets/models/quaternius/props/Anvil.gltf" id="16_anvil"]
+[ext_resource type="PackedScene" path="res://assets/models/quaternius/props/Workbench.gltf" id="17_workbench"]
+[ext_resource type="PackedScene" path="res://assets/models/quaternius/props/WeaponStand.gltf" id="18_weaponstand"]
+[ext_resource type="PackedScene" path="res://assets/models/quaternius/props/Barrel.gltf" id="19_barrel"]
+[ext_resource type="PackedScene" path="res://assets/models/quaternius/props/Crate_Metal.gltf" id="20_crate_metal"]
+[ext_resource type="PackedScene" path="res://assets/models/quaternius/props/Crate_Wooden.gltf" id="21_crate_wooden"]
+[ext_resource type="PackedScene" path="res://assets/models/quaternius/props/Bench.gltf" id="22_bench"]
+[ext_resource type="PackedScene" path="res://assets/models/quaternius/props/Stall_Empty.gltf" id="23_stall_empty"]
+[ext_resource type="PackedScene" path="res://assets/models/quaternius/props/FarmCrate_Apple.gltf" id="24_farmcrate_appl"]
+[ext_resource type="PackedScene" path="res://assets/models/quaternius/props/FarmCrate_Carrot.gltf" id="25_farmcrate_carr"]
+[ext_resource type="PackedScene" path="res://assets/models/quaternius/props/Bag.gltf" id="26_bag"]
+[ext_resource type="PackedScene" path="res://assets/models/quaternius/props/Stall_Cart_Empty.gltf" id="27_stall_cart_emp"]
+[ext_resource type="PackedScene" path="res://assets/models/quaternius/props/Barrel_Apples.gltf" id="28_barrel_apples"]
+[ext_resource type="PackedScene" path="res://assets/models/quaternius/props/BookStand.gltf" id="29_bookstand"]
+[ext_resource type="PackedScene" path="res://assets/models/quaternius/props/CandleStick_Stand.gltf" id="30_candlestick_st"]
+[ext_resource type="PackedScene" path="res://assets/models/quaternius/props/Bucket_Wooden_1.gltf" id="31_bucket_wooden_"]
+[ext_resource type="PackedScene" path="res://assets/models/quaternius/village/Prop_WoodenFence_Single.gltf" id="32_prop_woodenfen"]
+[ext_resource type="PackedScene" path="res://assets/models/quaternius/village/Corner_Exterior_Wood.gltf" id="33_corner_exterio"]
+[ext_resource type="PackedScene" path="res://assets/models/quaternius/props/Lantern_Wall.gltf" id="34_lantern_wall"]
 
-[ext_resource type="PackedScene" path="res://scenes/world/houses/house_brick.tscn" id="m_hou_house_brick"]
-[ext_resource type="PackedScene" path="res://scenes/world/houses/house_large.tscn" id="m_hou_house_large"]
-[ext_resource type="PackedScene" path="res://scenes/world/houses/house_small.tscn" id="m_hou_house_small"]
-[ext_resource type="PackedScene" path="res://scenes/world/houses/smithy.tscn" id="m_hou_smithy"]
-[ext_resource type="PackedScene" path="res://scenes/world/houses/tavern.tscn" id="m_hou_tavern"]
-[ext_resource type="PackedScene" path="res://assets/models/quaternius/nature/CommonTree_1.gltf" id="m_nat_CommonTree_1"]
-[ext_resource type="PackedScene" path="res://assets/models/quaternius/nature/CommonTree_2.gltf" id="m_nat_CommonTree_2"]
-[ext_resource type="PackedScene" path="res://assets/models/quaternius/nature/CommonTree_3.gltf" id="m_nat_CommonTree_3"]
-[ext_resource type="PackedScene" path="res://assets/models/quaternius/nature/CommonTree_4.gltf" id="m_nat_CommonTree_4"]
-[ext_resource type="PackedScene" path="res://assets/models/quaternius/nature/CommonTree_5.gltf" id="m_nat_CommonTree_5"]
-[ext_resource type="PackedScene" path="res://assets/models/quaternius/nature/Pine_1.gltf" id="m_nat_Pine_1"]
-[ext_resource type="PackedScene" path="res://assets/models/quaternius/nature/Pine_2.gltf" id="m_nat_Pine_2"]
-[ext_resource type="PackedScene" path="res://assets/models/quaternius/nature/Pine_3.gltf" id="m_nat_Pine_3"]
-[ext_resource type="PackedScene" path="res://assets/models/quaternius/nature/Pine_5.gltf" id="m_nat_Pine_5"]
-[ext_resource type="PackedScene" path="res://assets/models/quaternius/nature/RockPath_Round_Wide.gltf" id="m_nat_RockPath_Round_Wide"]
-[ext_resource type="PackedScene" path="res://assets/models/quaternius/nature/Rock_Medium_1.gltf" id="m_nat_Rock_Medium_1"]
-[ext_resource type="PackedScene" path="res://assets/models/quaternius/nature/Rock_Medium_2.gltf" id="m_nat_Rock_Medium_2"]
-[ext_resource type="PackedScene" path="res://assets/models/quaternius/props/Stall_Cart_Empty.gltf" id="m_pro_Stall_Cart_Empty"]
-[ext_resource type="PackedScene" path="res://assets/models/quaternius/village/Corner_Exterior_Wood.gltf" id="m_vil_Corner_Exterior_Wood"]
-[ext_resource type="PackedScene" path="res://assets/models/quaternius/village/Prop_WoodenFence_Single.gltf" id="m_vil_Prop_WoodenFence_Single"]
 [sub_resource type="Environment" id="Environment_tw001"]
 background_mode = 1
 background_color = Color(0.35, 0.45, 0.6, 1)
 ambient_light_source = 2
-ambient_light_color = Color(0.7, 0.72, 0.8, 1)
-ambient_light_energy = 0.45
+ambient_light_color = Color(0.72, 0.72, 0.78, 1)
+ambient_light_energy = 0.5
 tonemap_mode = 2
 
 [sub_resource type="NavigationMesh" id="NavigationMesh_tw001"]
@@ -56,982 +50,607 @@ cell_height = 0.1
 agent_height = 1.8
 agent_max_climb = 0.3
 
-[sub_resource type="FastNoiseLite" id="Noise_grass"]
-frequency = 0.02
+[sub_resource type="BoxShape3D" id="Shape_ground"]
+size = Vector3(40.0, 1, 40.0)
 
-[sub_resource type="Gradient" id="Gradient_grass"]
-colors = PackedColorArray(0.17, 0.27, 0.1, 1, 0.27, 0.37, 0.14, 1)
+[sub_resource type="BoxShape3D" id="Shape_fence_x"]
+size = Vector3(40.0, 1.2, 0.5)
 
-[sub_resource type="NoiseTexture2D" id="NoiseTex_grass"]
-seamless = true
-color_ramp = SubResource("Gradient_grass")
-noise = SubResource("Noise_grass")
+[sub_resource type="BoxShape3D" id="Shape_fence_z"]
+size = Vector3(0.5, 1.2, 40.0)
 
-[sub_resource type="StandardMaterial3D" id="Mat_ground"]
-albedo_texture = SubResource("NoiseTex_grass")
-uv1_scale = Vector3(4, 4, 4)
-roughness = 1.0
-
-[sub_resource type="PlaneMesh" id="Plane_ground"]
-material = SubResource("Mat_ground")
-size = Vector2(90, 90)
-
-[sub_resource type="BoxShape3D" id="Shape_0"]
-size = Vector3(40, 1, 40)
-
-[sub_resource type="BoxShape3D" id="Shape_1"]
-size = Vector3(40, 1.2, 0.5)
-
-[sub_resource type="BoxShape3D" id="Shape_2"]
-size = Vector3(0.5, 1.2, 40)
-
-[sub_resource type="BoxShape3D" id="Shape_Blacksmith"]
-size = Vector3(6.40, 6.00, 6.40)
+[sub_resource type="BoxShape3D" id="Shape_Smithy"]
+size = Vector3(6.4, 6, 6.4)
 
 [sub_resource type="BoxShape3D" id="Shape_Tavern"]
-size = Vector3(8.40, 6.00, 6.40)
+size = Vector3(6.4, 6, 8.4)
 
-[sub_resource type="BoxShape3D" id="Shape_HouseRed"]
-size = Vector3(4.40, 6.00, 4.40)
+[sub_resource type="BoxShape3D" id="Shape_ElderHouse"]
+size = Vector3(4.4, 6, 4.4)
 
-[sub_resource type="BoxShape3D" id="Shape_HouseBlue"]
-size = Vector3(4.40, 6.00, 4.40)
+[sub_resource type="BoxShape3D" id="Shape_HouseWest"]
+size = Vector3(4.4, 6, 4.4)
 
-[sub_resource type="BoxShape3D" id="Shape_Market"]
-size = Vector3(4.26, 3.72, 5.81)
+[sub_resource type="BoxShape3D" id="Shape_MarketStalls"]
+size = Vector3(1.4, 2.6, 6.6)
 
-[node name="Town" type="Node3D" unique_id=1300000001]
+[sub_resource type="BoxShape3D" id="Shape_Cart"]
+size = Vector3(1.2, 2, 3.2)
+
+[node name="Town" type="Node3D"]
 script = ExtResource("1_town")
+paved_areas = Array[Rect2]([Rect2(-10, -11, 20, 16), Rect2(-8, -19, 16, 8), Rect2(-2, 5, 4, 15), Rect2(-16, -11, 6, 4), Rect2(10, -10, 6, 4), Rect2(-14, -4, 4, 2), Rect2(-14, 6, 4, 2), Rect2(10, 6, 4, 2)])
+clearings = Array[Rect2]([Rect2(-31, -6, 6, 0), Rect2(30, -12, 6, 0), Rect2(-8, -31, 6, 0)])
 
-[node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=1300332094]
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_tw001")
 
-[node name="Sun" type="DirectionalLight3D" parent="." unique_id=1300340001]
+[node name="Sun" type="DirectionalLight3D" parent="."]
 transform = Transform3D(0.8660254, -0.40957603, 0.28678823, 0, 0.57357645, 0.81915206, -0.5, -0.7094065, 0.49673176, 0, 0, 0)
-light_color = Color(1, 0.85, 0.7, 1)
+light_color = Color(1, 0.88, 0.75, 1)
 light_energy = 1.0
 shadow_enabled = true
 
-[node name="NavigationRegion3D" type="NavigationRegion3D" parent="." unique_id=1300347908]
+[node name="NavigationRegion3D" type="NavigationRegion3D" parent="."]
 navigation_mesh = SubResource("NavigationMesh_tw001")
 
-[node name="Geometry" type="Node3D" parent="NavigationRegion3D" unique_id=1300355815]
+[node name="Geometry" type="Node3D" parent="NavigationRegion3D"]
 
-[node name="Ground" type="StaticBody3D" parent="NavigationRegion3D/Geometry" unique_id=1300007907]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.5, 0)
+[node name="Ground" type="StaticBody3D" parent="NavigationRegion3D/Geometry"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, 0, -0.5, 0)
 collision_mask = 0
 
-[node name="Mesh" type="MeshInstance3D" parent="NavigationRegion3D/Geometry/Ground" unique_id=1300015814]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0)
-mesh = SubResource("Plane_ground")
+[node name="Collision" type="CollisionShape3D" parent="NavigationRegion3D/Geometry/Ground"]
+shape = SubResource("Shape_ground")
 
-[node name="Collision" type="CollisionShape3D" parent="NavigationRegion3D/Geometry/Ground" unique_id=1300023721]
-shape = SubResource("Shape_0")
-
-[node name="FenceNorth" type="StaticBody3D" parent="NavigationRegion3D/Geometry" unique_id=1300039535]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.6, -20)
+[node name="FenceNorth" type="StaticBody3D" parent="NavigationRegion3D/Geometry"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, 0, 0.6, -20)
 collision_mask = 0
 
 [node name="Collision" type="CollisionShape3D" parent="NavigationRegion3D/Geometry/FenceNorth"]
-shape = SubResource("Shape_1")
+shape = SubResource("Shape_fence_x")
 
-[node name="FenceSouth" type="StaticBody3D" parent="NavigationRegion3D/Geometry" unique_id=1300063256]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.6, 20)
+[node name="FenceSouth" type="StaticBody3D" parent="NavigationRegion3D/Geometry"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, 0, 0.6, 20)
 collision_mask = 0
 
 [node name="Collision" type="CollisionShape3D" parent="NavigationRegion3D/Geometry/FenceSouth"]
-shape = SubResource("Shape_1")
+shape = SubResource("Shape_fence_x")
 
-[node name="FenceWest" type="StaticBody3D" parent="NavigationRegion3D/Geometry" unique_id=1300086977]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -20, 0.6, 0)
+[node name="FenceWest" type="StaticBody3D" parent="NavigationRegion3D/Geometry"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, -20, 0.6, 0)
 collision_mask = 0
 
 [node name="Collision" type="CollisionShape3D" parent="NavigationRegion3D/Geometry/FenceWest"]
-shape = SubResource("Shape_2")
+shape = SubResource("Shape_fence_z")
 
-[node name="FenceEast" type="StaticBody3D" parent="NavigationRegion3D/Geometry" unique_id=1300110698]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 20, 0.6, 0)
+[node name="FenceEast" type="StaticBody3D" parent="NavigationRegion3D/Geometry"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, 20, 0.6, 0)
 collision_mask = 0
 
 [node name="Collision" type="CollisionShape3D" parent="NavigationRegion3D/Geometry/FenceEast"]
-shape = SubResource("Shape_2")
+shape = SubResource("Shape_fence_z")
 
-[node name="DungeonAltar" parent="NavigationRegion3D/Geometry" unique_id=1300284652 instance=ExtResource("5_altar")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -12)
+[node name="DungeonAltar" parent="NavigationRegion3D/Geometry" instance=ExtResource("5_dungeon_altar")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, -4, 0, -14.5)
 
-[node name="Blacksmith" type="StaticBody3D" parent="NavigationRegion3D/Geometry"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -12.00, 3.00, -9.00)
-collision_mask = 0
-
-[node name="Collision" type="CollisionShape3D" parent="NavigationRegion3D/Geometry/Blacksmith"]
-shape = SubResource("Shape_Blacksmith")
-
-[node name="Tavern" type="StaticBody3D" parent="NavigationRegion3D/Geometry"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 12.00, 3.00, -9.00)
-collision_mask = 0
-
-[node name="Collision" type="CollisionShape3D" parent="NavigationRegion3D/Geometry/Tavern"]
-shape = SubResource("Shape_Tavern")
-
-[node name="HouseRed" type="StaticBody3D" parent="NavigationRegion3D/Geometry"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -12.00, 3.00, 9.00)
-collision_mask = 0
-
-[node name="Collision" type="CollisionShape3D" parent="NavigationRegion3D/Geometry/HouseRed"]
-shape = SubResource("Shape_HouseRed")
-
-[node name="HouseBlue" type="StaticBody3D" parent="NavigationRegion3D/Geometry"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 12.00, 3.00, 9.00)
-collision_mask = 0
-
-[node name="Collision" type="CollisionShape3D" parent="NavigationRegion3D/Geometry/HouseBlue"]
-shape = SubResource("Shape_HouseBlue")
-
-[node name="Market" type="StaticBody3D" parent="NavigationRegion3D/Geometry"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 13.00, 1.86, 0.00)
-collision_mask = 0
-
-[node name="Collision" type="CollisionShape3D" parent="NavigationRegion3D/Geometry/Market"]
-shape = SubResource("Shape_Market")
-
-[node name="EndlessAltar" parent="NavigationRegion3D/Geometry" instance=ExtResource("5_altar")]
-transform = Transform3D(0.92388, 0, 0.382683, 0, 1, 0, -0.382683, 0, 0.92388, -7, 0, -15.5)
+[node name="EndlessAltar" parent="NavigationRegion3D/Geometry" instance=ExtResource("5_dungeon_altar")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, 4, 0, -14.5)
 window_name = "endless"
 crystal_color = Color(0.95, 0.12, 0.08, 1)
 title_text = "Endlos-Altar
 (anklicken: Endlos-Modus)"
 
+[node name="Smithy" type="StaticBody3D" parent="NavigationRegion3D/Geometry"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, -13, 3, -14)
+collision_mask = 0
+
+[node name="Collision" type="CollisionShape3D" parent="NavigationRegion3D/Geometry/Smithy"]
+shape = SubResource("Shape_Smithy")
+
+[node name="Tavern" type="StaticBody3D" parent="NavigationRegion3D/Geometry"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, 13, 3, -14)
+collision_mask = 0
+
+[node name="Collision" type="CollisionShape3D" parent="NavigationRegion3D/Geometry/Tavern"]
+shape = SubResource("Shape_Tavern")
+
+[node name="ElderHouse" type="StaticBody3D" parent="NavigationRegion3D/Geometry"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, -16, 3, -3)
+collision_mask = 0
+
+[node name="Collision" type="CollisionShape3D" parent="NavigationRegion3D/Geometry/ElderHouse"]
+shape = SubResource("Shape_ElderHouse")
+
+[node name="HouseWest" type="StaticBody3D" parent="NavigationRegion3D/Geometry"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, -16, 3, 7)
+collision_mask = 0
+
+[node name="Collision" type="CollisionShape3D" parent="NavigationRegion3D/Geometry/HouseWest"]
+shape = SubResource("Shape_HouseWest")
+
+[node name="MarketStalls" type="StaticBody3D" parent="NavigationRegion3D/Geometry"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, 11, 1.3, 0)
+collision_mask = 0
+
+[node name="Collision" type="CollisionShape3D" parent="NavigationRegion3D/Geometry/MarketStalls"]
+shape = SubResource("Shape_MarketStalls")
+
+[node name="Cart" type="StaticBody3D" parent="NavigationRegion3D/Geometry"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, 12.5, 1, 7)
+collision_mask = 0
+
+[node name="Collision" type="CollisionShape3D" parent="NavigationRegion3D/Geometry/Cart"]
+shape = SubResource("Shape_Cart")
+
 [node name="Smith" type="StaticBody3D" parent="NavigationRegion3D/Geometry"]
-transform = Transform3D(0.825336, 0, 0.564642, 0, 1, 0, -0.564642, 0, 0.825336, -6.5, 0, -8)
-script = ExtResource("46_npc00")
+transform = Transform3D(0.69122, 0, 0.72264, 0, 1, 0, -0.72264, 0, 0.69122, -11.5, 0, -9)
+script = ExtResource("6_npc")
 window_name = "smith"
 display_name = "Schmied"
 name_color = Color(1, 0.65, 0.35, 1)
-model = ExtResource("npc_smith")
-
-[node name="Merchant" type="StaticBody3D" parent="NavigationRegion3D/Geometry"]
-transform = Transform3D(0.621610, 0, -0.783327, 0, 1, 0, 0.783327, 0, 0.621610, 9, 0, 1.5)
-script = ExtResource("46_npc00")
-window_name = "merchant"
-display_name = "Händler"
-name_color = Color(1, 0.85, 0.3, 1)
-model = ExtResource("npc_merchant")
+model = ExtResource("7_smith")
 
 [node name="Mystic" type="StaticBody3D" parent="NavigationRegion3D/Geometry"]
-transform = Transform3D(0.621610, 0, 0.783327, 0, 1, 0, -0.783327, 0, 0.621610, -4.5, 0, 6.5)
-script = ExtResource("46_npc00")
+transform = Transform3D(0.67427, 0, -0.73849, 0, 1, 0, 0.73849, 0, 0.67427, 11.5, 0, -8.5)
+script = ExtResource("6_npc")
 window_name = "mystic"
 display_name = "Mystikerin"
 name_color = Color(0.8, 0.6, 1, 1)
-model = ExtResource("npc_mystic")
+model = ExtResource("8_mystic")
 
 [node name="Elder" type="StaticBody3D" parent="NavigationRegion3D/Geometry"]
-transform = Transform3D(0.764842, 0, 0.644218, 0, 1, 0, -0.644218, 0, 0.764842, -6.5, 0, -1.5)
-script = ExtResource("46_npc00")
+transform = Transform3D(0.43556, 0, 0.90016, 0, 1, 0, -0.90016, 0, 0.43556, -11.5, 0, -1.5)
+script = ExtResource("6_npc")
 window_name = "elder"
 display_name = "Magischer Ältester"
 name_color = Color(0.55, 0.85, 1, 1)
-model = ExtResource("npc_elder")
+model = ExtResource("9_elder")
+
+[node name="Merchant" type="StaticBody3D" parent="NavigationRegion3D/Geometry"]
+transform = Transform3D(0.56334, 0, -0.82623, 0, 1, 0, 0.82623, 0, 0.56334, 8.8, 0, 0)
+script = ExtResource("6_npc")
+window_name = "merchant"
+display_name = "Händler"
+name_color = Color(1, 0.85, 0.3, 1)
+model = ExtResource("10_merchant")
 
 [node name="Decor" type="Node3D" parent="."]
 
-[node name="Paths" type="Node3D" parent="."]
+[node name="Smithy" parent="Decor" instance=ExtResource("11_smithy")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, -13, 0, -14)
 
-[node name="Blacksmith" parent="Decor" instance=ExtResource("m_hou_smithy")]
-transform = Transform3D(6.123e-17, 0, 1, 0, 1, 0, -1, 0, 6.123e-17, -12, 0, -9)
+[node name="Tavern" parent="Decor" instance=ExtResource("12_tavern")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, 13, 0, -14)
 
-[node name="Tavern" parent="Decor" instance=ExtResource("m_hou_tavern")]
-transform = Transform3D(6.123e-17, 0, -1, 0, 1, 0, 1, 0, 6.123e-17, 12, 0, -9)
+[node name="ElderHouse" parent="Decor" instance=ExtResource("13_house_brick")]
+transform = Transform3D(6.1232e-17, 0, 1, 0, 1, 0, -1, 0, 6.1232e-17, -16, 0, -3)
 
-[node name="HouseRed" parent="Decor" instance=ExtResource("m_hou_house_small")]
-transform = Transform3D(6.123e-17, 0, 1, 0, 1, 0, -1, 0, 6.123e-17, -12, 0, 9)
+[node name="HouseWest" parent="Decor" instance=ExtResource("14_house_small")]
+transform = Transform3D(6.1232e-17, 0, 1, 0, 1, 0, -1, 0, 6.1232e-17, -16, 0, 7)
 
-[node name="HouseBlue" parent="Decor" instance=ExtResource("m_hou_house_brick")]
-transform = Transform3D(6.123e-17, 0, -1, 0, 1, 0, 1, 0, 6.123e-17, 12, 0, 9)
+[node name="FarHouse" parent="Decor" instance=ExtResource("15_house_large")]
+transform = Transform3D(6.1232e-17, 0, 1, 0, 1, 0, -1, 0, 6.1232e-17, -31, 0, -6)
 
-[node name="MarketModel" type="Node3D" parent="Decor"]
-transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, 12.81, 0, 0)
+[node name="FarHouse2" parent="Decor" instance=ExtResource("14_house_small")]
+transform = Transform3D(6.1232e-17, 0, -1, 0, 1, 0, 1, 0, 6.1232e-17, 30, 0, -12)
 
-[node name="StallA" parent="Decor/MarketModel" instance=ExtResource("q_Stall_Empty")]
-transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, 0.6, 0, -1.3)
+[node name="FarHouse3" parent="Decor" instance=ExtResource("13_house_brick")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, -8, 0, -31)
 
-[node name="StallB" parent="Decor/MarketModel" instance=ExtResource("q_Stall_Empty")]
-transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, 0.6, 0, 1.3)
+[node name="Anvil" parent="Decor" instance=ExtResource("16_anvil")]
+transform = Transform3D(1.0392, 0, 0.6, 0, 1.2, 0, -0.6, 0, 1.0392, -9.8, 0, -10.2)
 
-[node name="Crates" parent="Decor/MarketModel" instance=ExtResource("q_Crate_Wooden")]
-transform = Transform3D(0.8, 0, 0, 0, 0.8, 0, 0, 0, 0.8, -1.2, 0, 0)
+[node name="Workbench" parent="Decor" instance=ExtResource("17_workbench")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, -15, 0, -9)
 
-[node name="Path" parent="Paths" instance=ExtResource("m_nat_RockPath_Round_Wide")]
-transform = Transform3D(-0.4465, 0, 0.8948, 0, 1, 0, -0.8948, 0, -0.4465, -3.002, 0, -14.99)
+[node name="WeaponStand" parent="Decor" instance=ExtResource("18_weaponstand")]
+transform = Transform3D(0.5, 0, 0.86603, 0, 1, 0, -0.86603, 0, 0.5, -10, 0, -7.8)
 
-[node name="Path2" parent="Paths" instance=ExtResource("m_nat_RockPath_Round_Wide")]
-transform = Transform3D(0.5839, 0, 0.8119, 0, 1, 0, -0.8119, 0, 0.5839, -1.005, 0, -15)
+[node name="Barrel" parent="Decor" instance=ExtResource("19_barrel")]
+transform = Transform3D(1.1, 0, 0, 0, 1.1, 0, -0, 0, 1.1, -16.2, 0, -10.6)
 
-[node name="Path3" parent="Paths" instance=ExtResource("m_nat_RockPath_Round_Wide")]
-transform = Transform3D(-0.5847, 0, -0.8112, 0, 1, 0, 0.8112, 0, -0.5847, 1.006, 0, -15)
+[node name="Crate_Metal" parent="Decor" instance=ExtResource("20_crate_metal")]
+transform = Transform3D(0.75175, 0, 0.27362, 0, 0.8, 0, -0.27362, 0, 0.75175, -15.3, 0, -10.8)
 
-[node name="Path4" parent="Paths" instance=ExtResource("m_nat_RockPath_Round_Wide")]
-transform = Transform3D(0.8983, 0, 0.4394, 0, 1, 0, -0.4394, 0, 0.8983, 2.995, 0, -15)
+[node name="Barrel2" parent="Decor" instance=ExtResource("19_barrel")]
+transform = Transform3D(1.1, 0, 0, 0, 1.1, 0, -0, 0, 1.1, 9.6, 0, -10.6)
 
-[node name="Path5" parent="Paths" instance=ExtResource("m_nat_RockPath_Round_Wide")]
-transform = Transform3D(-0.9751, 0, -0.2219, 0, 1, 0, 0.2219, 0, -0.9751, -3.008, 0, -13)
+[node name="Barrel3" parent="Decor" instance=ExtResource("19_barrel")]
+transform = Transform3D(0.84265, 0, 0.70707, 0, 1.1, 0, -0.70707, 0, 0.84265, 10.4, 0, -10.9)
 
-[node name="Path6" parent="Paths" instance=ExtResource("m_nat_RockPath_Round_Wide")]
-transform = Transform3D(-0.6637, 0, 0.748, 0, 1, 0, -0.748, 0, -0.6637, -0.9935, 0, -13)
+[node name="Crate_Wooden" parent="Decor" instance=ExtResource("21_crate_wooden")]
+transform = Transform3D(0.98481, 0, 0.17365, 0, 1, 0, -0.17365, 0, 0.98481, 16, 0, -9)
 
-[node name="Path7" parent="Paths" instance=ExtResource("m_nat_RockPath_Round_Wide")]
-transform = Transform3D(0.9344, 0, 0.3562, 0, 1, 0, -0.3562, 0, 0.9344, 1.002, 0, -13.01)
+[node name="Bench" parent="Decor" instance=ExtResource("22_bench")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, 14, 0, -8.2)
 
-[node name="Path8" parent="Paths" instance=ExtResource("m_nat_RockPath_Round_Wide")]
-transform = Transform3D(-0.999, 0, -0.04509, 0, 1, 0, 0.04509, 0, -0.999, 3.003, 0, -13.01)
+[node name="Stall_Empty" parent="Decor" instance=ExtResource("23_stall_empty")]
+transform = Transform3D(7.0417e-17, 0, -1.15, 0, 1.15, 0, 1.15, 0, 7.0417e-17, 11, 0, -2.2)
 
-[node name="Path9" parent="Paths" instance=ExtResource("m_nat_RockPath_Round_Wide")]
-transform = Transform3D(0.9724, 0, 0.2333, 0, 1, 0, -0.2333, 0, 0.9724, -3.003, 0, -10.99)
+[node name="Stall_Empty2" parent="Decor" instance=ExtResource("23_stall_empty")]
+transform = Transform3D(7.0417e-17, 0, -1.15, 0, 1.15, 0, 1.15, 0, 7.0417e-17, 11, 0, 2.2)
 
-[node name="Path10" parent="Paths" instance=ExtResource("m_nat_RockPath_Round_Wide")]
-transform = Transform3D(-0.9138, 0, 0.4062, 0, 1, 0, -0.4062, 0, -0.9138, -0.9935, 0, -11)
+[node name="FarmCrate_Apple" parent="Decor" instance=ExtResource("24_farmcrate_appl")]
+transform = Transform3D(1.2557, 0, 0.33646, 0, 1.3, 0, -0.33646, 0, 1.2557, 9.6, 0, -3.4)
 
-[node name="Path11" parent="Paths" instance=ExtResource("m_nat_RockPath_Round_Wide")]
-transform = Transform3D(0.9053, 0, 0.4248, 0, 1, 0, -0.4248, 0, 0.9053, 1.006, 0, -11)
+[node name="FarmCrate_Carrot" parent="Decor" instance=ExtResource("25_farmcrate_carr")]
+transform = Transform3D(1.2803, 0, -0.22574, 0, 1.3, 0, 0.22574, 0, 1.2803, 9.6, 0, 3.4)
 
-[node name="Path12" parent="Paths" instance=ExtResource("m_nat_RockPath_Round_Wide")]
-transform = Transform3D(0.8421, 0, 0.5394, 0, 1, 0, -0.5394, 0, 0.8421, 3.008, 0, -11)
+[node name="Crate_Wooden2" parent="Decor" instance=ExtResource("21_crate_wooden")]
+transform = Transform3D(0.9, 0, 0, 0, 0.9, 0, -0, 0, 0.9, 12.6, 0, 0)
 
-[node name="Path13" parent="Paths" instance=ExtResource("m_nat_RockPath_Round_Wide")]
-transform = Transform3D(-0.889, 0, 0.4579, 0, 1, 0, -0.4579, 0, -0.889, -2.997, 0, -9.006)
+[node name="Bag" parent="Decor" instance=ExtResource("26_bag")]
+transform = Transform3D(0.6, 0, 0, 0, 0.6, 0, -0, 0, 0.6, 10.2, 0, 1)
 
-[node name="Path14" parent="Paths" instance=ExtResource("m_nat_RockPath_Round_Wide")]
-transform = Transform3D(0.462, 0, -0.8869, 0, 1, 0, 0.8869, 0, 0.462, -0.9968, 0, -9.006)
+[node name="Stall_Cart_Empty" parent="Decor" instance=ExtResource("27_stall_cart_emp")]
+transform = Transform3D(6.1232e-17, 0, -1, 0, 1, 0, 1, 0, 6.1232e-17, 12.5, 0, 7)
 
-[node name="Path15" parent="Paths" instance=ExtResource("m_nat_RockPath_Round_Wide")]
-transform = Transform3D(0.7127, 0, 0.7015, 0, 1, 0, -0.7015, 0, 0.7127, 1.002, 0, -9.005)
+[node name="Barrel_Apples" parent="Decor" instance=ExtResource("28_barrel_apples")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, 14, 0, 9)
 
-[node name="Path16" parent="Paths" instance=ExtResource("m_nat_RockPath_Round_Wide")]
-transform = Transform3D(0.1681, 0, 0.9858, 0, 1, 0, -0.9858, 0, 0.1681, 3.006, 0, -8.997)
+[node name="BookStand" parent="Decor" instance=ExtResource("29_bookstand")]
+transform = Transform3D(6.1232e-17, 0, 1, 0, 1, 0, -1, 0, 6.1232e-17, -12.2, 0, -3.4)
 
-[node name="Path17" parent="Paths" instance=ExtResource("m_nat_RockPath_Round_Wide")]
-transform = Transform3D(-0.6976, 0, -0.7164, 0, 1, 0, 0.7164, 0, -0.6976, -0.9968, 0, -6.992)
+[node name="CandleStick_Stand" parent="Decor" instance=ExtResource("30_candlestick_st")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, -12.8, 0, -0.2)
 
-[node name="Path18" parent="Paths" instance=ExtResource("m_nat_RockPath_Round_Wide")]
-transform = Transform3D(0.9455, 0, -0.3255, 0, 1, 0, 0.3255, 0, 0.9455, 0.9924, 0, -6.997)
+[node name="Bench2" parent="Decor" instance=ExtResource("22_bench")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, -5, 0, 3.2)
 
-[node name="Path19" parent="Paths" instance=ExtResource("m_nat_RockPath_Round_Wide")]
-transform = Transform3D(-0.8858, 0, -0.4641, 0, 1, 0, 0.4641, 0, -0.8858, -0.9968, 0, -5.006)
+[node name="Bench3" parent="Decor" instance=ExtResource("22_bench")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, 5, 0, 3.2)
 
-[node name="Path20" parent="Paths" instance=ExtResource("m_nat_RockPath_Round_Wide")]
-transform = Transform3D(-0.7958, 0, 0.6055, 0, 1, 0, -0.6055, 0, -0.7958, 0.9946, 0, -5.002)
+[node name="Bucket_Wooden_1" parent="Decor" instance=ExtResource("31_bucket_wooden_")]
+transform = Transform3D(1.2, 0, 0, 0, 1.2, 0, -0, 0, 1.2, 6.6, 0, 3)
 
-[node name="Path21" parent="Paths" instance=ExtResource("m_nat_RockPath_Round_Wide")]
-transform = Transform3D(0.9884, 0, -0.1517, 0, 1, 0, 0.1517, 0, 0.9884, -1.003, 0, -3.008)
+[node name="Bag2" parent="Decor" instance=ExtResource("26_bag")]
+transform = Transform3D(0.6, 0, 0, 0, 0.6, 0, -0, 0, 0.6, -6.6, 0, 3.1)
 
-[node name="Path22" parent="Paths" instance=ExtResource("m_nat_RockPath_Round_Wide")]
-transform = Transform3D(0.9575, 0, 0.2884, 0, 1, 0, -0.2884, 0, 0.9575, 0.9968, 0, -3.008)
+[node name="Barrel4" parent="Decor" instance=ExtResource("19_barrel")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, -13.4, 0, 9.6)
 
-[node name="Path23" parent="Paths" instance=ExtResource("m_nat_RockPath_Round_Wide")]
-transform = Transform3D(0.6279, 0, -0.7783, 0, 1, 0, 0.7783, 0, 0.6279, -1.008, 0, -0.9968)
+[node name="Crate_Wooden3" parent="Decor" instance=ExtResource("21_crate_wooden")]
+transform = Transform3D(0.77942, 0, 0.45, 0, 0.9, 0, -0.45, 0, 0.77942, -13.6, 0, 4.6)
 
-[node name="Path24" parent="Paths" instance=ExtResource("m_nat_RockPath_Round_Wide")]
-transform = Transform3D(-0.2454, 0, 0.9694, 0, 1, 0, -0.9694, 0, -0.2454, 1.002, 0, -1.005)
+[node name="Fence" type="Node3D" parent="Decor"]
 
-[node name="Path25" parent="Paths" instance=ExtResource("m_nat_RockPath_Round_Wide")]
-transform = Transform3D(0.617, 0, 0.787, 0, 1, 0, -0.787, 0, 0.617, -0.9978, 0, 0.9946)
+[node name="Fence1" parent="Decor/Fence" instance=ExtResource("32_prop_woodenfen")]
+transform = Transform3D(1, 0, 0, 0, 1.1, 0, -0, 0, 1, -19.0, 0, -20.0)
 
-[node name="Path26" parent="Paths" instance=ExtResource("m_nat_RockPath_Round_Wide")]
-transform = Transform3D(0.7386, 0, 0.6741, 0, 1, 0, -0.6741, 0, 0.7386, 1.008, 0, 0.9968)
+[node name="Fence2" parent="Decor/Fence" instance=ExtResource("32_prop_woodenfen")]
+transform = Transform3D(1, 0, 0, 0, 1.1, 0, -0, 0, 1, -17.0, 0, -20.0)
 
-[node name="Path27" parent="Paths" instance=ExtResource("m_nat_RockPath_Round_Wide")]
-transform = Transform3D(-0.3583, 0, 0.9336, 0, 1, 0, -0.9336, 0, -0.3583, -0.9946, 0, 3.002)
+[node name="Fence3" parent="Decor/Fence" instance=ExtResource("32_prop_woodenfen")]
+transform = Transform3D(1, 0, 0, 0, 1.1, 0, -0, 0, 1, -15.0, 0, -20.0)
 
-[node name="Path28" parent="Paths" instance=ExtResource("m_nat_RockPath_Round_Wide")]
-transform = Transform3D(0.4013, 0, -0.916, 0, 1, 0, 0.916, 0, 0.4013, 1.003, 0, 2.994)
+[node name="Fence4" parent="Decor/Fence" instance=ExtResource("32_prop_woodenfen")]
+transform = Transform3D(1, 0, 0, 0, 1.1, 0, -0, 0, 1, -13.0, 0, -20.0)
 
-[node name="Path29" parent="Paths" instance=ExtResource("m_nat_RockPath_Round_Wide")]
-transform = Transform3D(0.4222, 0, 0.9065, 0, 1, 0, -0.9065, 0, 0.4222, -1.008, 0, 5.003)
+[node name="Fence5" parent="Decor/Fence" instance=ExtResource("32_prop_woodenfen")]
+transform = Transform3D(1, 0, 0, 0, 1.1, 0, -0, 0, 1, -11.0, 0, -20.0)
 
-[node name="Path30" parent="Paths" instance=ExtResource("m_nat_RockPath_Round_Wide")]
-transform = Transform3D(-0.8723, 0, -0.4889, 0, 1, 0, 0.4889, 0, -0.8723, 0.9935, 0, 4.997)
+[node name="Fence6" parent="Decor/Fence" instance=ExtResource("32_prop_woodenfen")]
+transform = Transform3D(1, 0, 0, 0, 1.1, 0, -0, 0, 1, -9.0, 0, -20.0)
 
-[node name="Path31" parent="Paths" instance=ExtResource("m_nat_RockPath_Round_Wide")]
-transform = Transform3D(-0.6442, 0, -0.7648, 0, 1, 0, 0.7648, 0, -0.6442, -0.9924, 0, 6.997)
+[node name="Fence7" parent="Decor/Fence" instance=ExtResource("32_prop_woodenfen")]
+transform = Transform3D(1, 0, 0, 0, 1.1, 0, -0, 0, 1, -7.0, 0, -20.0)
 
-[node name="Path32" parent="Paths" instance=ExtResource("m_nat_RockPath_Round_Wide")]
-transform = Transform3D(-0.6946, 0, 0.7194, 0, 1, 0, -0.7194, 0, -0.6946, 1.002, 0, 6.995)
+[node name="Fence8" parent="Decor/Fence" instance=ExtResource("32_prop_woodenfen")]
+transform = Transform3D(1, 0, 0, 0, 1.1, 0, -0, 0, 1, -5.0, 0, -20.0)
 
-[node name="Path33" parent="Paths" instance=ExtResource("m_nat_RockPath_Round_Wide")]
-transform = Transform3D(-0.9559, 0, -0.2938, 0, 1, 0, 0.2938, 0, -0.9559, -1.005, 0, 8.998)
+[node name="Fence9" parent="Decor/Fence" instance=ExtResource("32_prop_woodenfen")]
+transform = Transform3D(1, 0, 0, 0, 1.1, 0, -0, 0, 1, -3.0, 0, -20.0)
 
-[node name="Path34" parent="Paths" instance=ExtResource("m_nat_RockPath_Round_Wide")]
-transform = Transform3D(0.9233, 0, 0.3842, 0, 1, 0, -0.3842, 0, 0.9233, 0.9968, 0, 9.006)
+[node name="Fence10" parent="Decor/Fence" instance=ExtResource("32_prop_woodenfen")]
+transform = Transform3D(1, 0, 0, 0, 1.1, 0, -0, 0, 1, -1.0, 0, -20.0)
 
-[node name="Path35" parent="Paths" instance=ExtResource("m_nat_RockPath_Round_Wide")]
-transform = Transform3D(0.9308, 0, 0.3656, 0, 1, 0, -0.3656, 0, 0.9308, -1.006, 0, 11)
+[node name="Fence11" parent="Decor/Fence" instance=ExtResource("32_prop_woodenfen")]
+transform = Transform3D(1, 0, 0, 0, 1.1, 0, -0, 0, 1, 1.0, 0, -20.0)
 
-[node name="Path36" parent="Paths" instance=ExtResource("m_nat_RockPath_Round_Wide")]
-transform = Transform3D(0.2738, 0, 0.9618, 0, 1, 0, -0.9618, 0, 0.2738, 0.9968, 0, 11.01)
+[node name="Fence12" parent="Decor/Fence" instance=ExtResource("32_prop_woodenfen")]
+transform = Transform3D(1, 0, 0, 0, 1.1, 0, -0, 0, 1, 3.0, 0, -20.0)
 
-[node name="Path37" parent="Paths" instance=ExtResource("m_nat_RockPath_Round_Wide")]
-transform = Transform3D(-0.4255, 0, -0.905, 0, 1, 0, 0.905, 0, -0.4255, -1.005, 0, 13)
+[node name="Fence13" parent="Decor/Fence" instance=ExtResource("32_prop_woodenfen")]
+transform = Transform3D(1, 0, 0, 0, 1.1, 0, -0, 0, 1, 5.0, 0, -20.0)
 
-[node name="Path38" parent="Paths" instance=ExtResource("m_nat_RockPath_Round_Wide")]
-transform = Transform3D(-0.8977, 0, 0.4406, 0, 1, 0, -0.4406, 0, -0.8977, 0.9968, 0, 12.99)
+[node name="Fence14" parent="Decor/Fence" instance=ExtResource("32_prop_woodenfen")]
+transform = Transform3D(1, 0, 0, 0, 1.1, 0, -0, 0, 1, 7.0, 0, -20.0)
 
-[node name="Path39" parent="Paths" instance=ExtResource("m_nat_RockPath_Round_Wide")]
-transform = Transform3D(-0.3913, 0, 0.9203, 0, 1, 0, -0.9203, 0, -0.3913, -0.9968, 0, 15.01)
+[node name="Fence15" parent="Decor/Fence" instance=ExtResource("32_prop_woodenfen")]
+transform = Transform3D(1, 0, 0, 0, 1.1, 0, -0, 0, 1, 9.0, 0, -20.0)
 
-[node name="Path40" parent="Paths" instance=ExtResource("m_nat_RockPath_Round_Wide")]
-transform = Transform3D(-0.8599, 0, -0.5105, 0, 1, 0, 0.5105, 0, -0.8599, 1.005, 0, 15)
+[node name="Fence16" parent="Decor/Fence" instance=ExtResource("32_prop_woodenfen")]
+transform = Transform3D(1, 0, 0, 0, 1.1, 0, -0, 0, 1, 11.0, 0, -20.0)
 
-[node name="Fence_1" parent="Decor" instance=ExtResource("m_vil_Prop_WoodenFence_Single")]
-transform = Transform3D(-0.986, 0, 1.225e-16, 0, 1.1, 0, -1.207e-16, 0, -1, -18.99, 0, -20)
+[node name="Fence17" parent="Decor/Fence" instance=ExtResource("32_prop_woodenfen")]
+transform = Transform3D(1, 0, 0, 0, 1.1, 0, -0, 0, 1, 13.0, 0, -20.0)
 
-[node name="Fence_2" parent="Decor" instance=ExtResource("m_vil_Prop_WoodenFence_Single")]
-transform = Transform3D(-0.986, 0, 1.225e-16, 0, 1.1, 0, -1.207e-16, 0, -1, -16.97, 0, -20)
+[node name="Fence18" parent="Decor/Fence" instance=ExtResource("32_prop_woodenfen")]
+transform = Transform3D(1, 0, 0, 0, 1.1, 0, -0, 0, 1, 15.0, 0, -20.0)
 
-[node name="Fence2_1" parent="Decor" instance=ExtResource("m_vil_Prop_WoodenFence_Single")]
-transform = Transform3D(-0.986, 0, 1.225e-16, 0, 1.1, 0, -1.207e-16, 0, -1, -18.99, 0, 20)
+[node name="Fence19" parent="Decor/Fence" instance=ExtResource("32_prop_woodenfen")]
+transform = Transform3D(1, 0, 0, 0, 1.1, 0, -0, 0, 1, 17.0, 0, -20.0)
 
-[node name="Fence2_2" parent="Decor" instance=ExtResource("m_vil_Prop_WoodenFence_Single")]
-transform = Transform3D(-0.986, 0, 1.225e-16, 0, 1.1, 0, -1.207e-16, 0, -1, -16.97, 0, 20)
+[node name="Fence20" parent="Decor/Fence" instance=ExtResource("32_prop_woodenfen")]
+transform = Transform3D(1, 0, 0, 0, 1.1, 0, -0, 0, 1, 19.0, 0, -20.0)
 
-[node name="Fence3_1" parent="Decor" instance=ExtResource("m_vil_Prop_WoodenFence_Single")]
-transform = Transform3D(6.037e-17, 0, 1, 0, 1.1, 0, -0.986, 0, 6.123e-17, -20, 0, -18.99)
+[node name="Fence21" parent="Decor/Fence" instance=ExtResource("32_prop_woodenfen")]
+transform = Transform3D(1, 0, 0, 0, 1.1, 0, -0, 0, 1, -19.0, 0, 20.0)
 
-[node name="Fence3_2" parent="Decor" instance=ExtResource("m_vil_Prop_WoodenFence_Single")]
-transform = Transform3D(6.037e-17, 0, 1, 0, 1.1, 0, -0.986, 0, 6.123e-17, -20, 0, -16.97)
+[node name="Fence22" parent="Decor/Fence" instance=ExtResource("32_prop_woodenfen")]
+transform = Transform3D(1, 0, 0, 0, 1.1, 0, -0, 0, 1, -17.0, 0, 20.0)
 
-[node name="Fence4_1" parent="Decor" instance=ExtResource("m_vil_Prop_WoodenFence_Single")]
-transform = Transform3D(6.037e-17, 0, 1, 0, 1.1, 0, -0.986, 0, 6.123e-17, 20, 0, -18.99)
+[node name="Fence23" parent="Decor/Fence" instance=ExtResource("32_prop_woodenfen")]
+transform = Transform3D(1, 0, 0, 0, 1.1, 0, -0, 0, 1, -15.0, 0, 20.0)
 
-[node name="Fence4_2" parent="Decor" instance=ExtResource("m_vil_Prop_WoodenFence_Single")]
-transform = Transform3D(6.037e-17, 0, 1, 0, 1.1, 0, -0.986, 0, 6.123e-17, 20, 0, -16.97)
+[node name="Fence24" parent="Decor/Fence" instance=ExtResource("32_prop_woodenfen")]
+transform = Transform3D(1, 0, 0, 0, 1.1, 0, -0, 0, 1, -13.0, 0, 20.0)
 
-[node name="Fence5_1" parent="Decor" instance=ExtResource("m_vil_Prop_WoodenFence_Single")]
-transform = Transform3D(-0.986, 0, 1.225e-16, 0, 1.1, 0, -1.207e-16, 0, -1, -14.99, 0, -20)
+[node name="Fence25" parent="Decor/Fence" instance=ExtResource("32_prop_woodenfen")]
+transform = Transform3D(1, 0, 0, 0, 1.1, 0, -0, 0, 1, -11.0, 0, 20.0)
 
-[node name="Fence5_2" parent="Decor" instance=ExtResource("m_vil_Prop_WoodenFence_Single")]
-transform = Transform3D(-0.986, 0, 1.225e-16, 0, 1.1, 0, -1.207e-16, 0, -1, -12.97, 0, -20)
+[node name="Fence26" parent="Decor/Fence" instance=ExtResource("32_prop_woodenfen")]
+transform = Transform3D(1, 0, 0, 0, 1.1, 0, -0, 0, 1, -9.0, 0, 20.0)
 
-[node name="Fence6_1" parent="Decor" instance=ExtResource("m_vil_Prop_WoodenFence_Single")]
-transform = Transform3D(-0.986, 0, 1.225e-16, 0, 1.1, 0, -1.207e-16, 0, -1, -14.99, 0, 20)
+[node name="Fence27" parent="Decor/Fence" instance=ExtResource("32_prop_woodenfen")]
+transform = Transform3D(1, 0, 0, 0, 1.1, 0, -0, 0, 1, -7.0, 0, 20.0)
 
-[node name="Fence6_2" parent="Decor" instance=ExtResource("m_vil_Prop_WoodenFence_Single")]
-transform = Transform3D(-0.986, 0, 1.225e-16, 0, 1.1, 0, -1.207e-16, 0, -1, -12.97, 0, 20)
+[node name="Fence28" parent="Decor/Fence" instance=ExtResource("32_prop_woodenfen")]
+transform = Transform3D(1, 0, 0, 0, 1.1, 0, -0, 0, 1, -5.0, 0, 20.0)
 
-[node name="Fence7_1" parent="Decor" instance=ExtResource("m_vil_Prop_WoodenFence_Single")]
-transform = Transform3D(6.037e-17, 0, 1, 0, 1.1, 0, -0.986, 0, 6.123e-17, -20, 0, -14.99)
+[node name="Fence29" parent="Decor/Fence" instance=ExtResource("32_prop_woodenfen")]
+transform = Transform3D(1, 0, 0, 0, 1.1, 0, -0, 0, 1, -3.0, 0, 20.0)
 
-[node name="Fence7_2" parent="Decor" instance=ExtResource("m_vil_Prop_WoodenFence_Single")]
-transform = Transform3D(6.037e-17, 0, 1, 0, 1.1, 0, -0.986, 0, 6.123e-17, -20, 0, -12.97)
+[node name="Fence30" parent="Decor/Fence" instance=ExtResource("32_prop_woodenfen")]
+transform = Transform3D(1, 0, 0, 0, 1.1, 0, -0, 0, 1, 3.0, 0, 20.0)
 
-[node name="Fence8_1" parent="Decor" instance=ExtResource("m_vil_Prop_WoodenFence_Single")]
-transform = Transform3D(6.037e-17, 0, 1, 0, 1.1, 0, -0.986, 0, 6.123e-17, 20, 0, -14.99)
+[node name="Fence31" parent="Decor/Fence" instance=ExtResource("32_prop_woodenfen")]
+transform = Transform3D(1, 0, 0, 0, 1.1, 0, -0, 0, 1, 5.0, 0, 20.0)
 
-[node name="Fence8_2" parent="Decor" instance=ExtResource("m_vil_Prop_WoodenFence_Single")]
-transform = Transform3D(6.037e-17, 0, 1, 0, 1.1, 0, -0.986, 0, 6.123e-17, 20, 0, -12.97)
+[node name="Fence32" parent="Decor/Fence" instance=ExtResource("32_prop_woodenfen")]
+transform = Transform3D(1, 0, 0, 0, 1.1, 0, -0, 0, 1, 7.0, 0, 20.0)
 
-[node name="Fence9_1" parent="Decor" instance=ExtResource("m_vil_Prop_WoodenFence_Single")]
-transform = Transform3D(-0.986, 0, 1.225e-16, 0, 1.1, 0, -1.207e-16, 0, -1, -10.99, 0, -20)
+[node name="Fence33" parent="Decor/Fence" instance=ExtResource("32_prop_woodenfen")]
+transform = Transform3D(1, 0, 0, 0, 1.1, 0, -0, 0, 1, 9.0, 0, 20.0)
 
-[node name="Fence9_2" parent="Decor" instance=ExtResource("m_vil_Prop_WoodenFence_Single")]
-transform = Transform3D(-0.986, 0, 1.225e-16, 0, 1.1, 0, -1.207e-16, 0, -1, -8.972, 0, -20)
+[node name="Fence34" parent="Decor/Fence" instance=ExtResource("32_prop_woodenfen")]
+transform = Transform3D(1, 0, 0, 0, 1.1, 0, -0, 0, 1, 11.0, 0, 20.0)
 
-[node name="Fence10_1" parent="Decor" instance=ExtResource("m_vil_Prop_WoodenFence_Single")]
-transform = Transform3D(-0.986, 0, 1.225e-16, 0, 1.1, 0, -1.207e-16, 0, -1, -10.99, 0, 20)
+[node name="Fence35" parent="Decor/Fence" instance=ExtResource("32_prop_woodenfen")]
+transform = Transform3D(1, 0, 0, 0, 1.1, 0, -0, 0, 1, 13.0, 0, 20.0)
 
-[node name="Fence10_2" parent="Decor" instance=ExtResource("m_vil_Prop_WoodenFence_Single")]
-transform = Transform3D(-0.986, 0, 1.225e-16, 0, 1.1, 0, -1.207e-16, 0, -1, -8.972, 0, 20)
+[node name="Fence36" parent="Decor/Fence" instance=ExtResource("32_prop_woodenfen")]
+transform = Transform3D(1, 0, 0, 0, 1.1, 0, -0, 0, 1, 15.0, 0, 20.0)
 
-[node name="Fence11_1" parent="Decor" instance=ExtResource("m_vil_Prop_WoodenFence_Single")]
-transform = Transform3D(6.037e-17, 0, 1, 0, 1.1, 0, -0.986, 0, 6.123e-17, -20, 0, -10.99)
+[node name="Fence37" parent="Decor/Fence" instance=ExtResource("32_prop_woodenfen")]
+transform = Transform3D(1, 0, 0, 0, 1.1, 0, -0, 0, 1, 17.0, 0, 20.0)
 
-[node name="Fence11_2" parent="Decor" instance=ExtResource("m_vil_Prop_WoodenFence_Single")]
-transform = Transform3D(6.037e-17, 0, 1, 0, 1.1, 0, -0.986, 0, 6.123e-17, -20, 0, -8.972)
+[node name="Fence38" parent="Decor/Fence" instance=ExtResource("32_prop_woodenfen")]
+transform = Transform3D(1, 0, 0, 0, 1.1, 0, -0, 0, 1, 19.0, 0, 20.0)
 
-[node name="Fence12_1" parent="Decor" instance=ExtResource("m_vil_Prop_WoodenFence_Single")]
-transform = Transform3D(6.037e-17, 0, 1, 0, 1.1, 0, -0.986, 0, 6.123e-17, 20, 0, -10.99)
+[node name="Fence39" parent="Decor/Fence" instance=ExtResource("32_prop_woodenfen")]
+transform = Transform3D(6.1232e-17, 0, 1, 0, 1.1, 0, -1, 0, 6.1232e-17, -20.0, 0, -19.0)
 
-[node name="Fence12_2" parent="Decor" instance=ExtResource("m_vil_Prop_WoodenFence_Single")]
-transform = Transform3D(6.037e-17, 0, 1, 0, 1.1, 0, -0.986, 0, 6.123e-17, 20, 0, -8.972)
+[node name="Fence40" parent="Decor/Fence" instance=ExtResource("32_prop_woodenfen")]
+transform = Transform3D(6.1232e-17, 0, 1, 0, 1.1, 0, -1, 0, 6.1232e-17, -20.0, 0, -17.0)
 
-[node name="Fence13_1" parent="Decor" instance=ExtResource("m_vil_Prop_WoodenFence_Single")]
-transform = Transform3D(-0.986, 0, 1.225e-16, 0, 1.1, 0, -1.207e-16, 0, -1, -6.993, 0, -20)
+[node name="Fence41" parent="Decor/Fence" instance=ExtResource("32_prop_woodenfen")]
+transform = Transform3D(6.1232e-17, 0, 1, 0, 1.1, 0, -1, 0, 6.1232e-17, -20.0, 0, -15.0)
 
-[node name="Fence13_2" parent="Decor" instance=ExtResource("m_vil_Prop_WoodenFence_Single")]
-transform = Transform3D(-0.986, 0, 1.225e-16, 0, 1.1, 0, -1.207e-16, 0, -1, -4.972, 0, -20)
+[node name="Fence42" parent="Decor/Fence" instance=ExtResource("32_prop_woodenfen")]
+transform = Transform3D(6.1232e-17, 0, 1, 0, 1.1, 0, -1, 0, 6.1232e-17, -20.0, 0, -13.0)
 
-[node name="Fence14_1" parent="Decor" instance=ExtResource("m_vil_Prop_WoodenFence_Single")]
-transform = Transform3D(-0.986, 0, 1.225e-16, 0, 1.1, 0, -1.207e-16, 0, -1, -6.993, 0, 20)
+[node name="Fence43" parent="Decor/Fence" instance=ExtResource("32_prop_woodenfen")]
+transform = Transform3D(6.1232e-17, 0, 1, 0, 1.1, 0, -1, 0, 6.1232e-17, -20.0, 0, -11.0)
 
-[node name="Fence14_2" parent="Decor" instance=ExtResource("m_vil_Prop_WoodenFence_Single")]
-transform = Transform3D(-0.986, 0, 1.225e-16, 0, 1.1, 0, -1.207e-16, 0, -1, -4.972, 0, 20)
+[node name="Fence44" parent="Decor/Fence" instance=ExtResource("32_prop_woodenfen")]
+transform = Transform3D(6.1232e-17, 0, 1, 0, 1.1, 0, -1, 0, 6.1232e-17, -20.0, 0, -9.0)
 
-[node name="Fence15_1" parent="Decor" instance=ExtResource("m_vil_Prop_WoodenFence_Single")]
-transform = Transform3D(6.037e-17, 0, 1, 0, 1.1, 0, -0.986, 0, 6.123e-17, -20, 0, -6.993)
+[node name="Fence45" parent="Decor/Fence" instance=ExtResource("32_prop_woodenfen")]
+transform = Transform3D(6.1232e-17, 0, 1, 0, 1.1, 0, -1, 0, 6.1232e-17, -20.0, 0, -7.0)
 
-[node name="Fence15_2" parent="Decor" instance=ExtResource("m_vil_Prop_WoodenFence_Single")]
-transform = Transform3D(6.037e-17, 0, 1, 0, 1.1, 0, -0.986, 0, 6.123e-17, -20, 0, -4.972)
+[node name="Fence46" parent="Decor/Fence" instance=ExtResource("32_prop_woodenfen")]
+transform = Transform3D(6.1232e-17, 0, 1, 0, 1.1, 0, -1, 0, 6.1232e-17, -20.0, 0, -5.0)
 
-[node name="Fence16_1" parent="Decor" instance=ExtResource("m_vil_Prop_WoodenFence_Single")]
-transform = Transform3D(6.037e-17, 0, 1, 0, 1.1, 0, -0.986, 0, 6.123e-17, 20, 0, -6.993)
+[node name="Fence47" parent="Decor/Fence" instance=ExtResource("32_prop_woodenfen")]
+transform = Transform3D(6.1232e-17, 0, 1, 0, 1.1, 0, -1, 0, 6.1232e-17, -20.0, 0, -3.0)
 
-[node name="Fence16_2" parent="Decor" instance=ExtResource("m_vil_Prop_WoodenFence_Single")]
-transform = Transform3D(6.037e-17, 0, 1, 0, 1.1, 0, -0.986, 0, 6.123e-17, 20, 0, -4.972)
+[node name="Fence48" parent="Decor/Fence" instance=ExtResource("32_prop_woodenfen")]
+transform = Transform3D(6.1232e-17, 0, 1, 0, 1.1, 0, -1, 0, 6.1232e-17, -20.0, 0, -1.0)
 
-[node name="Fence17_1" parent="Decor" instance=ExtResource("m_vil_Prop_WoodenFence_Single")]
-transform = Transform3D(-0.986, 0, 1.225e-16, 0, 1.1, 0, -1.207e-16, 0, -1, -2.993, 0, -20)
+[node name="Fence49" parent="Decor/Fence" instance=ExtResource("32_prop_woodenfen")]
+transform = Transform3D(6.1232e-17, 0, 1, 0, 1.1, 0, -1, 0, 6.1232e-17, -20.0, 0, 1.0)
 
-[node name="Fence17_2" parent="Decor" instance=ExtResource("m_vil_Prop_WoodenFence_Single")]
-transform = Transform3D(-0.986, 0, 1.225e-16, 0, 1.1, 0, -1.207e-16, 0, -1, -0.9719, 0, -20)
+[node name="Fence50" parent="Decor/Fence" instance=ExtResource("32_prop_woodenfen")]
+transform = Transform3D(6.1232e-17, 0, 1, 0, 1.1, 0, -1, 0, 6.1232e-17, -20.0, 0, 3.0)
 
-[node name="Fence18_1" parent="Decor" instance=ExtResource("m_vil_Prop_WoodenFence_Single")]
-transform = Transform3D(-0.986, 0, 1.225e-16, 0, 1.1, 0, -1.207e-16, 0, -1, -2.993, 0, 20)
+[node name="Fence51" parent="Decor/Fence" instance=ExtResource("32_prop_woodenfen")]
+transform = Transform3D(6.1232e-17, 0, 1, 0, 1.1, 0, -1, 0, 6.1232e-17, -20.0, 0, 5.0)
 
-[node name="Fence18_2" parent="Decor" instance=ExtResource("m_vil_Prop_WoodenFence_Single")]
-transform = Transform3D(-0.986, 0, 1.225e-16, 0, 1.1, 0, -1.207e-16, 0, -1, -0.9719, 0, 20)
+[node name="Fence52" parent="Decor/Fence" instance=ExtResource("32_prop_woodenfen")]
+transform = Transform3D(6.1232e-17, 0, 1, 0, 1.1, 0, -1, 0, 6.1232e-17, -20.0, 0, 7.0)
 
-[node name="Fence19_1" parent="Decor" instance=ExtResource("m_vil_Prop_WoodenFence_Single")]
-transform = Transform3D(6.037e-17, 0, 1, 0, 1.1, 0, -0.986, 0, 6.123e-17, -20, 0, -2.993)
+[node name="Fence53" parent="Decor/Fence" instance=ExtResource("32_prop_woodenfen")]
+transform = Transform3D(6.1232e-17, 0, 1, 0, 1.1, 0, -1, 0, 6.1232e-17, -20.0, 0, 9.0)
 
-[node name="Fence19_2" parent="Decor" instance=ExtResource("m_vil_Prop_WoodenFence_Single")]
-transform = Transform3D(6.037e-17, 0, 1, 0, 1.1, 0, -0.986, 0, 6.123e-17, -20, 0, -0.9719)
+[node name="Fence54" parent="Decor/Fence" instance=ExtResource("32_prop_woodenfen")]
+transform = Transform3D(6.1232e-17, 0, 1, 0, 1.1, 0, -1, 0, 6.1232e-17, -20.0, 0, 11.0)
 
-[node name="Fence20_1" parent="Decor" instance=ExtResource("m_vil_Prop_WoodenFence_Single")]
-transform = Transform3D(6.037e-17, 0, 1, 0, 1.1, 0, -0.986, 0, 6.123e-17, 20, 0, -2.993)
+[node name="Fence55" parent="Decor/Fence" instance=ExtResource("32_prop_woodenfen")]
+transform = Transform3D(6.1232e-17, 0, 1, 0, 1.1, 0, -1, 0, 6.1232e-17, -20.0, 0, 13.0)
 
-[node name="Fence20_2" parent="Decor" instance=ExtResource("m_vil_Prop_WoodenFence_Single")]
-transform = Transform3D(6.037e-17, 0, 1, 0, 1.1, 0, -0.986, 0, 6.123e-17, 20, 0, -0.9719)
+[node name="Fence56" parent="Decor/Fence" instance=ExtResource("32_prop_woodenfen")]
+transform = Transform3D(6.1232e-17, 0, 1, 0, 1.1, 0, -1, 0, 6.1232e-17, -20.0, 0, 15.0)
 
-[node name="Fence21_1" parent="Decor" instance=ExtResource("m_vil_Prop_WoodenFence_Single")]
-transform = Transform3D(-0.986, 0, 1.225e-16, 0, 1.1, 0, -1.207e-16, 0, -1, 1.007, 0, -20)
+[node name="Fence57" parent="Decor/Fence" instance=ExtResource("32_prop_woodenfen")]
+transform = Transform3D(6.1232e-17, 0, 1, 0, 1.1, 0, -1, 0, 6.1232e-17, -20.0, 0, 17.0)
 
-[node name="Fence21_2" parent="Decor" instance=ExtResource("m_vil_Prop_WoodenFence_Single")]
-transform = Transform3D(-0.986, 0, 1.225e-16, 0, 1.1, 0, -1.207e-16, 0, -1, 3.028, 0, -20)
+[node name="Fence58" parent="Decor/Fence" instance=ExtResource("32_prop_woodenfen")]
+transform = Transform3D(6.1232e-17, 0, 1, 0, 1.1, 0, -1, 0, 6.1232e-17, -20.0, 0, 19.0)
 
-[node name="Fence22_1" parent="Decor" instance=ExtResource("m_vil_Prop_WoodenFence_Single")]
-transform = Transform3D(-0.986, 0, 1.225e-16, 0, 1.1, 0, -1.207e-16, 0, -1, 1.007, 0, 20)
+[node name="Fence59" parent="Decor/Fence" instance=ExtResource("32_prop_woodenfen")]
+transform = Transform3D(6.1232e-17, 0, 1, 0, 1.1, 0, -1, 0, 6.1232e-17, 20.0, 0, -19.0)
 
-[node name="Fence22_2" parent="Decor" instance=ExtResource("m_vil_Prop_WoodenFence_Single")]
-transform = Transform3D(-0.986, 0, 1.225e-16, 0, 1.1, 0, -1.207e-16, 0, -1, 3.028, 0, 20)
+[node name="Fence60" parent="Decor/Fence" instance=ExtResource("32_prop_woodenfen")]
+transform = Transform3D(6.1232e-17, 0, 1, 0, 1.1, 0, -1, 0, 6.1232e-17, 20.0, 0, -17.0)
 
-[node name="Fence23_1" parent="Decor" instance=ExtResource("m_vil_Prop_WoodenFence_Single")]
-transform = Transform3D(6.037e-17, 0, 1, 0, 1.1, 0, -0.986, 0, 6.123e-17, -20, 0, 1.007)
+[node name="Fence61" parent="Decor/Fence" instance=ExtResource("32_prop_woodenfen")]
+transform = Transform3D(6.1232e-17, 0, 1, 0, 1.1, 0, -1, 0, 6.1232e-17, 20.0, 0, -15.0)
 
-[node name="Fence23_2" parent="Decor" instance=ExtResource("m_vil_Prop_WoodenFence_Single")]
-transform = Transform3D(6.037e-17, 0, 1, 0, 1.1, 0, -0.986, 0, 6.123e-17, -20, 0, 3.028)
+[node name="Fence62" parent="Decor/Fence" instance=ExtResource("32_prop_woodenfen")]
+transform = Transform3D(6.1232e-17, 0, 1, 0, 1.1, 0, -1, 0, 6.1232e-17, 20.0, 0, -13.0)
 
-[node name="Fence24_1" parent="Decor" instance=ExtResource("m_vil_Prop_WoodenFence_Single")]
-transform = Transform3D(6.037e-17, 0, 1, 0, 1.1, 0, -0.986, 0, 6.123e-17, 20, 0, 1.007)
+[node name="Fence63" parent="Decor/Fence" instance=ExtResource("32_prop_woodenfen")]
+transform = Transform3D(6.1232e-17, 0, 1, 0, 1.1, 0, -1, 0, 6.1232e-17, 20.0, 0, -11.0)
 
-[node name="Fence24_2" parent="Decor" instance=ExtResource("m_vil_Prop_WoodenFence_Single")]
-transform = Transform3D(6.037e-17, 0, 1, 0, 1.1, 0, -0.986, 0, 6.123e-17, 20, 0, 3.028)
+[node name="Fence64" parent="Decor/Fence" instance=ExtResource("32_prop_woodenfen")]
+transform = Transform3D(6.1232e-17, 0, 1, 0, 1.1, 0, -1, 0, 6.1232e-17, 20.0, 0, -9.0)
 
-[node name="Fence25_1" parent="Decor" instance=ExtResource("m_vil_Prop_WoodenFence_Single")]
-transform = Transform3D(-0.986, 0, 1.225e-16, 0, 1.1, 0, -1.207e-16, 0, -1, 5.007, 0, -20)
+[node name="Fence65" parent="Decor/Fence" instance=ExtResource("32_prop_woodenfen")]
+transform = Transform3D(6.1232e-17, 0, 1, 0, 1.1, 0, -1, 0, 6.1232e-17, 20.0, 0, -7.0)
 
-[node name="Fence25_2" parent="Decor" instance=ExtResource("m_vil_Prop_WoodenFence_Single")]
-transform = Transform3D(-0.986, 0, 1.225e-16, 0, 1.1, 0, -1.207e-16, 0, -1, 7.028, 0, -20)
+[node name="Fence66" parent="Decor/Fence" instance=ExtResource("32_prop_woodenfen")]
+transform = Transform3D(6.1232e-17, 0, 1, 0, 1.1, 0, -1, 0, 6.1232e-17, 20.0, 0, -5.0)
 
-[node name="Fence26_1" parent="Decor" instance=ExtResource("m_vil_Prop_WoodenFence_Single")]
-transform = Transform3D(-0.986, 0, 1.225e-16, 0, 1.1, 0, -1.207e-16, 0, -1, 5.007, 0, 20)
+[node name="Fence67" parent="Decor/Fence" instance=ExtResource("32_prop_woodenfen")]
+transform = Transform3D(6.1232e-17, 0, 1, 0, 1.1, 0, -1, 0, 6.1232e-17, 20.0, 0, -3.0)
 
-[node name="Fence26_2" parent="Decor" instance=ExtResource("m_vil_Prop_WoodenFence_Single")]
-transform = Transform3D(-0.986, 0, 1.225e-16, 0, 1.1, 0, -1.207e-16, 0, -1, 7.028, 0, 20)
+[node name="Fence68" parent="Decor/Fence" instance=ExtResource("32_prop_woodenfen")]
+transform = Transform3D(6.1232e-17, 0, 1, 0, 1.1, 0, -1, 0, 6.1232e-17, 20.0, 0, -1.0)
 
-[node name="Fence27_1" parent="Decor" instance=ExtResource("m_vil_Prop_WoodenFence_Single")]
-transform = Transform3D(6.037e-17, 0, 1, 0, 1.1, 0, -0.986, 0, 6.123e-17, -20, 0, 5.007)
+[node name="Fence69" parent="Decor/Fence" instance=ExtResource("32_prop_woodenfen")]
+transform = Transform3D(6.1232e-17, 0, 1, 0, 1.1, 0, -1, 0, 6.1232e-17, 20.0, 0, 1.0)
 
-[node name="Fence27_2" parent="Decor" instance=ExtResource("m_vil_Prop_WoodenFence_Single")]
-transform = Transform3D(6.037e-17, 0, 1, 0, 1.1, 0, -0.986, 0, 6.123e-17, -20, 0, 7.028)
+[node name="Fence70" parent="Decor/Fence" instance=ExtResource("32_prop_woodenfen")]
+transform = Transform3D(6.1232e-17, 0, 1, 0, 1.1, 0, -1, 0, 6.1232e-17, 20.0, 0, 3.0)
 
-[node name="Fence28_1" parent="Decor" instance=ExtResource("m_vil_Prop_WoodenFence_Single")]
-transform = Transform3D(6.037e-17, 0, 1, 0, 1.1, 0, -0.986, 0, 6.123e-17, 20, 0, 5.007)
+[node name="Fence71" parent="Decor/Fence" instance=ExtResource("32_prop_woodenfen")]
+transform = Transform3D(6.1232e-17, 0, 1, 0, 1.1, 0, -1, 0, 6.1232e-17, 20.0, 0, 5.0)
 
-[node name="Fence28_2" parent="Decor" instance=ExtResource("m_vil_Prop_WoodenFence_Single")]
-transform = Transform3D(6.037e-17, 0, 1, 0, 1.1, 0, -0.986, 0, 6.123e-17, 20, 0, 7.028)
+[node name="Fence72" parent="Decor/Fence" instance=ExtResource("32_prop_woodenfen")]
+transform = Transform3D(6.1232e-17, 0, 1, 0, 1.1, 0, -1, 0, 6.1232e-17, 20.0, 0, 7.0)
 
-[node name="Fence29_1" parent="Decor" instance=ExtResource("m_vil_Prop_WoodenFence_Single")]
-transform = Transform3D(-0.986, 0, 1.225e-16, 0, 1.1, 0, -1.207e-16, 0, -1, 9.007, 0, -20)
+[node name="Fence73" parent="Decor/Fence" instance=ExtResource("32_prop_woodenfen")]
+transform = Transform3D(6.1232e-17, 0, 1, 0, 1.1, 0, -1, 0, 6.1232e-17, 20.0, 0, 9.0)
 
-[node name="Fence29_2" parent="Decor" instance=ExtResource("m_vil_Prop_WoodenFence_Single")]
-transform = Transform3D(-0.986, 0, 1.225e-16, 0, 1.1, 0, -1.207e-16, 0, -1, 11.03, 0, -20)
+[node name="Fence74" parent="Decor/Fence" instance=ExtResource("32_prop_woodenfen")]
+transform = Transform3D(6.1232e-17, 0, 1, 0, 1.1, 0, -1, 0, 6.1232e-17, 20.0, 0, 11.0)
 
-[node name="Fence30_1" parent="Decor" instance=ExtResource("m_vil_Prop_WoodenFence_Single")]
-transform = Transform3D(-0.986, 0, 1.225e-16, 0, 1.1, 0, -1.207e-16, 0, -1, 9.007, 0, 20)
+[node name="Fence75" parent="Decor/Fence" instance=ExtResource("32_prop_woodenfen")]
+transform = Transform3D(6.1232e-17, 0, 1, 0, 1.1, 0, -1, 0, 6.1232e-17, 20.0, 0, 13.0)
 
-[node name="Fence30_2" parent="Decor" instance=ExtResource("m_vil_Prop_WoodenFence_Single")]
-transform = Transform3D(-0.986, 0, 1.225e-16, 0, 1.1, 0, -1.207e-16, 0, -1, 11.03, 0, 20)
+[node name="Fence76" parent="Decor/Fence" instance=ExtResource("32_prop_woodenfen")]
+transform = Transform3D(6.1232e-17, 0, 1, 0, 1.1, 0, -1, 0, 6.1232e-17, 20.0, 0, 15.0)
 
-[node name="Fence31_1" parent="Decor" instance=ExtResource("m_vil_Prop_WoodenFence_Single")]
-transform = Transform3D(6.037e-17, 0, 1, 0, 1.1, 0, -0.986, 0, 6.123e-17, -20, 0, 9.007)
+[node name="Fence77" parent="Decor/Fence" instance=ExtResource("32_prop_woodenfen")]
+transform = Transform3D(6.1232e-17, 0, 1, 0, 1.1, 0, -1, 0, 6.1232e-17, 20.0, 0, 17.0)
 
-[node name="Fence31_2" parent="Decor" instance=ExtResource("m_vil_Prop_WoodenFence_Single")]
-transform = Transform3D(6.037e-17, 0, 1, 0, 1.1, 0, -0.986, 0, 6.123e-17, -20, 0, 11.03)
+[node name="Fence78" parent="Decor/Fence" instance=ExtResource("32_prop_woodenfen")]
+transform = Transform3D(6.1232e-17, 0, 1, 0, 1.1, 0, -1, 0, 6.1232e-17, 20.0, 0, 19.0)
 
-[node name="Fence32_1" parent="Decor" instance=ExtResource("m_vil_Prop_WoodenFence_Single")]
-transform = Transform3D(6.037e-17, 0, 1, 0, 1.1, 0, -0.986, 0, 6.123e-17, 20, 0, 9.007)
+[node name="GatePost1" parent="Decor/Fence" instance=ExtResource("33_corner_exterio")]
+transform = Transform3D(1.3, 0, 0, 0, 0.8, 0, 0, 0, 1.3, -2.6, 0, 20.0)
 
-[node name="Fence32_2" parent="Decor" instance=ExtResource("m_vil_Prop_WoodenFence_Single")]
-transform = Transform3D(6.037e-17, 0, 1, 0, 1.1, 0, -0.986, 0, 6.123e-17, 20, 0, 11.03)
+[node name="GatePost2" parent="Decor/Fence" instance=ExtResource("33_corner_exterio")]
+transform = Transform3D(1.3, 0, 0, 0, 0.8, 0, 0, 0, 1.3, 2.6, 0, 20.0)
 
-[node name="Fence33_1" parent="Decor" instance=ExtResource("m_vil_Prop_WoodenFence_Single")]
-transform = Transform3D(-0.986, 0, 1.225e-16, 0, 1.1, 0, -1.207e-16, 0, -1, 13.01, 0, -20)
+[node name="Lights" type="Node3D" parent="."]
 
-[node name="Fence33_2" parent="Decor" instance=ExtResource("m_vil_Prop_WoodenFence_Single")]
-transform = Transform3D(-0.986, 0, 1.225e-16, 0, 1.1, 0, -1.207e-16, 0, -1, 15.03, 0, -20)
+[node name="Lantern1" type="Node3D" parent="Decor"]
+transform = Transform3D(6.1232e-17, 0, 1, 0, 1, 0, -1, 0, 6.1232e-17, -2.8, 0, 8)
 
-[node name="Fence34_1" parent="Decor" instance=ExtResource("m_vil_Prop_WoodenFence_Single")]
-transform = Transform3D(-0.986, 0, 1.225e-16, 0, 1.1, 0, -1.207e-16, 0, -1, 13.01, 0, 20)
+[node name="Post" parent="Decor/Lantern1" instance=ExtResource("33_corner_exterio")]
+transform = Transform3D(0.8, 0, 0, 0, 0.8333, 0, 0, 0, 0.8, 0, 0, 0)
 
-[node name="Fence34_2" parent="Decor" instance=ExtResource("m_vil_Prop_WoodenFence_Single")]
-transform = Transform3D(-0.986, 0, 1.225e-16, 0, 1.1, 0, -1.207e-16, 0, -1, 15.03, 0, 20)
-
-[node name="Fence35_1" parent="Decor" instance=ExtResource("m_vil_Prop_WoodenFence_Single")]
-transform = Transform3D(6.037e-17, 0, 1, 0, 1.1, 0, -0.986, 0, 6.123e-17, -20, 0, 13.01)
-
-[node name="Fence35_2" parent="Decor" instance=ExtResource("m_vil_Prop_WoodenFence_Single")]
-transform = Transform3D(6.037e-17, 0, 1, 0, 1.1, 0, -0.986, 0, 6.123e-17, -20, 0, 15.03)
-
-[node name="Fence36_1" parent="Decor" instance=ExtResource("m_vil_Prop_WoodenFence_Single")]
-transform = Transform3D(6.037e-17, 0, 1, 0, 1.1, 0, -0.986, 0, 6.123e-17, 20, 0, 13.01)
-
-[node name="Fence36_2" parent="Decor" instance=ExtResource("m_vil_Prop_WoodenFence_Single")]
-transform = Transform3D(6.037e-17, 0, 1, 0, 1.1, 0, -0.986, 0, 6.123e-17, 20, 0, 15.03)
-
-[node name="Fence37_1" parent="Decor" instance=ExtResource("m_vil_Prop_WoodenFence_Single")]
-transform = Transform3D(-0.986, 0, 1.225e-16, 0, 1.1, 0, -1.207e-16, 0, -1, 17.01, 0, -20)
-
-[node name="Fence37_2" parent="Decor" instance=ExtResource("m_vil_Prop_WoodenFence_Single")]
-transform = Transform3D(-0.986, 0, 1.225e-16, 0, 1.1, 0, -1.207e-16, 0, -1, 19.03, 0, -20)
-
-[node name="Fence38_1" parent="Decor" instance=ExtResource("m_vil_Prop_WoodenFence_Single")]
-transform = Transform3D(-0.986, 0, 1.225e-16, 0, 1.1, 0, -1.207e-16, 0, -1, 17.01, 0, 20)
-
-[node name="Fence38_2" parent="Decor" instance=ExtResource("m_vil_Prop_WoodenFence_Single")]
-transform = Transform3D(-0.986, 0, 1.225e-16, 0, 1.1, 0, -1.207e-16, 0, -1, 19.03, 0, 20)
-
-[node name="Fence39_1" parent="Decor" instance=ExtResource("m_vil_Prop_WoodenFence_Single")]
-transform = Transform3D(6.037e-17, 0, 1, 0, 1.1, 0, -0.986, 0, 6.123e-17, -20, 0, 17.01)
-
-[node name="Fence39_2" parent="Decor" instance=ExtResource("m_vil_Prop_WoodenFence_Single")]
-transform = Transform3D(6.037e-17, 0, 1, 0, 1.1, 0, -0.986, 0, 6.123e-17, -20, 0, 19.03)
-
-[node name="Fence40_1" parent="Decor" instance=ExtResource("m_vil_Prop_WoodenFence_Single")]
-transform = Transform3D(6.037e-17, 0, 1, 0, 1.1, 0, -0.986, 0, 6.123e-17, 20, 0, 17.01)
-
-[node name="Fence40_2" parent="Decor" instance=ExtResource("m_vil_Prop_WoodenFence_Single")]
-transform = Transform3D(6.037e-17, 0, 1, 0, 1.1, 0, -0.986, 0, 6.123e-17, 20, 0, 19.03)
-
-[node name="Tree_1" parent="Decor" instance=ExtResource("m_nat_Pine_3")]
-transform = Transform3D(-0.4071, 0, 0.4834, 0, 0.6319, 0, -0.4834, 0, -0.4071, -31.82, 0, -27.57)
-
-[node name="Tree_2" parent="Decor" instance=ExtResource("m_nat_CommonTree_4")]
-transform = Transform3D(0.1349, 0, -0.4758, 0, 0.4946, 0, 0.4758, 0, 0.1349, -28.46, 0, -28.38)
-
-[node name="Tree_3" parent="Decor" instance=ExtResource("m_nat_CommonTree_4")]
-transform = Transform3D(0.4306, 0, 0.2432, 0, 0.4946, 0, -0.2432, 0, 0.4306, -28.94, 0, -25.37)
-
-[node name="Tree2" parent="Decor" instance=ExtResource("m_nat_CommonTree_5")]
-transform = Transform3D(-1.028, 0, -0.1624, 0, 1.041, 0, 0.1624, 0, -1.028, -25.18, 0, -27.9)
-
-[node name="Tree3_1" parent="Decor" instance=ExtResource("m_nat_Pine_1")]
-transform = Transform3D(-0.08401, 0, -0.6353, 0, 0.6408, 0, 0.6353, 0, -0.08401, -19.62, 0, -27.77)
-
-[node name="Tree3_2" parent="Decor" instance=ExtResource("m_nat_CommonTree_5")]
-transform = Transform3D(-0.5192, 0, -0.4221, 0, 0.6691, 0, 0.4221, 0, -0.5192, -19.71, 0, -31.64)
-
-[node name="Tree3_3" parent="Decor" instance=ExtResource("m_nat_CommonTree_2")]
-transform = Transform3D(0.4653, 0, 0.4261, 0, 0.6309, 0, -0.4261, 0, 0.4653, -16.52, 0, -30.4)
-
-[node name="Tree4_1" parent="Decor" instance=ExtResource("m_nat_Pine_2")]
-transform = Transform3D(0.3266, 0, 0.5514, 0, 0.6408, 0, -0.5514, 0, 0.3266, -13.01, 0, -20.53)
-
-[node name="Tree4_2" parent="Decor" instance=ExtResource("m_nat_Pine_1")]
-transform = Transform3D(0.3704, 0, 0.5229, 0, 0.6408, 0, -0.5229, 0, 0.3704, -14.91, 0, -24.28)
-
-[node name="Tree4_3" parent="Decor" instance=ExtResource("m_nat_Pine_3")]
-transform = Transform3D(-0.6184, 0, 0.3325, 0, 0.7021, 0, -0.3325, 0, -0.6184, -11.21, 0, -24.55)
-
-[node name="Tree5_1" parent="Decor" instance=ExtResource("m_nat_CommonTree_2")]
-transform = Transform3D(0.05472, 0, -0.6124, 0, 0.6149, 0, 0.6124, 0, 0.05472, -10.21, 0, -24.26)
-
-[node name="Tree5_2" parent="Decor" instance=ExtResource("m_nat_Pine_1")]
-transform = Transform3D(-0.3432, 0, 0.5412, 0, 0.6408, 0, -0.5412, 0, -0.3432, -7.369, 0, -26.24)
-
-[node name="Tree5_3" parent="Decor" instance=ExtResource("m_nat_Pine_1")]
-transform = Transform3D(-0.5717, 0, -0.3836, 0, 0.6885, 0, 0.3836, 0, -0.5717, -6.597, 0, -23.18)
-
-[node name="Tree6" parent="Decor" instance=ExtResource("m_nat_Pine_3")]
-transform = Transform3D(0.8046, 0, 0.3708, 0, 0.8859, 0, -0.3708, 0, 0.8046, -2.83, 0, -29.12)
-
-[node name="Tree7_1" parent="Decor" instance=ExtResource("m_nat_CommonTree_2")]
-transform = Transform3D(0.5775, 0, -0.2112, 0, 0.6149, 0, 0.2112, 0, 0.5775, 2.224, 0, -26.28)
-
-[node name="Tree7_2" parent="Decor" instance=ExtResource("m_nat_Pine_3")]
-transform = Transform3D(-0.2077, 0, -0.5968, 0, 0.6319, 0, 0.5968, 0, -0.2077, 4.08, 0, -23.06)
-
-[node name="Tree7_3" parent="Decor" instance=ExtResource("m_nat_CommonTree_2")]
-transform = Transform3D(0.5708, 0, 0.2286, 0, 0.6149, 0, -0.2286, 0, 0.5708, 0.8227, 0, -22.64)
-
-[node name="Tree8_1" parent="Decor" instance=ExtResource("m_nat_CommonTree_5")]
-transform = Transform3D(-0.4041, 0, -0.5333, 0, 0.6691, 0, 0.5333, 0, -0.4041, 6.931, 0, -27.29)
-
-[node name="Tree8_2" parent="Decor" instance=ExtResource("m_nat_Pine_3")]
-transform = Transform3D(-0.1357, 0, 0.6172, 0, 0.6319, 0, -0.6172, 0, -0.1357, 10.1, 0, -25.72)
-
-[node name="Tree8_3" parent="Decor" instance=ExtResource("m_nat_Pine_2")]
-transform = Transform3D(0.4849, 0, -0.419, 0, 0.6408, 0, 0.419, 0, 0.4849, 7.746, 0, -23.67)
-
-[node name="Tree9" parent="Decor" instance=ExtResource("m_nat_Pine_1")]
-transform = Transform3D(1.044, 0, 0.1489, 0, 1.054, 0, -0.1489, 0, 1.044, 13.03, 0, -24.62)
-
-[node name="Tree10" parent="Decor" instance=ExtResource("m_nat_Pine_3")]
-transform = Transform3D(-0.5454, 0, 0.7006, 0, 0.8879, 0, -0.7006, 0, -0.5454, 18.55, 0, -24.97)
-
-[node name="Tree11" parent="Decor" instance=ExtResource("m_nat_CommonTree_2")]
-transform = Transform3D(-1.009, 0, 0.0416, 0, 1.01, 0, -0.0416, 0, -1.009, 25.18, 0, -29.66)
-
-[node name="Tree12_1" parent="Decor" instance=ExtResource("m_nat_CommonTree_4")]
-transform = Transform3D(0.05533, 0, -0.4915, 0, 0.4946, 0, 0.4915, 0, 0.05533, 32.48, 0, -25.42)
-
-[node name="Tree12_2" parent="Decor" instance=ExtResource("m_nat_CommonTree_3")]
-transform = Transform3D(-0.03729, 0, -0.4932, 0, 0.4946, 0, 0.4932, 0, -0.03729, 29.87, 0, -28.3)
-
-[node name="Tree12_3" parent="Decor" instance=ExtResource("m_nat_Pine_2")]
-transform = Transform3D(-0.5102, 0, 0.418, 0, 0.6596, 0, -0.418, 0, -0.5102, 33.11, 0, -29.44)
-
-[node name="Tree13" parent="Decor" instance=ExtResource("m_nat_Pine_3")]
-transform = Transform3D(0.7305, 0, 0.4048, 0, 0.8351, 0, -0.4048, 0, 0.7305, -30.06, 0, 25.8)
-
-[node name="Tree14" parent="Decor" instance=ExtResource("m_nat_Pine_3")]
-transform = Transform3D(-0.765, 0, 0.5453, 0, 0.9394, 0, -0.5453, 0, -0.765, -25.51, 0, 25.36)
-
-[node name="Tree15" parent="Decor" instance=ExtResource("m_nat_CommonTree_5")]
-transform = Transform3D(0.6463, 0, -0.5848, 0, 0.8716, 0, 0.5848, 0, 0.6463, -18.88, 0, 29.63)
-
-[node name="Tree16_1" parent="Decor" instance=ExtResource("m_nat_Pine_2")]
-transform = Transform3D(0.4194, 0, -0.4846, 0, 0.6408, 0, 0.4846, 0, 0.4194, -11.47, 0, 27.56)
-
-[node name="Tree16_2" parent="Decor" instance=ExtResource("m_nat_CommonTree_5")]
-transform = Transform3D(-0.1825, 0, -0.6438, 0, 0.6691, 0, 0.6438, 0, -0.1825, -14.88, 0, 29.16)
-
-[node name="Tree16_3" parent="Decor" instance=ExtResource("m_nat_Pine_1")]
-transform = Transform3D(-0.3087, 0, -0.6823, 0, 0.7489, 0, 0.6823, 0, -0.3087, -15.15, 0, 25.73)
-
-[node name="Tree17_1" parent="Decor" instance=ExtResource("m_nat_Pine_2")]
-transform = Transform3D(0.6179, 0, -0.1701, 0, 0.6408, 0, 0.1701, 0, 0.6179, -7.499, 0, 28.1)
-
-[node name="Tree17_2" parent="Decor" instance=ExtResource("m_nat_CommonTree_3")]
-transform = Transform3D(0.4289, 0, 0.2462, 0, 0.4946, 0, -0.2462, 0, 0.4289, -11.08, 0, 26.92)
-
-[node name="Tree17_3" parent="Decor" instance=ExtResource("m_nat_CommonTree_3")]
-transform = Transform3D(0.05631, 0, 0.4913, 0, 0.4946, 0, -0.4913, 0, 0.05631, -8.905, 0, 24.4)
-
-[node name="Tree18_1" parent="Decor" instance=ExtResource("m_nat_CommonTree_4")]
-transform = Transform3D(0.4931, 0, 0.03743, 0, 0.4946, 0, -0.03743, 0, 0.4931, -1.816, 0, 30.15)
-
-[node name="Tree18_2" parent="Decor" instance=ExtResource("m_nat_CommonTree_3")]
-transform = Transform3D(-0.03915, 0, 0.493, 0, 0.4946, 0, -0.493, 0, -0.03915, -5.643, 0, 28.8)
-
-[node name="Tree18_3" parent="Decor" instance=ExtResource("m_nat_CommonTree_1")]
-transform = Transform3D(0.4992, 0, 0.6487, 0, 0.8186, 0, -0.6487, 0, 0.4992, -3.255, 0, 25.97)
-
-[node name="Tree19_1" parent="Decor" instance=ExtResource("m_nat_Pine_5")]
-transform = Transform3D(-0.3641, 0, 0.3924, 0, 0.5353, 0, -0.3924, 0, -0.3641, 0.6539, 0, 24.99)
-
-[node name="Tree19_2" parent="Decor" instance=ExtResource("m_nat_Pine_1")]
-transform = Transform3D(0.6127, 0, -0.188, 0, 0.6408, 0, 0.188, 0, 0.6127, 3.562, 0, 22.46)
-
-[node name="Tree19_3" parent="Decor" instance=ExtResource("m_nat_Pine_5")]
-transform = Transform3D(0.6092, 0, -0.199, 0, 0.6409, 0, 0.199, 0, 0.6092, 4.788, 0, 25.76)
-
-[node name="Tree20" parent="Decor" instance=ExtResource("m_nat_CommonTree_1")]
-transform = Transform3D(-0.8322, 0, 0.2338, 0, 0.8644, 0, -0.2338, 0, -0.8322, 7.087, 0, 26.72)
-
-[node name="Tree21" parent="Decor" instance=ExtResource("m_nat_Pine_5")]
-transform = Transform3D(-0.6748, 0, 0.5429, 0, 0.8661, 0, -0.5429, 0, -0.6748, 13.6, 0, 24.17)
-
-[node name="Tree22" parent="Decor" instance=ExtResource("m_nat_Pine_2")]
-transform = Transform3D(-0.8253, 0, 0.6491, 0, 1.05, 0, -0.6491, 0, -0.8253, 18.99, 0, 24.56)
-
-[node name="Tree23_1" parent="Decor" instance=ExtResource("m_nat_Pine_3")]
-transform = Transform3D(-0.421, 0, -0.4713, 0, 0.6319, 0, 0.4713, 0, -0.421, 25.71, 0, 26.69)
-
-[node name="Tree23_2" parent="Decor" instance=ExtResource("m_nat_CommonTree_1")]
-transform = Transform3D(0.2373, 0, 0.6051, 0, 0.65, 0, -0.6051, 0, 0.2373, 24.19, 0, 23.69)
-
-[node name="Tree23_3" parent="Decor" instance=ExtResource("m_nat_CommonTree_4")]
-transform = Transform3D(-0.4603, 0, 0.1809, 0, 0.4946, 0, -0.1809, 0, -0.4603, 27.15, 0, 23.47)
-
-[node name="Tree24_1" parent="Decor" instance=ExtResource("m_nat_CommonTree_2")]
-transform = Transform3D(-0.3291, 0, 0.5194, 0, 0.6149, 0, -0.5194, 0, -0.3291, 26.91, 0, 26.21)
-
-[node name="Tree24_2" parent="Decor" instance=ExtResource("m_nat_CommonTree_1")]
-transform = Transform3D(0.5202, 0, 0.3897, 0, 0.65, 0, -0.3897, 0, 0.5202, 29, 0, 22.87)
-
-[node name="Tree24_3" parent="Decor" instance=ExtResource("m_nat_CommonTree_3")]
-transform = Transform3D(-0.5892, 0, -0.1369, 0, 0.6049, 0, 0.1369, 0, -0.5892, 31.18, 0, 25.73)
-
-[node name="Tree25_1" parent="Decor" instance=ExtResource("m_nat_Pine_1")]
-transform = Transform3D(-0.4849, 0, -0.419, 0, 0.6408, 0, 0.419, 0, -0.4849, -29.95, 0, -32.38)
-
-[node name="Tree25_2" parent="Decor" instance=ExtResource("m_nat_CommonTree_2")]
-transform = Transform3D(0.4317, 0, -0.4378, 0, 0.6149, 0, 0.4378, 0, 0.4317, -26.76, 0, -30.68)
-
-[node name="Tree25_3" parent="Decor" instance=ExtResource("m_nat_Pine_2")]
-transform = Transform3D(0.4286, 0, 0.5782, 0, 0.7197, 0, -0.5782, 0, 0.4286, -29.24, 0, -28.5)
-
-[node name="Tree26" parent="Decor" instance=ExtResource("m_nat_CommonTree_5")]
-transform = Transform3D(0.9406, 0, -0.2734, 0, 0.9795, 0, 0.2734, 0, 0.9406, -24.59, 0, -25.34)
-
-[node name="Tree27" parent="Decor" instance=ExtResource("m_nat_Pine_1")]
-transform = Transform3D(-0.9678, 0, 0.1601, 0, 0.9809, 0, -0.1601, 0, -0.9678, -27.29, 0, -17.53)
-
-[node name="Tree28" parent="Decor" instance=ExtResource("m_nat_CommonTree_2")]
-transform = Transform3D(0.5697, 0, -0.7998, 0, 0.9819, 0, 0.7998, 0, 0.5697, -23.57, 0, -12.6)
-
-[node name="Tree29" parent="Decor" instance=ExtResource("m_nat_Pine_3")]
-transform = Transform3D(-0.9679, 0, 0.1213, 0, 0.9754, 0, -0.1213, 0, -0.9679, -26.35, 0, -7.25)
-
-[node name="Tree30_1" parent="Decor" instance=ExtResource("m_nat_CommonTree_5")]
-transform = Transform3D(0.5741, 0, 0.3436, 0, 0.6691, 0, -0.3436, 0, 0.5741, -27.92, 0, -1.591)
-
-[node name="Tree30_2" parent="Decor" instance=ExtResource("m_nat_CommonTree_2")]
-transform = Transform3D(-0.002728, 0, -0.6149, 0, 0.6149, 0, 0.6149, 0, -0.002728, -31.91, 0, -3.401)
-
-[node name="Tree30_3" parent="Decor" instance=ExtResource("m_nat_CommonTree_5")]
-transform = Transform3D(-0.7697, 0, 0.1052, 0, 0.7768, 0, -0.1052, 0, -0.7697, -29.08, 0, -6.036)
-
-[node name="Tree31" parent="Decor" instance=ExtResource("m_nat_CommonTree_3")]
-transform = Transform3D(-0.748, 0, -0.07579, 0, 0.7518, 0, 0.07579, 0, -0.748, -24.11, 0, 1.755)
-
-[node name="Tree32_1" parent="Decor" instance=ExtResource("m_nat_CommonTree_4")]
-transform = Transform3D(0.4708, 0, -0.1513, 0, 0.4946, 0, 0.1513, 0, 0.4708, -25.32, 0, 7.646)
-
-[node name="Tree32_2" parent="Decor" instance=ExtResource("m_nat_Pine_5")]
-transform = Transform3D(-0.3453, 0, 0.4091, 0, 0.5353, 0, -0.4091, 0, -0.3453, -28, 0, 10.37)
-
-[node name="Tree32_3" parent="Decor" instance=ExtResource("m_nat_Pine_5")]
-transform = Transform3D(0.4643, 0, -0.2798, 0, 0.5421, 0, 0.2798, 0, 0.4643, -29.31, 0, 7.264)
-
-[node name="Tree33" parent="Decor" instance=ExtResource("m_nat_Pine_5")]
-transform = Transform3D(-0.2491, 0, 0.8017, 0, 0.8395, 0, -0.8017, 0, -0.2491, -23.9, 0, 14.16)
-
-[node name="Tree34" parent="Decor" instance=ExtResource("m_nat_CommonTree_2")]
-transform = Transform3D(-0.3419, 0, -0.9657, 0, 1.024, 0, 0.9657, 0, -0.3419, -28.25, 0, 18.31)
-
-[node name="Tree35_1" parent="Decor" instance=ExtResource("m_nat_CommonTree_5")]
-transform = Transform3D(-0.6648, 0, -0.07607, 0, 0.6691, 0, 0.07607, 0, -0.6648, -26.41, 0, 27.43)
-
-[node name="Tree35_2" parent="Decor" instance=ExtResource("m_nat_CommonTree_3")]
-transform = Transform3D(-0.3044, 0, 0.3898, 0, 0.4946, 0, -0.3898, 0, -0.3044, -24.8, 0, 23.99)
-
-[node name="Tree35_3" parent="Decor" instance=ExtResource("m_nat_CommonTree_4")]
-transform = Transform3D(-0.5715, 0, -0.1177, 0, 0.5835, 0, 0.1177, 0, -0.5715, -22.38, 0, 26.48)
-
-[node name="Tree36_1" parent="Decor" instance=ExtResource("m_nat_Pine_5")]
-transform = Transform3D(-0.2564, 0, 0.4699, 0, 0.5353, 0, -0.4699, 0, -0.2564, -24.98, 0, 29.18)
-
-[node name="Tree36_2" parent="Decor" instance=ExtResource("m_nat_CommonTree_4")]
-transform = Transform3D(-0.3752, 0, -0.3222, 0, 0.4946, 0, 0.3222, 0, -0.3752, -23.86, 0, 32.4)
-
-[node name="Tree36_3" parent="Decor" instance=ExtResource("m_nat_CommonTree_4")]
-transform = Transform3D(0.1695, 0, -0.4646, 0, 0.4946, 0, 0.4646, 0, 0.1695, -26.87, 0, 32.22)
-
-[node name="Tree37_1" parent="Decor" instance=ExtResource("m_nat_Pine_2")]
-transform = Transform3D(-0.04226, 0, -0.6395, 0, 0.6408, 0, 0.6395, 0, -0.04226, 29.81, 0, -32.09)
-
-[node name="Tree37_2" parent="Decor" instance=ExtResource("m_nat_CommonTree_4")]
-transform = Transform3D(0.1534, 0, 0.4702, 0, 0.4946, 0, -0.4702, 0, 0.1534, 31.12, 0, -27.71)
-
-[node name="Tree37_3" parent="Decor" instance=ExtResource("m_nat_Pine_3")]
-transform = Transform3D(-0.4708, 0, 0.604, 0, 0.7659, 0, -0.604, 0, -0.4708, 27.1, 0, -28.13)
-
-[node name="Tree38" parent="Decor" instance=ExtResource("m_nat_CommonTree_1")]
-transform = Transform3D(1.034, 0, -0.07089, 0, 1.036, 0, 0.07089, 0, 1.034, 24.09, 0, -25.6)
-
-[node name="Tree39" parent="Decor" instance=ExtResource("m_nat_CommonTree_5")]
-transform = Transform3D(-0.9613, 0, 0.1709, 0, 0.9763, 0, -0.1709, 0, -0.9613, 28.43, 0, -18.67)
-
-[node name="Tree40_1" parent="Decor" instance=ExtResource("m_nat_CommonTree_4")]
-transform = Transform3D(-0.1758, 0, -0.4623, 0, 0.4946, 0, 0.4623, 0, -0.1758, 29.1, 0, -13.9)
-
-[node name="Tree40_2" parent="Decor" instance=ExtResource("m_nat_Pine_1")]
-transform = Transform3D(-0.6056, 0, 0.2095, 0, 0.6408, 0, -0.2095, 0, -0.6056, 26.84, 0, -10.79)
-
-[node name="Tree40_3" parent="Decor" instance=ExtResource("m_nat_Pine_1")]
-transform = Transform3D(0.733, 0, -0.2154, 0, 0.764, 0, 0.2154, 0, 0.733, 24.91, 0, -13.73)
-
-[node name="Tree41" parent="Decor" instance=ExtResource("m_nat_Pine_1")]
-transform = Transform3D(0.7501, 0, 0.4154, 0, 0.8574, 0, -0.4154, 0, 0.7501, 28.42, 0, -8.068)
-
-[node name="Tree42" parent="Decor" instance=ExtResource("m_nat_CommonTree_2")]
-transform = Transform3D(0.149, 0, 1.012, 0, 1.023, 0, -1.012, 0, 0.149, 26.57, 0, -1.665)
-
-[node name="Tree43" parent="Decor" instance=ExtResource("m_nat_CommonTree_4")]
-transform = Transform3D(-0.3745, 0, 0.6105, 0, 0.7162, 0, -0.6105, 0, -0.3745, 27.29, 0, 2.83)
-
-[node name="Tree44" parent="Decor" instance=ExtResource("m_nat_Pine_3")]
-transform = Transform3D(-0.7515, 0, -0.7398, 0, 1.055, 0, 0.7398, 0, -0.7515, 26.35, 0, 8.6)
-
-[node name="Tree45" parent="Decor" instance=ExtResource("m_nat_CommonTree_1")]
-transform = Transform3D(-0.8277, 0, 0.1086, 0, 0.8348, 0, -0.1086, 0, -0.8277, 24.82, 0, 15.33)
-
-[node name="Tree46" parent="Decor" instance=ExtResource("m_nat_Pine_1")]
-transform = Transform3D(0.2762, 0, -0.8641, 0, 0.9071, 0, 0.8641, 0, 0.2762, 26.1, 0, 18.39)
-
-[node name="Tree47" parent="Decor" instance=ExtResource("m_nat_CommonTree_2")]
-transform = Transform3D(0.3958, 0, -0.6768, 0, 0.7841, 0, 0.6768, 0, 0.3958, 25.14, 0, 24.14)
-
-[node name="Tree48" parent="Decor" instance=ExtResource("m_nat_CommonTree_2")]
-transform = Transform3D(0.6649, 0, -0.426, 0, 0.7897, 0, 0.426, 0, 0.6649, 27.62, 0, 31.15)
-
-[node name="Tree49" parent="Decor" instance=ExtResource("m_nat_CommonTree_4")]
-transform = Transform3D(-0.6789, 0, 0.09536, 0, 0.6856, 0, -0.09536, 0, -0.6789, -17, 0, -16)
-
-[node name="Tree50" parent="Decor" instance=ExtResource("m_nat_CommonTree_3")]
-transform = Transform3D(-0.6182, 0, 0.2735, 0, 0.676, 0, -0.2735, 0, -0.6182, 16.98, 0, -16.5)
-
-[node name="Tree51" parent="Decor" instance=ExtResource("m_nat_Pine_1")]
-transform = Transform3D(0.7598, 0, 0.4604, 0, 0.8884, 0, -0.4604, 0, 0.7598, -17, 0, 16.5)
-
-[node name="Tree52" parent="Decor" instance=ExtResource("m_nat_Pine_2")]
-transform = Transform3D(-0.8523, 0, 0.2022, 0, 0.8759, 0, -0.2022, 0, -0.8523, 17.5, 0, 15.98)
-
-[node name="Tree53" parent="Decor" instance=ExtResource("m_nat_CommonTree_2")]
-transform = Transform3D(-0.1363, 0, -0.8414, 0, 0.8524, 0, 0.8414, 0, -0.1363, -6, 0, 17.5)
-
-[node name="Tree54" parent="Decor" instance=ExtResource("m_nat_CommonTree_3")]
-transform = Transform3D(0.6849, 0, -0.03183, 0, 0.6856, 0, 0.03183, 0, 0.6849, 7, 0, -17.5)
-
-[node name="FarHouse" parent="Decor" instance=ExtResource("m_hou_house_large")]
-transform = Transform3D(-0.6465, 0, -0.7629, 0, 1, 0, 0.7629, 0, -0.6465, 25.97, 0, 22.01)
-
-[node name="FarHouse2" parent="Decor" instance=ExtResource("m_hou_house_small")]
-transform = Transform3D(0.7075, 0, 0.7067, 0, 1, 0, -0.7067, 0, 0.7075, -23.98, 0, -24.01)
-
-[node name="barrel" parent="Decor" instance=ExtResource("q_Barrel")]
-transform = Transform3D(1.1, 0, 0, 0, 1.1, 0, 0, 0, 1.1, -7.6, 0, -5)
-
-[node name="barrel2" parent="Decor" instance=ExtResource("q_Barrel")]
-transform = Transform3D(0.8427, 0, 0.7071, 0, 1.1, 0, -0.7071, 0, 0.8427, -7.4, 0, -6.3)
-
-[node name="weaponrack" parent="Decor" instance=ExtResource("q_WeaponStand")]
-transform = Transform3D(0, 0, 1.1, 0, 1.1, 0, -1.1, 0, 0, -7.375, 0, -11.5)
-
-[node name="crate_A_big" parent="Decor" instance=ExtResource("q_Crate_Wooden")]
-transform = Transform3D(0.9659, 0, 0.2588, 0, 1, 0, -0.2588, 0, 0.9659, -7.5694, 0, -12.9823)
-
-[node name="crate_B_small" parent="Decor" instance=ExtResource("q_Crate_Metal")]
-transform = Transform3D(0.8, 0, 0, 0, 0.8, 0, 0, 0, 0.8, 7.8, 0, -5)
-
-[node name="barrel3" parent="Decor" instance=ExtResource("q_Barrel")]
-transform = Transform3D(1.1, 0, 0, 0, 1.1, 0, 0, 0, 1.1, 7.5, 0, -6.2)
-
-[node name="sack" parent="Decor" instance=ExtResource("q_Bag")]
-transform = Transform3D(0.866, 0, 0.5, 0, 1, 0, -0.5, 0, 0.866, 7.904, 0, -6.933)
-
-[node name="tent" parent="Decor" instance=ExtResource("q_Stall_Empty")]
-transform = Transform3D(0, 0, -1.1, 0, 1.1, 0, 1.1, 0, 0, 15.5, 0, 4.5)
-
-[node name="crate_open" parent="Decor" instance=ExtResource("q_FarmCrate_Apple")]
-transform = Transform3D(1.2216, 0, 0.4446, 0, 1.3, 0, -0.4446, 0, 1.2216, 8.6946, 0, 3.3112)
-
-[node name="sack2" parent="Decor" instance=ExtResource("q_Bag")]
-transform = Transform3D(0.342, 0, 0.9397, 0, 1, 0, -0.9397, 0, 0.342, 9.2461, 0, -2.5513)
-
-[node name="wheelbarrow" parent="Decor" instance=ExtResource("m_pro_Stall_Cart_Empty")]
-transform = Transform3D(0.866, 0, 0.5, 0, 1, 0, -0.5, 0, 0.866, -7.013, 0, 13.48)
-
-[node name="crate_A_big2" parent="Decor" instance=ExtResource("q_Crate_Wooden")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7.575, 0, 5.525)
-
-[node name="barrel4" parent="Decor" instance=ExtResource("q_Barrel")]
-transform = Transform3D(1.1, 0, 0, 0, 1.1, 0, 0, 0, 1.1, 7.5, 0, 13)
-
-[node name="bucket_water" parent="Decor" instance=ExtResource("q_Bucket_Wooden_1")]
-transform = Transform3D(1.2, 0, 0, 0, 1.2, 0, 0, 0, 1.2, 7.8, 0, 3.8)
-
-[node name="rock_single_A" parent="Decor" instance=ExtResource("m_nat_Rock_Medium_1")]
-transform = Transform3D(0.2711, 0, 0.3785, 0, 0.4656, 0, -0.3785, 0, 0.2711, -16, 0, 2.025)
-
-[node name="rock_single_B" parent="Decor" instance=ExtResource("m_nat_Rock_Medium_2")]
-transform = Transform3D(0.1548, 0, -0.4209, 0, 0.4484, 0, 0.4209, 0, 0.1548, 3.995, 0, 16.02)
-
-[node name="rock_single_C" parent="Decor" instance=ExtResource("m_nat_Rock_Medium_1")]
-transform = Transform3D(-0.4114, 0, -0.3459, 0, 0.5375, 0, 0.3459, 0, -0.4114, -4.018, 0, -17.53)
-
-[node name="bench" parent="Decor" instance=ExtResource("q_Bench")]
-transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, 3.205, 0, 2)
-
-[node name="bench2" parent="Decor" instance=ExtResource("q_Bench")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6, 0, 5.205)
-
-[node name="Lantern" type="Node3D" parent="Decor"]
-transform = Transform3D(6.123e-17, 0, 1, 0, 1, 0, -1, 0, 6.123e-17, -7.5, 0, -4)
-
-[node name="Post" parent="Decor/Lantern" instance=ExtResource("m_vil_Corner_Exterior_Wood")]
-transform = Transform3D(0.8, 0, 0, 0, 0.8333, 0, -0, 0, 0.8, 0, 0, 0)
-
-[node name="Lantern" parent="Decor/Lantern" instance=ExtResource("q_Lantern_Wall")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.0, 0.08)
-
-[node name="Lantern2" type="Node3D" parent="Decor"]
-transform = Transform3D(6.123e-17, 0, -1, 0, 1, 0, 1, 0, 6.123e-17, 7.5, 0, -4)
-
-[node name="Post" parent="Decor/Lantern2" instance=ExtResource("m_vil_Corner_Exterior_Wood")]
-transform = Transform3D(0.8, 0, 0, 0, 0.8333, 0, -0, 0, 0.8, 0, 0, 0)
-
-[node name="Lantern" parent="Decor/Lantern2" instance=ExtResource("q_Lantern_Wall")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.0, 0.08)
-
-[node name="Lantern3" type="Node3D" parent="Decor"]
-transform = Transform3D(6.123e-17, 0, 1, 0, 1, 0, -1, 0, 6.123e-17, -7.5, 0, 12)
-
-[node name="Post" parent="Decor/Lantern3" instance=ExtResource("m_vil_Corner_Exterior_Wood")]
-transform = Transform3D(0.8, 0, 0, 0, 0.8333, 0, -0, 0, 0.8, 0, 0, 0)
-
-[node name="Lantern" parent="Decor/Lantern3" instance=ExtResource("q_Lantern_Wall")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.0, 0.08)
-
-[node name="Lantern4" type="Node3D" parent="Decor"]
-transform = Transform3D(6.123e-17, 0, -1, 0, 1, 0, 1, 0, 6.123e-17, 7.5, 0, 12)
-
-[node name="Post" parent="Decor/Lantern4" instance=ExtResource("m_vil_Corner_Exterior_Wood")]
-transform = Transform3D(0.8, 0, 0, 0, 0.8333, 0, -0, 0, 0.8, 0, 0, 0)
-
-[node name="Lantern" parent="Decor/Lantern4" instance=ExtResource("q_Lantern_Wall")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.0, 0.08)
-
-[node name="Lights" type="Node3D" parent="." unique_id=1300292559]
+[node name="Lantern" parent="Decor/Lantern1" instance=ExtResource("34_lantern_wall")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.2, 0.1)
 
 [node name="Lamp1" type="OmniLight3D" parent="Lights"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.4, 2.4, -4)
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, -2.2, 2.3, 8)
 light_color = Color(1, 0.75, 0.45, 1)
-light_energy = 1.5
-omni_range = 9.0
+light_energy = 1.3
+omni_range = 8.0
+
+[node name="Lantern2" type="Node3D" parent="Decor"]
+transform = Transform3D(6.1232e-17, 0, -1, 0, 1, 0, 1, 0, 6.1232e-17, 2.8, 0, 8)
+
+[node name="Post" parent="Decor/Lantern2" instance=ExtResource("33_corner_exterio")]
+transform = Transform3D(0.8, 0, 0, 0, 0.8333, 0, 0, 0, 0.8, 0, 0, 0)
+
+[node name="Lantern" parent="Decor/Lantern2" instance=ExtResource("34_lantern_wall")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.2, 0.1)
 
 [node name="Lamp2" type="OmniLight3D" parent="Lights"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6.4, 2.4, -4)
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, 2.2, 2.3, 8)
 light_color = Color(1, 0.75, 0.45, 1)
-light_energy = 1.5
-omni_range = 9.0
+light_energy = 1.3
+omni_range = 8.0
+
+[node name="Lantern3" type="Node3D" parent="Decor"]
+transform = Transform3D(6.1232e-17, 0, 1, 0, 1, 0, -1, 0, 6.1232e-17, -2.8, 0, 15)
+
+[node name="Post" parent="Decor/Lantern3" instance=ExtResource("33_corner_exterio")]
+transform = Transform3D(0.8, 0, 0, 0, 0.8333, 0, 0, 0, 0.8, 0, 0, 0)
+
+[node name="Lantern" parent="Decor/Lantern3" instance=ExtResource("34_lantern_wall")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.2, 0.1)
 
 [node name="Lamp3" type="OmniLight3D" parent="Lights"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.4, 2.4, 12)
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, -2.2, 2.3, 15)
 light_color = Color(1, 0.75, 0.45, 1)
-light_energy = 1.5
-omni_range = 9.0
+light_energy = 1.3
+omni_range = 8.0
+
+[node name="Lantern4" type="Node3D" parent="Decor"]
+transform = Transform3D(6.1232e-17, 0, -1, 0, 1, 0, 1, 0, 6.1232e-17, 2.8, 0, 15)
+
+[node name="Post" parent="Decor/Lantern4" instance=ExtResource("33_corner_exterio")]
+transform = Transform3D(0.8, 0, 0, 0, 0.8333, 0, 0, 0, 0.8, 0, 0, 0)
+
+[node name="Lantern" parent="Decor/Lantern4" instance=ExtResource("34_lantern_wall")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.2, 0.1)
 
 [node name="Lamp4" type="OmniLight3D" parent="Lights"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6.4, 2.4, 12)
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, 2.2, 2.3, 15)
 light_color = Color(1, 0.75, 0.45, 1)
-light_energy = 1.5
-omni_range = 9.0
+light_energy = 1.3
+omni_range = 8.0
 
-[node name="Player" parent="." unique_id=1235802749 instance=ExtResource("2_v45ci")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 12)
+[node name="Lantern5" type="Node3D" parent="Decor"]
+transform = Transform3D(6.1232e-17, 0, 1, 0, 1, 0, -1, 0, 6.1232e-17, -9.6, 0, 4.6)
 
-[node name="IsoCamera" parent="." unique_id=1126317581 node_paths=PackedStringArray("target") instance=ExtResource("3_48ne7")]
+[node name="Post" parent="Decor/Lantern5" instance=ExtResource("33_corner_exterio")]
+transform = Transform3D(0.8, 0, 0, 0, 0.8333, 0, 0, 0, 0.8, 0, 0, 0)
+
+[node name="Lantern" parent="Decor/Lantern5" instance=ExtResource("34_lantern_wall")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.2, 0.1)
+
+[node name="Lamp5" type="OmniLight3D" parent="Lights"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, -9, 2.3, 4.6)
+light_color = Color(1, 0.75, 0.45, 1)
+light_energy = 1.3
+omni_range = 8.0
+
+[node name="Lantern6" type="Node3D" parent="Decor"]
+transform = Transform3D(6.1232e-17, 0, -1, 0, 1, 0, 1, 0, 6.1232e-17, 9.6, 0, 4.6)
+
+[node name="Post" parent="Decor/Lantern6" instance=ExtResource("33_corner_exterio")]
+transform = Transform3D(0.8, 0, 0, 0, 0.8333, 0, 0, 0, 0.8, 0, 0, 0)
+
+[node name="Lantern" parent="Decor/Lantern6" instance=ExtResource("34_lantern_wall")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.2, 0.1)
+
+[node name="Lamp6" type="OmniLight3D" parent="Lights"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, 9, 2.3, 4.6)
+light_color = Color(1, 0.75, 0.45, 1)
+light_energy = 1.3
+omni_range = 8.0
+
+[node name="Player" parent="." instance=ExtResource("2_player")]
+transform = Transform3D(-1, 0, 1.2246e-16, 0, 1, 0, -1.2246e-16, 0, -1, 0, 0, 14)
+
+[node name="IsoCamera" parent="." node_paths=PackedStringArray("target") instance=ExtResource("3_iso_camera")]
 target = NodePath("../Player")
 
-[node name="HUD" parent="." unique_id=1620394857 instance=ExtResource("4_hud00")]
+[node name="HUD" parent="." instance=ExtResource("4_hud")]
