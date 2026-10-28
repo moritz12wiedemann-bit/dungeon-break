@@ -48,6 +48,18 @@ func _run() -> void:
 	_overview(Vector3(0, 0, -8), 16.0)
 	await _frames(5)
 	_shot("stadt_nah")
+	# Inventar mit Schmuck: Amulett, Armschienen und zwei Ringe anziehen.
+	var town_player: Node = tree.get_first_node_in_group("player")
+	var inventory: Inventory = town_player.inventory
+	for slot in [ItemData.Slot.AMULET, ItemData.Slot.BRACERS, ItemData.Slot.RING, ItemData.Slot.RING]:
+		var item := ItemGenerator.create_item(ItemData.Rarity.RARE, 5, slot)
+		inventory.add_item(item)
+		inventory.equip_from_bag(inventory.bag.find(item))
+	var panel: Control = tree.root.find_child("InventoryPanel", true, false)
+	panel.toggle()
+	await _frames(5)
+	_shot("inventar_schmuck")
+	panel.toggle()
 
 	tree.change_scene_to_file("res://scenes/levels/dungeon.tscn")
 	await _frames(90)

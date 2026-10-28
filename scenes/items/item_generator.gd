@@ -27,6 +27,9 @@ const BASE_NAMES := {
 	ItemData.Slot.PANTS: ["Lederhose", "Kettenbeinlinge", "Beinschienen"],
 	ItemData.Slot.BOOTS: ["Stiefel", "Sandalen", "Eisenschuhe"],
 	ItemData.Slot.WEAPON: ["Kurzschwert", "Axt", "Streitkolben", "Langschwert", "Dolch"],
+	ItemData.Slot.AMULET: ["Knochenamulett", "Silberkette", "Talisman", "Bernsteinanhänger", "Wolfszahnkette"],
+	ItemData.Slot.BRACERS: ["Lederarmschienen", "Eisenarmschienen", "Nietenarmbänder", "Schuppenarmschienen"],
+	ItemData.Slot.RING: ["Eisenring", "Silberring", "Siegelring", "Knochenring", "Rubinring", "Onyxring"],
 }
 const MAGIC_SUFFIXES := ["der Stärke", "des Bären", "der Schärfe", "des Fuchses", "der Ausdauer", "des Lichts"]
 const RARE_WORDS_A := ["Blut", "Sturm", "Schatten", "Knochen", "Glut", "Frost", "Dämonen"]
@@ -38,12 +41,16 @@ const SETS := {
 	"Erbe des Grabwächters": "des Grabwächters",
 	"Schwarzer Mond": "des Schwarzen Mondes",
 }
-## Grundwert je Platz: Waffen machen Schaden, alles andere gibt Rüstung.
-## Bereich [Minimum, Maximum] auf Gegenstandsstufe 1 (wächst mit der Stufe).
-const BASE_RANGES := {
-	"damage": [3.0, 7.0],
-	"armor": [5.0, 10.0],
+## Grundwert je Platz: Waffen machen Schaden, Rüstungsteile geben Rüstung, Schmuck ist
+## schwächer, dafür trägt man zwei Ringe. Wert und Bereich [Minimum, Maximum] auf
+## Gegenstandsstufe 1 (wächst mit der Stufe). Nicht aufgeführte Plätze: DEFAULT_BASE.
+const BASE_STATS := {
+	ItemData.Slot.WEAPON: ["damage", 3.0, 7.0],
+	ItemData.Slot.BRACERS: ["armor", 3.0, 7.0],
+	ItemData.Slot.AMULET: ["health", 12.0, 30.0],
+	ItemData.Slot.RING: ["damage", 1.0, 3.0],
 }
+const DEFAULT_BASE := ["armor", 5.0, 10.0]
 ## Zusatzwerte: Name → [Minimum, Maximum] auf Gegenstandsstufe 1.
 const AFFIXES := {
 	"damage": [1.0, 4.0],
@@ -73,8 +80,8 @@ static func create_item(rarity: ItemData.Rarity, item_level: int, slot: int = -1
 	var item := ItemData.new()
 	item.rarity = rarity
 	item.item_level = maxi(item_level, 1)
-	item.slot = slot if slot >= 0 else ItemData.Slot.values().pick_random()
-	item.base_stat = "damage" if item.slot == ItemData.Slot.WEAPON else "armor"
+	item.slot = slot if slot >= 0 else ItemData.ITEM_SLOTS.pick_random()
+	item.base_stat = BASE_STATS.get(item.slot, DEFAULT_BASE)[0]
 	item.base_name = BASE_NAMES[item.slot].pick_random()
 	_add_stat(item, item.base_stat)
 	for i in ItemData.STAT_COUNT[rarity] - 1:
@@ -118,17 +125,19 @@ static func reroll_stats(item: ItemData) -> String:
 	return ""
 
 
-## Bereich eines Werts auf der Stufe des Gegenstands.
-static func stat_range(stat: String, is_base: bool, item_level: int) -> Vector2:
-	var table: Array = BASE_RANGES[stat] if is_base else AFFIXES[stat]
-	var scale := 1.0 if stat in FIXED_STATS else 1.0 + 0.15 * (item_level - 1)
-	var low := _round_stat(stat, table[0] * scale)
-	var high := maxf(_round_stat(stat, table[1] * scale), low)
+## Bereich eines Werts auf der Stufe des Gegenstands (Grundwert: Bereich hängt am Platz).
+static func stat_range(stat: String, item: ItemData) -> Vector2:
+	var low_high: Array = AFFIXES[stat]
+	if stat == item.base_stat:
+		low_high = BASE_STATS.get(item.slot, DEFAULT_BASE).slice(1)
+	var scale := 1.0 if stat in FIXED_STATS else 1.0 + 0.15 * (item.item_level - 1)
+	var low := _round_stat(stat, low_high[0] * scale)
+	var high := maxf(_round_stat(stat, low_high[1] * scale), low)
 	return Vector2(low, high)
 
 
 static func _add_stat(item: ItemData, stat: String) -> void:
-	var r := stat_range(stat, stat == item.base_stat, item.item_level)
+	var r := stat_range(stat, item)
 	item.ranges[stat] = r
 	item.stats[stat] = _roll_value(stat, r)
 

@@ -17,13 +17,13 @@ extends PanelContainer
 @onready var materials_box: HFlowContainer = %MaterialsBox
 @onready var status_label: Label = %StatusLabel
 
-## Ausrüstung wie eine Figur: Helm oben, Waffe | Rüstung | Handschuhe, darunter Hose und Schuhe.
-## -1 = leeres Feld.
+## Ausrüstung wie eine Figur: Helm und Amulett oben, Waffe | Rüstung | Handschuhe,
+## Armschienen neben der Hose, unten Ring | Schuhe | Ring. -1 = leeres Feld.
 const EQUIPMENT_LAYOUT := [
-	-1, ItemData.Slot.HELM, -1,
+	-1, ItemData.Slot.HELM, ItemData.Slot.AMULET,
 	ItemData.Slot.WEAPON, ItemData.Slot.ARMOR, ItemData.Slot.GLOVES,
-	-1, ItemData.Slot.PANTS, -1,
-	-1, ItemData.Slot.BOOTS, -1,
+	ItemData.Slot.BRACERS, ItemData.Slot.PANTS, -1,
+	ItemData.Slot.RING, ItemData.Slot.BOOTS, ItemData.Slot.RING_2,
 ]
 const EQUIPMENT_SLOT_SIZE := Vector2(46, 46)
 const BAG_SLOT_SIZE := Vector2(42, 42)

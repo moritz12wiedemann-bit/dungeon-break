@@ -11,6 +11,8 @@ const WEAPON_MODELS := [
 	"res://assets/models/quaternius/props/Pickaxe_Bronze.gltf",
 ]
 const BAG_MODEL := "res://assets/models/quaternius/props/Bag.gltf"
+## Schmuck (Amulett, Ring) liegt als kleiner Beutel am Boden.
+const POUCH_MODEL := "res://assets/models/quaternius/props/Pouch_Large.gltf"
 
 var item: ItemData
 
@@ -66,6 +68,8 @@ func _add_model() -> void:
 		model.scale = Vector3.ONE * 0.8
 		model.position.y = 0.1
 	else:
+		if item.slot in [ItemData.Slot.AMULET, ItemData.Slot.RING]:
+			path = POUCH_MODEL
 		model.rotation.y = randf() * TAU
 		model.scale = Vector3.ONE * 0.6
 	model.add_child(load(path).instantiate())
