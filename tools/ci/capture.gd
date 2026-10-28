@@ -59,6 +59,19 @@ func _run() -> void:
 	panel.toggle()
 	await _frames(5)
 	_shot("inventar_schmuck")
+	# Vergleichs-Tooltip: neuer Ring in der Tasche gegen die beiden angelegten.
+	var new_ring := ItemGenerator.create_item(ItemData.Rarity.LEGENDARY, 5, ItemData.Slot.RING)
+	inventory.add_item(new_ring)
+	var bag_slot: ItemSlot = panel._bag_slots[inventory.bag.find(new_ring)]
+	var layer := CanvasLayer.new()
+	layer.layer = 50
+	tree.root.add_child(layer)
+	var tip: Control = bag_slot._make_custom_tooltip("x")
+	tip.position = Vector2(40, 120)
+	layer.add_child(tip)
+	await _frames(5)
+	_shot("tooltip_vergleich")
+	layer.free()
 	panel.toggle()
 
 	tree.change_scene_to_file("res://scenes/levels/dungeon.tscn")
