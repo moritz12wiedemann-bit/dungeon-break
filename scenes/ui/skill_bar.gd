@@ -5,6 +5,8 @@ extends HBoxContainer
 ## Jeder Platz zeigt das Bild der Fähigkeit, die Taste und die Abklingzeit
 ## (dunkle Fläche, die von oben nach unten schrumpft). Fehlt Mana, wird das Bild blau getönt.
 ## Beim Drüberfahren mit der Maus erscheint die Beschreibung.
+## Klick auf einen Platz öffnet darüber eine Auswahl: welche Fähigkeit soll hier liegen?
+## (Standardangriff und alle gelernten Fähigkeiten; liegt sie schon woanders, tauschen die Plätze.)
 
 const SLOT_SIZE := 52.0
 
@@ -12,6 +14,9 @@ var _player: Node = null
 var _slots: Array[Panel] = []
 var _icons: Array[TextureRect] = []
 var _shades: Array[ColorRect] = []
+## Auswahl über der Leiste (null = zu). Platz, für den sie offen ist.
+var _picker: PanelContainer = null
+var _picker_slot: int = -1
 
 
 func _init() -> void:
@@ -43,10 +48,10 @@ func refresh() -> void:
 		_icons[slot].texture = data.get("icon")
 		var key: String = PlayerClasses.SLOT_KEYS[slot]
 		if data.is_empty():
-			_slots[slot].tooltip_text = "%s: noch keine Fähigkeit" % key
+			_slots[slot].tooltip_text = "%s: noch keine Fähigkeit\n(Klicken, um eine hinzulegen)" % key
 		else:
-			var text := PlayerClasses.describe_skill(id, GameState.skill_path(id), GameState.skill_levels.get(id, 0))
-			_slots[slot].tooltip_text = "%s\nTaste: %s" % [text, key]
+			var text := PlayerClasses.describe_skill(id, GameState.skill_upgrade(id))
+			_slots[slot].tooltip_text = "%s\nTaste: %s\n(Klicken zum Ändern)" % [text, key]
 
 
 func _process(_delta: float) -> void:
@@ -70,6 +75,12 @@ func _add_slot(key: String) -> void:
 	style.set_border_width_all(2)
 	style.set_corner_radius_all(4)
 	panel.add_theme_stylebox_override("panel", style)
+	panel.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+	var slot_index := _slots.size()
+	panel.gui_input.connect(func(event: InputEvent):
+		if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
+			toggle_picker(slot_index)
+			panel.accept_event())
 	add_child(panel)
 
 	var icon := TextureRect.new()
@@ -106,3 +117,57 @@ func _add_slot(key: String) -> void:
 	_slots.append(panel)
 	_icons.append(icon)
 	_shades.append(shade)
+
+
+## Öffnet (oder schließt) die Auswahl für Platz `slot`.
+func toggle_picker(slot: int) -> void:
+	var same := _picker_slot == slot
+	close_picker()
+	if same:
+		return
+	_picker_slot = slot
+	_picker = PanelContainer.new()
+	var style := StyleBoxFlat.new()
+	style.bg_color = Color(0.06, 0.05, 0.04, 0.95)
+	style.border_color = Color(0.55, 0.4, 0.2)
+	style.set_border_width_all(2)
+	style.set_corner_radius_all(4)
+	style.set_content_margin_all(8)
+	_picker.add_theme_stylebox_override("panel", style)
+	var box := VBoxContainer.new()
+	box.add_theme_constant_override("separation", 4)
+	_picker.add_child(box)
+	box.add_child(GameWindow.make_label("Fähigkeit für %s:" % PlayerClasses.SLOT_KEYS[slot], 13, Color(0.95, 0.8, 0.5)))
+	for id in GameState.usable_skills():
+		var data := PlayerClasses.skill(id)
+		var button := GameWindow.make_button(data.name, _pick.bind(slot, id))
+		button.icon = data.icon
+		button.expand_icon = false
+		button.add_theme_constant_override("icon_max_width", 28)
+		button.alignment = HORIZONTAL_ALIGNMENT_LEFT
+		button.tooltip_text = PlayerClasses.describe_skill(id, GameState.skill_upgrade(id))
+		if GameState.skill_bar[slot] == id:
+			button.disabled = true
+		box.add_child(button)
+	if GameState.learned_skills.is_empty():
+		box.add_child(GameWindow.make_label("Neue Fähigkeiten lernst du\nbeim magischen Ältesten.", 11, Color(0.6, 0.57, 0.5)))
+	box.add_child(GameWindow.make_button("Leer lassen", _pick.bind(slot, "")))
+	get_parent().add_child(_picker)
+	_picker.reset_size()
+	var slot_rect := _slots[slot].get_global_rect()
+	_picker.position = Vector2(slot_rect.get_center().x - _picker.size.x / 2.0, slot_rect.position.y - _picker.size.y - 8.0)
+
+
+## Schließt die Auswahl. Gibt false zurück, wenn keine offen war.
+func close_picker() -> bool:
+	_picker_slot = -1
+	if _picker == null:
+		return false
+	_picker.queue_free()
+	_picker = null
+	return true
+
+
+func _pick(slot: int, id: String) -> void:
+	GameState.assign_skill(slot, id)
+	close_picker()

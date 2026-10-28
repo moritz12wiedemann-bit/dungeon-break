@@ -85,6 +85,12 @@ var _protection_left: float = 0.0
 var mana: float = 0.0
 ## Fähigkeit → Sekunden, bis sie wieder bereit ist.
 var skill_cooldowns: Dictionary = {}
+## So lange (Sekunden) bleibt die Figur noch stehen, weil sie gerade eine Fähigkeit benutzt.
+var _cast_lock_left: float = 0.0
+## Platz der Leiste, dessen Fähigkeit gerade aufgeladen wird (-1 = keiner), und wie lange schon.
+var charging_slot: int = -1
+var charge_time: float = 0.0
+var _charge_effect: Node3D = null
 
 
 func _ready() -> void:
@@ -133,13 +139,20 @@ func _physics_process(delta: float) -> void:
 	# Nicht, wenn die Maus gerade über einem Fenster (z. B. Inventar) steht.
 	if Input.is_action_pressed("move") and get_viewport().gui_get_hovered_control() == null:
 		_pick_target_from_mouse()
+	_cast_lock_left = maxf(_cast_lock_left - delta, 0.0)
 	# Fähigkeiten auf Q, W, E, R und Rechtsklick: Gedrückthalten wirkt immer wieder,
 	# sobald die Abklingzeit vorbei ist. Meldungen ("Nicht genug Mana") nur beim Drücken.
+	# Aufladbare Fähigkeiten laden, solange die Taste gedrückt ist, und wirken beim Loslassen.
 	for slot in PlayerClasses.SLOT_ACTIONS.size():
-		if slot == PlayerClasses.Slot.LEFT:
-			continue
 		var action: String = PlayerClasses.SLOT_ACTIONS[slot]
-		if not Input.is_action_pressed(action):
+		var held := Input.is_action_pressed(action)
+		if slot == charging_slot:
+			if held:
+				_update_charge(delta)
+			else:
+				_release_charge()
+			continue
+		if slot == PlayerClasses.Slot.LEFT or not held or charging_slot >= 0:
 			continue
 		if slot == PlayerClasses.Slot.RIGHT and get_viewport().gui_get_hovered_control() != null:
 			continue
@@ -153,7 +166,12 @@ func _physics_process(delta: float) -> void:
 		_interact_target = null
 
 	var horizontal := Vector3.ZERO
-	if _interact_target and _flat_distance(_interact_target) <= _interact_range(_interact_target):
+	if _cast_lock_left > 0.0 or charging_slot >= 0:
+		# Beim Zaubern und Aufladen bleibt die Figur stehen und schaut zum Mauszeiger.
+		nav_agent.target_position = global_position
+		if charging_slot >= 0:
+			_face_direction(_mouse_aim().point - global_position, delta)
+	elif _interact_target and _flat_distance(_interact_target) <= _interact_range(_interact_target):
 		var target := _interact_target
 		_interact_target = null
 		nav_agent.target_position = global_position
@@ -167,7 +185,7 @@ func _physics_process(delta: float) -> void:
 		# Nah genug: stehen bleiben, zum Gegner drehen, zuschlagen.
 		nav_agent.target_position = global_position
 		_face_direction(_attack_target.global_position - global_position, delta)
-		if _cooldown_left <= 0.0:
+		if _cooldown_left <= 0.0 and not _use_left_skill_on(_attack_target):
 			_attack(_attack_target)
 	else:
 		if _attack_target:
@@ -222,9 +240,11 @@ func drink_potion() -> bool:
 
 
 ## Benutzt die Fähigkeit auf Platz `slot` der Skill-Leiste (PlayerClasses.Slot), gezielt auf den
-## Mauszeiger. `show_errors`: kurz anzeigen, warum es nicht geht. Gibt true zurück, wenn es geklappt hat.
-func use_skill(slot: int, show_errors: bool = true) -> bool:
-	if health.is_dead():
+## Mauszeiger (oder auf `aim`, falls angegeben: {"point": Vector3, "target": Node3D}).
+## `show_errors`: kurz anzeigen, warum es nicht geht. Gibt true zurück, wenn es geklappt hat
+## (bei aufladbaren Fähigkeiten: wenn das Aufladen begonnen hat).
+func use_skill(slot: int, show_errors: bool = true, aim: Dictionary = {}) -> bool:
+	if health.is_dead() or _cast_lock_left > 0.0 or charging_slot >= 0:
 		return false
 	var id: String = GameState.skill_bar[slot]
 	var data := PlayerClasses.skill(id)
@@ -232,7 +252,8 @@ func use_skill(slot: int, show_errors: bool = true) -> bool:
 		if show_errors:
 			DamageNumber.spawn_text(self, "Keine Fähigkeit auf %s" % PlayerClasses.SLOT_KEYS[slot], Color(0.7, 0.7, 0.7))
 		return false
-	var aim := _mouse_aim()
+	if aim.is_empty():
+		aim = _mouse_aim()
 	if data.get("basic_attack", false):
 		# Standardangriff auf einer Taste: den Gegner unter dem Mauszeiger angreifen.
 		if aim.target:
@@ -247,14 +268,78 @@ func use_skill(slot: int, show_errors: bool = true) -> bool:
 		if show_errors:
 			DamageNumber.spawn_text(self, "Nicht genug Mana", Color(0.4, 0.6, 1.0))
 		return false
+	var upgrade := GameState.skill_upgrade(id)
+	if upgrade > 0 and data.get("charge_upgrade", 0) == upgrade and slot != PlayerClasses.Slot.LEFT:
+		charging_slot = slot
+		charge_time = 0.0
+		_attack_target = null
+		_charge_effect = SkillEffects.charge_ring(self)
+		return true
+	return _cast(id, aim, 0.0)
+
+
+## Führt die Fähigkeit `id` aus: Mana, Abklingzeit, kurz stehen bleiben.
+func _cast(id: String, aim: Dictionary, charge: float) -> bool:
+	var data := PlayerClasses.skill(id)
 	if not data.has("script"):
 		return false
-	var level: int = GameState.skill_levels.get(id, 0)
-	if not data.script.call("cast", self, aim.point, aim.target, GameState.skill_path(id), level):
+	var upgrade := GameState.skill_upgrade(id)
+	face_towards(aim.point)
+	if not data.script.call("cast", self, aim.point, aim.target, upgrade, charge):
 		return false
 	mana -= data.mana
 	skill_cooldowns[id] = data.cooldown
+	if data.get("moving_upgrade", 0) != upgrade or upgrade == 0:
+		_cast_lock_left = data.get("cast_time", 0.0)
+		_attack_target = null
+		nav_agent.target_position = global_position
 	return true
+
+
+func _update_charge(delta: float) -> void:
+	var data := PlayerClasses.skill(GameState.skill_bar[charging_slot])
+	var max_charge: float = data.get("max_charge", 1.0)
+	charge_time = minf(charge_time + delta, max_charge)
+	if is_instance_valid(_charge_effect):
+		_charge_effect.scale = Vector3.ONE * (0.5 + charge_time / max_charge)
+
+
+func _release_charge() -> void:
+	var id: String = GameState.skill_bar[charging_slot]
+	var charge := charge_time
+	charging_slot = -1
+	charge_time = 0.0
+	if is_instance_valid(_charge_effect):
+		_charge_effect.queue_free()
+	_charge_effect = null
+	_cast(id, _mouse_aim(), charge)
+
+
+## Liegt auf Linksklick eine echte Fähigkeit (nicht der Standardangriff), wird sie beim
+## Angriff benutzt. Geht sie gerade nicht (Abklingzeit, Mana), schlägt die Figur normal zu.
+func _use_left_skill_on(target: Node3D) -> bool:
+	var data := PlayerClasses.skill(GameState.skill_bar[PlayerClasses.Slot.LEFT])
+	if data.is_empty() or data.get("basic_attack", false):
+		return false
+	return use_skill(PlayerClasses.Slot.LEFT, false, {"point": target.global_position, "target": target})
+
+
+## Schaden eines normalen Schlags (mit Stufe und Ausrüstung) mal `multiplier`.
+func roll_damage(multiplier: float = 1.0) -> int:
+	return int(round((randi_range(damage_min, damage_max) + bonus_damage) * multiplier))
+
+
+## Gibt Mana zurück (höchstens bis max_mana).
+func restore_mana(amount: float) -> void:
+	mana = minf(mana + amount, max_mana)
+
+
+## Dreht die Figur sofort in Richtung `point`.
+func face_towards(point: Vector3) -> void:
+	var direction := point - global_position
+	direction.y = 0.0
+	if direction.length() > 0.01:
+		rotation.y = atan2(direction.x, direction.z)
 
 
 ## Wie viel der Abklingzeit auf Platz `slot` noch übrig ist (0 = bereit, 1 = gerade benutzt).
@@ -448,7 +533,7 @@ func _stat_total(stat: String) -> float:
 
 func _attack(target: Node3D) -> void:
 	_cooldown_left = attack_cooldown
-	target.take_damage(randi_range(damage_min, damage_max) + bonus_damage)
+	target.take_damage(roll_damage())
 	animator.play_attack(attack_cooldown)
 
 
@@ -464,6 +549,10 @@ func _on_leveled_up(new_level: int) -> void:
 
 func _on_died() -> void:
 	_attack_target = null
+	if charging_slot >= 0:
+		charging_slot = -1
+		if is_instance_valid(_charge_effect):
+			_charge_effect.queue_free()
 	velocity = Vector3.ZERO
 	animator.play_death()
 	died.emit()

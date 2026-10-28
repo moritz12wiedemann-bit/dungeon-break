@@ -28,10 +28,10 @@ var equipped_cards: Array[String] = []
 var max_arcana: int = AugmentCards.START_ARCANA
 ## Klasse des Spielers (siehe PlayerClasses). Vorerst immer der Krieger.
 var player_class: String = PlayerClasses.START_CLASS
-## Fähigkeit → Stufe (beim magischen Ältesten verteilt, 1 Punkt pro Spielerstufe).
-var skill_levels: Dictionary = {}
-## Fähigkeit → gewählter Skillbaum (0 = Grundform, 1 = erster, 2 = zweiter).
-var skill_paths: Dictionary = {}
+## Gelernte Fähigkeiten (beim magischen Ältesten, je 1 Punkt; 1 Punkt pro Spielerstufe).
+var learned_skills: Array[String] = []
+## Fähigkeit → gewählte Erweiterung (1 = erste, 2 = zweite; fehlt = keine). Kostet auch 1 Punkt.
+var skill_upgrades: Dictionary = {}
 ## Gewählte passive Fähigkeiten (höchstens PlayerClasses.MAX_PASSIVES).
 var passives: Array[String] = []
 ## Belegung der Skill-Leiste: Q, W, E, R, Linksklick, Rechtsklick ("" = leer).
@@ -54,30 +54,92 @@ func _ready() -> void:
 	set_player_class(player_class)
 
 
-## Wechselt die Klasse: Fähigkeiten, Skillbäume und Passive fangen von vorne an.
+## Wechselt die Klasse: Fähigkeiten, Erweiterungen und Passive fangen von vorne an.
 func set_player_class(class_id: String) -> void:
 	player_class = class_id
-	skill_levels.clear()
-	skill_paths.clear()
+	learned_skills.clear()
+	skill_upgrades.clear()
 	passives.clear()
 	skill_bar.assign(PlayerClasses.CLASSES[class_id].bar)
 	progress_changed.emit()
 
 
-func skill_path(skill_id: String) -> int:
-	return skill_paths.get(skill_id, 0)
+## Gewählte Erweiterung einer Fähigkeit (0 = keine).
+func skill_upgrade(skill_id: String) -> int:
+	return skill_upgrades.get(skill_id, 0)
 
 
-## Summe eines Werts (z. B. "armor") über gewählte Passive und gewählte Skillbäume.
+## Fähigkeiten, die man auf die Skill-Leiste legen kann: Standardangriff + gelernte.
+func usable_skills() -> Array[String]:
+	var list: Array[String] = [PlayerClasses.CLASSES[player_class].basic_attack]
+	list.append_array(learned_skills)
+	return list
+
+
+## Noch freie Fähigkeitspunkte bei Spielerstufe `level`.
+func free_skill_points(level: int) -> int:
+	return level - learned_skills.size() - skill_upgrades.size()
+
+
+## Lernt eine Fähigkeit und legt sie auf den ersten freien Platz der Leiste.
+func learn_skill(skill_id: String) -> void:
+	if skill_id in learned_skills:
+		return
+	learned_skills.append(skill_id)
+	if not skill_id in skill_bar:
+		for slot in PlayerClasses.AUTO_SLOTS:
+			if skill_bar[slot] == "":
+				skill_bar[slot] = skill_id
+				break
+	progress_changed.emit()
+
+
+## Verlernt eine Fähigkeit (Punkte zurück, auch für die Erweiterung) und nimmt sie von der Leiste.
+func unlearn_skill(skill_id: String) -> void:
+	learned_skills.erase(skill_id)
+	skill_upgrades.erase(skill_id)
+	for slot in skill_bar.size():
+		if skill_bar[slot] == skill_id:
+			skill_bar[slot] = ""
+	progress_changed.emit()
+
+
+## Wählt Erweiterung `upgrade` (1 oder 2) einer gelernten Fähigkeit, 0 = Erweiterung ablegen.
+func set_skill_upgrade(skill_id: String, upgrade: int) -> void:
+	if upgrade == 0:
+		skill_upgrades.erase(skill_id)
+	else:
+		skill_upgrades[skill_id] = upgrade
+	progress_changed.emit()
+
+
+## Legt eine Fähigkeit auf Platz `slot` der Leiste. Lag sie schon woanders, tauschen die Plätze.
+func assign_skill(slot: int, skill_id: String) -> void:
+	var old: int = skill_bar.find(skill_id) if skill_id != "" else -1
+	if old >= 0:
+		skill_bar[old] = skill_bar[slot]
+	skill_bar[slot] = skill_id
+	progress_changed.emit()
+
+
+## Alle Fähigkeitspunkte zurück (Standardangriff bleibt auf der Leiste).
+func reset_skills() -> void:
+	for id in learned_skills.duplicate():
+		unlearn_skill(id)
+	passives.clear()
+	progress_changed.emit()
+
+
+## Summe eines Werts (z. B. "armor") über gewählte Passive und gewählte Erweiterungen.
 func skill_stat_total(stat: String) -> float:
 	var total := 0.0
 	for id in passives:
 		total += PlayerClasses.PASSIVES[id].get("stats", {}).get(stat, 0)
-	for id in skill_paths:
-		var path: int = skill_paths[id]
+	for id in skill_upgrades:
+		var upgrade: int = skill_upgrades[id]
 		var data := PlayerClasses.skill(id)
-		if path > 0 and path <= data.get("paths", []).size():
-			total += data.paths[path - 1].get("stats", {}).get(stat, 0)
+		if upgrade > 0 and upgrade <= data.get("upgrades", []).size():
+			total += data.upgrades[upgrade - 1].get("stats", {}).get(stat, 0)
 	return total
 
 

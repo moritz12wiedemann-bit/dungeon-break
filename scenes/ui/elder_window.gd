@@ -1,51 +1,77 @@
 extends GameWindow
-## Magischer Ältester: hier lernt und verbessert man Fähigkeiten, wählt pro Fähigkeit
-## einen der zwei Skillbäume (oder bleibt bei der Grundform) und wählt bis zu
-## PlayerClasses.MAX_PASSIVES passive Fähigkeiten. Nur hier, nirgends sonst.
-## Fähigkeitspunkte: 1 pro Stufe. Skillbäume und Passive kann man jederzeit umstellen.
+## Magischer Ältester: großes Fenster mit dem Skillbaum (siehe SkillTree).
+## Nur hier verteilt man Fähigkeitspunkte (1 pro Stufe): Fähigkeiten lernen, pro Fähigkeit
+## eine von zwei Erweiterungen wählen, bis zu PlayerClasses.MAX_PASSIVES Passive wählen.
+## Auf die Skill-Leiste legt man die Fähigkeiten überall (Klick auf einen Platz der Leiste).
 
-var _info: Label
+var _tree := SkillTree.new()
+var _class_label: Label
+var _class_text: Label
 var _points_label: Label
-var _skills_box: VBoxContainer
 var _passives_label: Label
 var _passives_box: HFlowContainer
 
 
 func _init() -> void:
 	super("Magischer Ältester")
+	# Groß in der Mitte statt links am Rand.
+	set_anchors_preset(Control.PRESET_CENTER)
+	grow_horizontal = Control.GROW_DIRECTION_BOTH
 
 
 func _build() -> void:
-	_info = make_label("", 14)
-	content.add_child(_info)
-	_points_label = make_label("", 16, Color(0.6, 0.85, 1.0))
-	content.add_child(_points_label)
-	content.add_child(make_label("Fähigkeiten", 18, Color(0.95, 0.8, 0.5)))
-	_skills_box = VBoxContainer.new()
-	_skills_box.add_theme_constant_override("separation", 8)
-	content.add_child(_skills_box)
-	_passives_label = make_label("", 18, Color(0.95, 0.8, 0.5))
-	content.add_child(_passives_label)
+	var row := HBoxContainer.new()
+	row.add_theme_constant_override("separation", 16)
+	content.add_child(row)
+	_tree.skill_clicked.connect(_on_skill_clicked)
+	_tree.upgrade_clicked.connect(_on_upgrade_clicked)
+	row.add_child(_tree)
+
+	var side := VBoxContainer.new()
+	side.custom_minimum_size.x = 250
+	side.add_theme_constant_override("separation", 8)
+	row.add_child(side)
+	_class_label = make_label("", 22, Color(0.95, 0.8, 0.5))
+	side.add_child(_class_label)
+	_class_text = make_label("", 13)
+	_class_text.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	side.add_child(_class_text)
+	_points_label = make_label("", 18, Color(0.6, 0.85, 1.0))
+	side.add_child(_points_label)
+	var help := make_label("Linksklick: lernen bzw. Erweiterung wählen\nRechtsklick: verlernen (Punkt zurück)\n\n"
+		+ "Jede Fähigkeit hat zwei Erweiterungen, es gilt immer nur eine.\n\n"
+		+ "Gelernte Fähigkeiten legst du auf die Skill-Leiste, indem du unten auf einen Platz klickst.", 12, Color(0.7, 0.68, 0.62))
+	help.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	side.add_child(help)
+
+	side.add_child(HSeparator.new())
+	_passives_label = make_label("", 16, Color(0.95, 0.8, 0.5))
+	side.add_child(_passives_label)
 	_passives_box = HFlowContainer.new()
-	_passives_box.custom_minimum_size.x = 420
 	_passives_box.add_theme_constant_override("h_separation", 6)
 	_passives_box.add_theme_constant_override("v_separation", 6)
-	content.add_child(_passives_box)
+	side.add_child(_passives_box)
+
+	var spacer := Control.new()
+	spacer.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	side.add_child(spacer)
+	side.add_child(make_button("Alle Punkte zurücksetzen", _reset))
+
+
+func open(for_player: Node, from: Node3D) -> void:
+	_tree.build(GameState.player_class)
+	super(for_player, from)
 
 
 func refresh() -> void:
 	var class_data: Dictionary = PlayerClasses.CLASSES[GameState.player_class]
-	_info.text = "Klasse: %s\n%s" % [class_data.name, class_data.text]
-	_points_label.text = "Fähigkeitspunkte frei: %d" % _free_points()
+	_class_label.text = class_data.name
+	_class_text.text = class_data.text
+	var points := _free_points()
+	_points_label.text = "Fähigkeitspunkte frei: %d" % points
+	_tree.refresh(points)
 
-	for child in _skills_box.get_children():
-		child.queue_free()
-	for id in class_data.skills:
-		_skills_box.add_child(_make_skill_row(id))
-	if class_data.skills.size() <= 1:
-		_skills_box.add_child(make_label("Weitere Fähigkeiten folgen bald.", 12, Color(0.6, 0.57, 0.5)))
-
-	_passives_label.text = "Passive Fähigkeiten (%d / %d gewählt)" % [GameState.passives.size(), PlayerClasses.MAX_PASSIVES]
+	_passives_label.text = "Passive (%d / %d)" % [GameState.passives.size(), PlayerClasses.MAX_PASSIVES]
 	for child in _passives_box.get_children():
 		child.queue_free()
 	if class_data.passives.is_empty():
@@ -59,75 +85,53 @@ func refresh() -> void:
 		_passives_box.add_child(button)
 
 
-## Eine Fähigkeit: Bild, Name, Stufe mit "+" und darunter die Wahl Grundform / Skillbaum 1 / Skillbaum 2.
-func _make_skill_row(id: String) -> Control:
-	var data := PlayerClasses.skill(id)
-	var box := VBoxContainer.new()
-	var row := HBoxContainer.new()
-	row.add_theme_constant_override("separation", 10)
-	box.add_child(row)
-	var icon := TextureRect.new()
-	icon.texture = data.icon
-	icon.custom_minimum_size = Vector2(32, 32)
-	icon.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
-	icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
-	row.add_child(icon)
-	var name_label := make_label(data.name, 15)
-	name_label.custom_minimum_size.x = 150
-	name_label.tooltip_text = data.text
-	name_label.mouse_filter = Control.MOUSE_FILTER_PASS
-	row.add_child(name_label)
-	if data.get("basic_attack", false):
-		row.add_child(make_label("Standardangriff (Linksklick)", 13, Color(0.7, 0.68, 0.62)))
-	else:
-		var level: int = GameState.skill_levels.get(id, 0)
-		row.add_child(make_label("Stufe %d / %d" % [level, PlayerClasses.MAX_SKILL_LEVEL], 14, Color(0.7, 0.68, 0.62)))
-		var plus := make_button("+", _raise.bind(id))
-		plus.disabled = level >= PlayerClasses.MAX_SKILL_LEVEL or _free_points() <= 0
-		row.add_child(plus)
-	if not data.paths.is_empty():
-		var paths := HBoxContainer.new()
-		paths.add_theme_constant_override("separation", 6)
-		paths.add_child(make_label("Skillbaum:", 13, Color(0.7, 0.68, 0.62)))
-		var names: Array = ["Grundform"]
-		var texts: Array = [data.text]
-		for path in data.paths:
-			names.append(path.name)
-			texts.append(path.text)
-		for i in names.size():
-			var button := make_button(names[i], _choose_path.bind(id, i))
-			button.toggle_mode = true
-			button.button_pressed = GameState.skill_path(id) == i
-			button.tooltip_text = texts[i]
-			paths.add_child(button)
-		box.add_child(paths)
-	return box
+func _recenter() -> void:
+	reset_size()
+	offset_left = -size.x / 2.0
+	offset_right = size.x / 2.0
+	offset_top = -size.y / 2.0
+	offset_bottom = size.y / 2.0
 
 
-## 1 Punkt pro Stufe, minus die schon verteilten.
 func _free_points() -> int:
-	var spent := 0
-	for skill in GameState.skill_levels:
-		spent += GameState.skill_levels[skill]
-	return int(player.experience.level) - spent
+	return GameState.free_skill_points(int(player.experience.level))
 
 
-func _raise(id: String) -> void:
-	if _free_points() <= 0:
-		return
-	GameState.skill_levels[id] = GameState.skill_levels.get(id, 0) + 1
-	show_status("%s ist jetzt Stufe %d." % [PlayerClasses.skill(id).name, GameState.skill_levels[id]])
-	GameState.progress_changed.emit()
+func _on_skill_clicked(id: String, right: bool) -> void:
+	var skill_name: String = PlayerClasses.skill(id).name
+	var learned := id in GameState.learned_skills
+	if right:
+		if learned:
+			GameState.unlearn_skill(id)
+			show_status("%s verlernt." % skill_name)
+	elif learned:
+		show_status("%s ist schon gelernt." % skill_name)
+	elif _free_points() <= 0:
+		show_status("Kein Fähigkeitspunkt frei (1 pro Stufe).", true)
+	else:
+		GameState.learn_skill(id)
+		var slot := GameState.skill_bar.find(id)
+		show_status("%s gelernt%s." % [skill_name, (" und auf %s gelegt" % PlayerClasses.SLOT_KEYS[slot]) if slot >= 0 else ""])
 	refresh()
 
 
-## Skillbaum wählen (0 = Grundform). Es gilt immer nur einer.
-func _choose_path(id: String, path: int) -> void:
+func _on_upgrade_clicked(id: String, upgrade: int, right: bool) -> void:
 	var data := PlayerClasses.skill(id)
-	GameState.skill_paths[id] = path
-	var path_name: String = "Grundform" if path == 0 else data.paths[path - 1].name
-	show_status("%s: %s gewählt." % [data.name, path_name])
-	GameState.progress_changed.emit()
+	var upgrade_name: String = data.upgrades[upgrade - 1].name
+	var chosen := GameState.skill_upgrade(id)
+	if right:
+		if chosen == upgrade:
+			GameState.set_skill_upgrade(id, 0)
+			show_status("%s abgelegt." % upgrade_name)
+	elif not id in GameState.learned_skills:
+		show_status("Lerne zuerst %s." % data.name, true)
+	elif chosen == upgrade:
+		show_status("%s ist schon gewählt." % upgrade_name)
+	elif chosen == 0 and _free_points() <= 0:
+		show_status("Kein Fähigkeitspunkt frei (1 pro Stufe).", true)
+	else:
+		GameState.set_skill_upgrade(id, upgrade)
+		show_status("%s: %s gewählt." % [data.name, upgrade_name])
 	refresh()
 
 
@@ -142,4 +146,10 @@ func _toggle_passive(id: String) -> void:
 		GameState.passives.append(id)
 		show_status("%s gewählt." % passive_name)
 	GameState.progress_changed.emit()
+	refresh()
+
+
+func _reset() -> void:
+	GameState.reset_skills()
+	show_status("Alle Fähigkeitspunkte sind wieder frei.")
 	refresh()

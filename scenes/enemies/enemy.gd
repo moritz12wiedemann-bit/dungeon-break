@@ -62,6 +62,12 @@ var _cooldown_left: float = 0.0
 ## Den Weg nicht jedes Bild neu berechnen, sondern ein paar Mal pro Sekunde.
 var _repath_left: float = 0.0
 var _gravity: float = ProjectSettings.get_setting("physics/3d/default_gravity")
+## Verlangsamung durch Fähigkeiten (0.5 = halb so schnell) und wie lange noch (Sekunden).
+var _slow: float = 0.0
+var _slow_left: float = 0.0
+## Schadensanfälligkeit (0.3 = +30 % Schaden) und wie lange noch (Sekunden).
+var _vulnerable: float = 0.0
+var _vulnerable_left: float = 0.0
 
 
 func _ready() -> void:
@@ -86,6 +92,7 @@ func _physics_process(delta: float) -> void:
 		_player = get_tree().get_first_node_in_group("player")
 	_cooldown_left = maxf(_cooldown_left - delta, 0.0)
 	_repath_left -= delta
+	_update_effects(delta)
 
 	match state:
 		State.IDLE:
@@ -105,10 +112,50 @@ func _physics_process(delta: float) -> void:
 
 ## Wird vom Spieler aufgerufen, wenn er uns trifft.
 func take_damage(amount: int) -> void:
+	if _vulnerable_left > 0.0:
+		amount = int(round(amount * (1.0 + _vulnerable)))
 	health.take_damage(amount)
 	# Wer geschlagen wird, wehrt sich, auch wenn er den Spieler noch nicht bemerkt hatte.
 	if state != State.DEAD:
 		state = State.CHASE
+
+
+## Verlangsamt den Gegner für `seconds` Sekunden um `ratio` (0.5 = 50 %). Der stärkere Wert gilt.
+func apply_slow(ratio: float, seconds: float) -> void:
+	_slow = maxf(_slow, ratio) if _slow_left > 0.0 else ratio
+	_slow_left = maxf(_slow_left, seconds)
+	_update_tint()
+
+
+## Lässt den Gegner für `seconds` Sekunden `ratio` mehr Schaden erleiden (0.3 = +30 %).
+func apply_vulnerable(ratio: float, seconds: float) -> void:
+	_vulnerable = maxf(_vulnerable, ratio) if _vulnerable_left > 0.0 else ratio
+	_vulnerable_left = maxf(_vulnerable_left, seconds)
+	_update_tint()
+
+
+func _update_effects(delta: float) -> void:
+	if _slow_left <= 0.0 and _vulnerable_left <= 0.0:
+		return
+	_slow_left = maxf(_slow_left - delta, 0.0)
+	_vulnerable_left = maxf(_vulnerable_left - delta, 0.0)
+	if _slow_left <= 0.0 and _vulnerable_left <= 0.0:
+		_update_tint()
+
+
+## Verlangsamte bzw. anfällige Gegner sind leicht violett eingefärbt (siehe _on_damaged/_clear_flash).
+func _update_tint() -> void:
+	_clear_flash()
+
+
+func _effect_overlay() -> Material:
+	if _slow_left <= 0.0 and _vulnerable_left <= 0.0:
+		return null
+	var tint := StandardMaterial3D.new()
+	tint.albedo_color = Color(0.55, 0.3, 1.0, 0.35)
+	tint.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+	tint.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+	return tint
 
 
 func is_dead() -> bool:
@@ -149,7 +196,7 @@ func _move_along_path(delta: float) -> void:
 		direction.y = 0.0
 		if direction.length() > 0.01:
 			direction = _steer_around_allies(direction.normalized())
-			horizontal = direction * move_speed
+			horizontal = direction * move_speed * (1.0 - _slow if _slow_left > 0.0 else 1.0)
 			_face_direction(direction, delta)
 	horizontal += _crowd_push()
 
@@ -251,8 +298,9 @@ func _on_damaged(amount: int) -> void:
 func _clear_flash() -> void:
 	if not is_instance_valid(visual):
 		return
+	var overlay := _effect_overlay()
 	for child in visual.find_children("*", "GeometryInstance3D", true, false):
-		child.material_overlay = null
+		child.material_overlay = overlay
 
 
 func _on_died() -> void:
