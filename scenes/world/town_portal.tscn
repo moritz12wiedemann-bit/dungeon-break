@@ -1,7 +1,7 @@
 [gd_scene format=3]
 
 [ext_resource type="Script" path="res://scenes/world/town_portal.gd" id="1_portl"]
-[ext_resource type="PackedScene" path="res://assets/models/kaykit/halloween/arch.gltf" id="2_arch0"]
+[ext_resource type="Script" path="res://scenes/world/placeholder.gd" id="2_arch0"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_po001"]
 albedo_color = Color(0.3, 0.6, 1, 1)
@@ -35,8 +35,10 @@ collision_layer = 8
 collision_mask = 0
 script = ExtResource("1_portl")
 
-[node name="Arch" parent="." instance=ExtResource("2_arch0")]
-transform = Transform3D(0.85, 0, 0, 0, 0.85, 0, 0, 0, 0.85, 0, 0, 0)
+[node name="Arch" type="Node3D" parent="."]
+script = ExtResource("2_arch0")
+kind = "Bogen"
+size = Vector3(3.6, 3.75, 0.65)
 
 [node name="Ring" type="Node3D" parent="." unique_id=1293847569]
 transform = Transform3D(0.9, 0, 0, 0, -3.934025e-08, -0.9, 0, 0.9, -3.934025e-08, 0, 1.4, 0)

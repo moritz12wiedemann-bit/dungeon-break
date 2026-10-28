@@ -3,7 +3,7 @@ extends Node3D
 ## Gold oder ein Material (z. B. ein Orb), das am Boden liegt.
 ## Wird automatisch aufgehoben, sobald der Spieler darüber läuft (kein Klick nötig).
 
-const COIN_MODEL := "res://assets/models/kaykit/dungeon/coin_stack_small.gltf"
+const COIN_MODEL := "res://assets/models/quaternius/props/Coin_Pile_2.gltf"
 ## Aus dieser Entfernung (Meter) wird es aufgehoben.
 const PICKUP_RANGE := 1.3
 
@@ -44,7 +44,7 @@ func _ready() -> void:
 	label.position.y = 0.6
 	if material_id == "":
 		var coins: Node3D = load(COIN_MODEL).instantiate()
-		coins.scale = Vector3.ONE * 1.2
+		coins.scale = Vector3.ONE * 2.5
 		coins.rotation.y = randf() * TAU
 		_visual.add_child(coins)
 		label.text = "%d Gold" % amount

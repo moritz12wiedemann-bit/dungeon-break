@@ -5,46 +5,22 @@
 [ext_resource type="PackedScene" path="res://scenes/camera/iso_camera.tscn" id="3_48ne7"]
 [ext_resource type="PackedScene" path="res://scenes/ui/hud.tscn" id="4_hud00"]
 [ext_resource type="PackedScene" path="res://scenes/world/dungeon_altar.tscn" id="5_altar"]
-[ext_resource type="PackedScene" path="res://assets/models/kaykit/town/building_blacksmith_blue.gltf" id="10_build"]
-[ext_resource type="PackedScene" path="res://assets/models/kaykit/town/building_tavern_blue.gltf" id="11_build"]
-[ext_resource type="PackedScene" path="res://assets/models/kaykit/town/building_home_B_red.gltf" id="12_build"]
-[ext_resource type="PackedScene" path="res://assets/models/kaykit/town/building_home_A_blue.gltf" id="13_build"]
-[ext_resource type="PackedScene" path="res://assets/models/kaykit/town/building_market_blue.gltf" id="14_build"]
-[ext_resource type="PackedScene" path="res://assets/models/kaykit/town/building_well_blue.gltf" id="15_build"]
-[ext_resource type="PackedScene" path="res://assets/models/kaykit/halloween/path_B.gltf" id="16_pathb"]
-[ext_resource type="PackedScene" path="res://assets/models/kaykit/halloween/path_A.gltf" id="17_patha"]
-[ext_resource type="PackedScene" path="res://assets/models/kaykit/halloween/path_C.gltf" id="18_pathc"]
-[ext_resource type="PackedScene" path="res://assets/models/kaykit/town/fence_wood_straight.gltf" id="19_fence"]
-[ext_resource type="PackedScene" path="res://assets/models/kaykit/town/trees_B_medium.gltf" id="20_trees"]
-[ext_resource type="PackedScene" path="res://assets/models/kaykit/town/tree_single_A.gltf" id="21_trees"]
-[ext_resource type="PackedScene" path="res://assets/models/kaykit/town/trees_A_medium.gltf" id="22_trees"]
-[ext_resource type="PackedScene" path="res://assets/models/kaykit/town/tree_single_B.gltf" id="23_trees"]
-[ext_resource type="PackedScene" path="res://assets/models/kaykit/town/building_church_blue.gltf" id="24_build"]
-[ext_resource type="PackedScene" path="res://assets/models/kaykit/town/building_windmill_blue.gltf" id="25_build"]
-[ext_resource type="PackedScene" path="res://assets/models/kaykit/town/building_tower_A_blue.gltf" id="26_build"]
-[ext_resource type="PackedScene" path="res://assets/models/kaykit/town/building_home_A_red.gltf" id="27_build"]
-[ext_resource type="PackedScene" path="res://assets/models/kaykit/town/building_home_B_blue.gltf" id="28_build"]
-[ext_resource type="PackedScene" path="res://assets/models/kaykit/town/barrel.gltf" id="29_barre"]
-[ext_resource type="PackedScene" path="res://assets/models/kaykit/town/weaponrack.gltf" id="30_weapo"]
-[ext_resource type="PackedScene" path="res://assets/models/kaykit/town/crate_A_big.gltf" id="31_crate"]
-[ext_resource type="PackedScene" path="res://assets/models/kaykit/town/resource_lumber.gltf" id="32_resou"]
-[ext_resource type="PackedScene" path="res://assets/models/kaykit/town/crate_B_small.gltf" id="33_crate"]
-[ext_resource type="PackedScene" path="res://assets/models/kaykit/town/sack.gltf" id="34_sackg"]
-[ext_resource type="PackedScene" path="res://assets/models/kaykit/town/tent.gltf" id="35_tentg"]
-[ext_resource type="PackedScene" path="res://assets/models/kaykit/town/crate_open.gltf" id="36_crate"]
-[ext_resource type="PackedScene" path="res://assets/models/kaykit/town/wheelbarrow.gltf" id="37_wheel"]
-[ext_resource type="PackedScene" path="res://assets/models/kaykit/town/bucket_water.gltf" id="38_bucke"]
-[ext_resource type="PackedScene" path="res://assets/models/kaykit/town/flag_red.gltf" id="39_flagr"]
-[ext_resource type="PackedScene" path="res://assets/models/kaykit/town/flag_blue.gltf" id="40_flagb"]
-[ext_resource type="PackedScene" path="res://assets/models/kaykit/town/rock_single_A.gltf" id="41_rocks"]
-[ext_resource type="PackedScene" path="res://assets/models/kaykit/town/rock_single_B.gltf" id="42_rocks"]
-[ext_resource type="PackedScene" path="res://assets/models/kaykit/town/rock_single_C.gltf" id="43_rocks"]
-[ext_resource type="PackedScene" path="res://assets/models/kaykit/halloween/bench.gltf" id="44_bench"]
-[ext_resource type="PackedScene" path="res://assets/models/kaykit/halloween/post_lantern.gltf" id="45_postl"]
 [ext_resource type="Script" path="res://scenes/world/npc.gd" id="46_npc00"]
-[ext_resource type="PackedScene" path="res://assets/models/kaykit/adventurers/Barbarian.gltf" id="47_barba"]
-[ext_resource type="PackedScene" path="res://assets/models/kaykit/adventurers/Rogue.gltf" id="48_rogue"]
-[ext_resource type="PackedScene" path="res://assets/models/kaykit/adventurers/Mage.gltf" id="49_mage0"]
+[ext_resource type="Script" path="res://scenes/world/placeholder.gd" id="ph_script"]
+[ext_resource type="PackedScene" path="res://assets/models/quaternius/props/Bag.gltf" id="q_Bag"]
+[ext_resource type="PackedScene" path="res://assets/models/quaternius/props/Barrel.gltf" id="q_Barrel"]
+[ext_resource type="PackedScene" path="res://assets/models/quaternius/props/Bench.gltf" id="q_Bench"]
+[ext_resource type="PackedScene" path="res://assets/models/quaternius/props/Bucket_Wooden_1.gltf" id="q_Bucket_Wooden_1"]
+[ext_resource type="PackedScene" path="res://assets/models/quaternius/props/Crate_Metal.gltf" id="q_Crate_Metal"]
+[ext_resource type="PackedScene" path="res://assets/models/quaternius/props/Crate_Wooden.gltf" id="q_Crate_Wooden"]
+[ext_resource type="PackedScene" path="res://assets/models/quaternius/props/FarmCrate_Apple.gltf" id="q_FarmCrate_Apple"]
+[ext_resource type="PackedScene" path="res://assets/models/quaternius/props/Lantern_Wall.gltf" id="q_Lantern_Wall"]
+[ext_resource type="PackedScene" path="res://assets/models/quaternius/props/Stall_Empty.gltf" id="q_Stall_Empty"]
+[ext_resource type="PackedScene" path="res://assets/models/quaternius/props/WeaponStand.gltf" id="q_WeaponStand"]
+[ext_resource type="PackedScene" path="res://scenes/characters/smith.tscn" id="npc_smith"]
+[ext_resource type="PackedScene" path="res://scenes/characters/merchant.tscn" id="npc_merchant"]
+[ext_resource type="PackedScene" path="res://scenes/characters/mystic.tscn" id="npc_mystic"]
+[ext_resource type="PackedScene" path="res://scenes/characters/elder.tscn" id="npc_elder"]
 
 [sub_resource type="Environment" id="Environment_tw001"]
 background_mode = 1
@@ -222,8 +198,7 @@ script = ExtResource("46_npc00")
 window_name = "smith"
 display_name = "Schmied"
 name_color = Color(1, 0.65, 0.35, 1)
-model = ExtResource("47_barba")
-held_items = PackedStringArray("1H_Axe")
+model = ExtResource("npc_smith")
 
 [node name="Merchant" type="StaticBody3D" parent="NavigationRegion3D/Geometry"]
 transform = Transform3D(0.621610, 0, -0.783327, 0, 1, 0, 0.783327, 0, 0.621610, 9, 0, 1.5)
@@ -231,7 +206,7 @@ script = ExtResource("46_npc00")
 window_name = "merchant"
 display_name = "Händler"
 name_color = Color(1, 0.85, 0.3, 1)
-model = ExtResource("48_rogue")
+model = ExtResource("npc_merchant")
 
 [node name="Mystic" type="StaticBody3D" parent="NavigationRegion3D/Geometry"]
 transform = Transform3D(0.621610, 0, 0.783327, 0, 1, 0, -0.783327, 0, 0.621610, -4.5, 0, 6.5)
@@ -239,8 +214,7 @@ script = ExtResource("46_npc00")
 window_name = "mystic"
 display_name = "Mystikerin"
 name_color = Color(0.8, 0.6, 1, 1)
-model = ExtResource("49_mage0")
-held_items = PackedStringArray("Spellbook_open")
+model = ExtResource("npc_mystic")
 
 [node name="Elder" type="StaticBody3D" parent="NavigationRegion3D/Geometry"]
 transform = Transform3D(0.764842, 0, 0.644218, 0, 1, 0, -0.644218, 0, 0.764842, -6.5, 0, -1.5)
@@ -248,526 +222,1167 @@ script = ExtResource("46_npc00")
 window_name = "elder"
 display_name = "Magischer Ältester"
 name_color = Color(0.55, 0.85, 1, 1)
-model = ExtResource("49_mage0")
-model_scale = 0.85
-held_items = PackedStringArray("2H_Staff")
+model = ExtResource("npc_elder")
 
 [node name="Decor" type="Node3D" parent="."]
 
 [node name="Paths" type="Node3D" parent="."]
 
-[node name="BlacksmithModel" parent="Decor" instance=ExtResource("10_build")]
+[node name="BlacksmithModel" type="Node3D" parent="Decor"]
 transform = Transform3D(0, 0, 5.5, 0, 5.5, 0, -5.5, 0, 0, -12.3575, 0, -8.9175)
+script = ExtResource("ph_script")
+kind = "Haus"
+size = Vector3(1.288, 0.985, 1.245)
+offset = Vector3(0.014, -0.005, 0.063)
+label_text = "Schmiede"
 
-[node name="TavernModel" parent="Decor" instance=ExtResource("11_build")]
+[node name="TavernModel" type="Node3D" parent="Decor"]
 transform = Transform3D(0, 0, -5, 0, 5, 0, 5, 0, 0, 11.825, 0, -8.975)
+script = ExtResource("ph_script")
+kind = "Haus"
+size = Vector3(1.172, 1.397, 1.332)
+offset = Vector3(-0.009, -0, -0.036)
+label_text = "Taverne"
 
-[node name="HouseRedModel" parent="Decor" instance=ExtResource("12_build")]
+[node name="HouseRedModel" type="Node3D" parent="Decor"]
 transform = Transform3D(0, 0, 5.5, 0, 5.5, 0, -5.5, 0, 0, -12.055, 0, 8.9725)
+script = ExtResource("ph_script")
+kind = "Haus"
+size = Vector3(0.875, 1.28, 1.099)
+offset = Vector3(-0.001, -0, 0.011)
 
-[node name="HouseBlueModel" parent="Decor" instance=ExtResource("13_build")]
+[node name="HouseBlueModel" type="Node3D" parent="Decor"]
 transform = Transform3D(0, 0, -6.5, 0, 6.5, 0, 6.5, 0, 0, 11.7075, 0, 9.0325)
+script = ExtResource("ph_script")
+kind = "Haus"
+size = Vector3(0.792, 0.93, 0.854)
+offset = Vector3(-0, -0, -0.042)
 
-[node name="MarketModel" parent="Decor" instance=ExtResource("14_build")]
-transform = Transform3D(0, 0, -3.8, 0, 3.8, 0, 3.8, 0, 0, 12.81, 0, 0)
+[node name="MarketModel" type="Node3D" parent="Decor"]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, 12.81, 0, 0)
 
-[node name="WellModel" parent="Decor" instance=ExtResource("15_build")]
+[node name="StallA" parent="Decor/MarketModel" instance=ExtResource("q_Stall_Empty")]
+transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, 0.6, 0, -1.3)
+
+[node name="StallB" parent="Decor/MarketModel" instance=ExtResource("q_Stall_Empty")]
+transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, 0.6, 0, 1.3)
+
+[node name="Crates" parent="Decor/MarketModel" instance=ExtResource("q_Crate_Wooden")]
+transform = Transform3D(0.8, 0, 0, 0, 0.8, 0, 0, 0, 0.8, -1.2, 0, 0)
+
+[node name="WellModel" type="Node3D" parent="Decor"]
 transform = Transform3D(3.5, 0, 0, 0, 3.5, 0, 0, 0, 3.5, 5.9475, 0, 2.0175)
+script = ExtResource("ph_script")
+kind = "Turm"
+size = Vector3(0.652, 0.826, 0.751)
+offset = Vector3(0.011, -0, 0)
+label_text = "Brunnen"
 
-[node name="Path" parent="Paths" instance=ExtResource("16_pathb")]
+[node name="Path" type="Node3D" parent="Paths"]
 transform = Transform3D(0, 0, 1.08, 0, 1.08, 0, -1.08, 0, 0, -3, 0, -14.9838)
+script = ExtResource("ph_script")
+kind = "Weg"
+size = Vector3(1.886, 0.04, 1.856)
+offset = Vector3(0.01, 0, -0.002)
 
-[node name="Path2" parent="Paths" instance=ExtResource("16_pathb")]
+[node name="Path2" type="Node3D" parent="Paths"]
 transform = Transform3D(1.08, 0, 0, 0, 1.08, 0, 0, 0, 1.08, -1.0162, 0, -15)
+script = ExtResource("ph_script")
+kind = "Weg"
+size = Vector3(1.886, 0.04, 1.856)
+offset = Vector3(0.01, 0, -0.002)
 
-[node name="Path3" parent="Paths" instance=ExtResource("17_patha")]
+[node name="Path3" type="Node3D" parent="Paths"]
 transform = Transform3D(1.08, 0, 0, 0, 1.08, 0, 0, 0, 1.08, 1.0216, 0, -15)
+script = ExtResource("ph_script")
+kind = "Weg"
+size = Vector3(1.903, 0.04, 1.884)
+offset = Vector3(-0.014, 0, 0.003)
 
-[node name="Path4" parent="Paths" instance=ExtResource("16_pathb")]
+[node name="Path4" type="Node3D" parent="Paths"]
 transform = Transform3D(1.08, 0, 0, 0, 1.08, 0, 0, 0, 1.08, 2.9838, 0, -15)
+script = ExtResource("ph_script")
+kind = "Weg"
+size = Vector3(1.886, 0.04, 1.856)
+offset = Vector3(0.01, 0, -0.002)
 
-[node name="Path5" parent="Paths" instance=ExtResource("18_pathc")]
+[node name="Path5" type="Node3D" parent="Paths"]
 transform = Transform3D(0, 0, 1.08, 0, 1.08, 0, -1.08, 0, 0, -3.0108, 0, -12.9838)
+script = ExtResource("ph_script")
+kind = "Weg"
+size = Vector3(1.85, 0.04, 1.857)
+offset = Vector3(0.012, 0, 0.003)
 
-[node name="Path6" parent="Paths" instance=ExtResource("17_patha")]
+[node name="Path6" type="Node3D" parent="Paths"]
 transform = Transform3D(1.08, 0, 0, 0, 1.08, 0, 0, 0, 1.08, -0.9784, 0, -13)
+script = ExtResource("ph_script")
+kind = "Weg"
+size = Vector3(1.903, 0.04, 1.884)
+offset = Vector3(-0.014, 0, 0.003)
 
-[node name="Path7" parent="Paths" instance=ExtResource("16_pathb")]
+[node name="Path7" type="Node3D" parent="Paths"]
 transform = Transform3D(0, 0, -1.08, 0, 1.08, 0, 1.08, 0, 0, 1, 0, -13.0162)
+script = ExtResource("ph_script")
+kind = "Weg"
+size = Vector3(1.886, 0.04, 1.856)
+offset = Vector3(0.01, 0, -0.002)
 
-[node name="Path8" parent="Paths" instance=ExtResource("17_patha")]
+[node name="Path8" type="Node3D" parent="Paths"]
 transform = Transform3D(0, 0, 1.08, 0, 1.08, 0, -1.08, 0, 0, 3, 0, -13.0216)
+script = ExtResource("ph_script")
+kind = "Weg"
+size = Vector3(1.903, 0.04, 1.884)
+offset = Vector3(-0.014, 0, 0.003)
 
-[node name="Path9" parent="Paths" instance=ExtResource("17_patha")]
+[node name="Path9" type="Node3D" parent="Paths"]
 transform = Transform3D(0, 0, -1.08, 0, 1.08, 0, 1.08, 0, 0, -3, 0, -10.9784)
+script = ExtResource("ph_script")
+kind = "Weg"
+size = Vector3(1.903, 0.04, 1.884)
+offset = Vector3(-0.014, 0, 0.003)
 
-[node name="Path10" parent="Paths" instance=ExtResource("17_patha")]
+[node name="Path10" type="Node3D" parent="Paths"]
 transform = Transform3D(1.08, 0, 0, 0, 1.08, 0, 0, 0, 1.08, -0.9784, 0, -11)
+script = ExtResource("ph_script")
+kind = "Weg"
+size = Vector3(1.903, 0.04, 1.884)
+offset = Vector3(-0.014, 0, 0.003)
 
-[node name="Path11" parent="Paths" instance=ExtResource("17_patha")]
+[node name="Path11" type="Node3D" parent="Paths"]
 transform = Transform3D(1.08, 0, 0, 0, 1.08, 0, 0, 0, 1.08, 1.0216, 0, -11)
+script = ExtResource("ph_script")
+kind = "Weg"
+size = Vector3(1.903, 0.04, 1.884)
+offset = Vector3(-0.014, 0, 0.003)
 
-[node name="Path12" parent="Paths" instance=ExtResource("18_pathc")]
+[node name="Path12" type="Node3D" parent="Paths"]
 transform = Transform3D(0, 0, -1.08, 0, 1.08, 0, 1.08, 0, 0, 3.0108, 0, -11.0162)
+script = ExtResource("ph_script")
+kind = "Weg"
+size = Vector3(1.85, 0.04, 1.857)
+offset = Vector3(0.012, 0, 0.003)
 
-[node name="Path13" parent="Paths" instance=ExtResource("17_patha")]
+[node name="Path13" type="Node3D" parent="Paths"]
 transform = Transform3D(0, 0, 1.08, 0, 1.08, 0, -1.08, 0, 0, -3, 0, -9.0216)
+script = ExtResource("ph_script")
+kind = "Weg"
+size = Vector3(1.903, 0.04, 1.884)
+offset = Vector3(-0.014, 0, 0.003)
 
-[node name="Path14" parent="Paths" instance=ExtResource("17_patha")]
+[node name="Path14" type="Node3D" parent="Paths"]
 transform = Transform3D(0, 0, 1.08, 0, 1.08, 0, -1.08, 0, 0, -1, 0, -9.0216)
+script = ExtResource("ph_script")
+kind = "Weg"
+size = Vector3(1.903, 0.04, 1.884)
+offset = Vector3(-0.014, 0, 0.003)
 
-[node name="Path15" parent="Paths" instance=ExtResource("16_pathb")]
+[node name="Path15" type="Node3D" parent="Paths"]
 transform = Transform3D(0, 0, -1.08, 0, 1.08, 0, 1.08, 0, 0, 1, 0, -9.0162)
+script = ExtResource("ph_script")
+kind = "Weg"
+size = Vector3(1.886, 0.04, 1.856)
+offset = Vector3(0.01, 0, -0.002)
 
-[node name="Path16" parent="Paths" instance=ExtResource("17_patha")]
+[node name="Path16" type="Node3D" parent="Paths"]
 transform = Transform3D(1.08, 0, 0, 0, 1.08, 0, 0, 0, 1.08, 3.0216, 0, -9)
+script = ExtResource("ph_script")
+kind = "Weg"
+size = Vector3(1.903, 0.04, 1.884)
+offset = Vector3(-0.014, 0, 0.003)
 
-[node name="Path17" parent="Paths" instance=ExtResource("18_pathc")]
+[node name="Path17" type="Node3D" parent="Paths"]
 transform = Transform3D(-1.08, 0, 0, 0, 1.08, 0, 0, 0, -1.08, -0.9838, 0, -6.9892)
+script = ExtResource("ph_script")
+kind = "Weg"
+size = Vector3(1.85, 0.04, 1.857)
+offset = Vector3(0.012, 0, 0.003)
 
-[node name="Path18" parent="Paths" instance=ExtResource("18_pathc")]
+[node name="Path18" type="Node3D" parent="Paths"]
 transform = Transform3D(0, 0, 1.08, 0, 1.08, 0, -1.08, 0, 0, 0.9892, 0, -6.9838)
+script = ExtResource("ph_script")
+kind = "Weg"
+size = Vector3(1.85, 0.04, 1.857)
+offset = Vector3(0.012, 0, 0.003)
 
-[node name="Path19" parent="Paths" instance=ExtResource("17_patha")]
+[node name="Path19" type="Node3D" parent="Paths"]
 transform = Transform3D(0, 0, 1.08, 0, 1.08, 0, -1.08, 0, 0, -1, 0, -5.0216)
+script = ExtResource("ph_script")
+kind = "Weg"
+size = Vector3(1.903, 0.04, 1.884)
+offset = Vector3(-0.014, 0, 0.003)
 
-[node name="Path20" parent="Paths" instance=ExtResource("16_pathb")]
+[node name="Path20" type="Node3D" parent="Paths"]
 transform = Transform3D(1.08, 0, 0, 0, 1.08, 0, 0, 0, 1.08, 0.9838, 0, -5)
+script = ExtResource("ph_script")
+kind = "Weg"
+size = Vector3(1.886, 0.04, 1.856)
+offset = Vector3(0.01, 0, -0.002)
 
-[node name="Path21" parent="Paths" instance=ExtResource("18_pathc")]
+[node name="Path21" type="Node3D" parent="Paths"]
 transform = Transform3D(1.08, 0, 0, 0, 1.08, 0, 0, 0, 1.08, -1.0162, 0, -3.0108)
+script = ExtResource("ph_script")
+kind = "Weg"
+size = Vector3(1.85, 0.04, 1.857)
+offset = Vector3(0.012, 0, 0.003)
 
-[node name="Path22" parent="Paths" instance=ExtResource("18_pathc")]
+[node name="Path22" type="Node3D" parent="Paths"]
 transform = Transform3D(1.08, 0, 0, 0, 1.08, 0, 0, 0, 1.08, 0.9838, 0, -3.0108)
+script = ExtResource("ph_script")
+kind = "Weg"
+size = Vector3(1.85, 0.04, 1.857)
+offset = Vector3(0.012, 0, 0.003)
 
-[node name="Path23" parent="Paths" instance=ExtResource("18_pathc")]
+[node name="Path23" type="Node3D" parent="Paths"]
 transform = Transform3D(0, 0, 1.08, 0, 1.08, 0, -1.08, 0, 0, -1.0108, 0, -0.9838)
+script = ExtResource("ph_script")
+kind = "Weg"
+size = Vector3(1.85, 0.04, 1.857)
+offset = Vector3(0.012, 0, 0.003)
 
-[node name="Path24" parent="Paths" instance=ExtResource("16_pathb")]
+[node name="Path24" type="Node3D" parent="Paths"]
 transform = Transform3D(0, 0, -1.08, 0, 1.08, 0, 1.08, 0, 0, 1, 0, -1.0162)
+script = ExtResource("ph_script")
+kind = "Weg"
+size = Vector3(1.886, 0.04, 1.856)
+offset = Vector3(0.01, 0, -0.002)
 
-[node name="Path25" parent="Paths" instance=ExtResource("16_pathb")]
+[node name="Path25" type="Node3D" parent="Paths"]
 transform = Transform3D(0, 0, -1.08, 0, 1.08, 0, 1.08, 0, 0, -1, 0, 0.9838)
+script = ExtResource("ph_script")
+kind = "Weg"
+size = Vector3(1.886, 0.04, 1.856)
+offset = Vector3(0.01, 0, -0.002)
 
-[node name="Path26" parent="Paths" instance=ExtResource("18_pathc")]
+[node name="Path26" type="Node3D" parent="Paths"]
 transform = Transform3D(0, 0, -1.08, 0, 1.08, 0, 1.08, 0, 0, 1.0108, 0, 0.9838)
+script = ExtResource("ph_script")
+kind = "Weg"
+size = Vector3(1.85, 0.04, 1.857)
+offset = Vector3(0.012, 0, 0.003)
 
-[node name="Path27" parent="Paths" instance=ExtResource("16_pathb")]
+[node name="Path27" type="Node3D" parent="Paths"]
 transform = Transform3D(-1.08, 0, 0, 0, 1.08, 0, 0, 0, -1.08, -0.9838, 0, 3)
+script = ExtResource("ph_script")
+kind = "Weg"
+size = Vector3(1.886, 0.04, 1.856)
+offset = Vector3(0.01, 0, -0.002)
 
-[node name="Path28" parent="Paths" instance=ExtResource("17_patha")]
+[node name="Path28" type="Node3D" parent="Paths"]
 transform = Transform3D(0, 0, 1.08, 0, 1.08, 0, -1.08, 0, 0, 1, 0, 2.9784)
+script = ExtResource("ph_script")
+kind = "Weg"
+size = Vector3(1.903, 0.04, 1.884)
+offset = Vector3(-0.014, 0, 0.003)
 
-[node name="Path29" parent="Paths" instance=ExtResource("18_pathc")]
+[node name="Path29" type="Node3D" parent="Paths"]
 transform = Transform3D(0, 0, 1.08, 0, 1.08, 0, -1.08, 0, 0, -1.0108, 0, 5.0162)
+script = ExtResource("ph_script")
+kind = "Weg"
+size = Vector3(1.85, 0.04, 1.857)
+offset = Vector3(0.012, 0, 0.003)
 
-[node name="Path30" parent="Paths" instance=ExtResource("17_patha")]
+[node name="Path30" type="Node3D" parent="Paths"]
 transform = Transform3D(-1.08, 0, 0, 0, 1.08, 0, 0, 0, -1.08, 0.9784, 0, 5)
+script = ExtResource("ph_script")
+kind = "Weg"
+size = Vector3(1.903, 0.04, 1.884)
+offset = Vector3(-0.014, 0, 0.003)
 
-[node name="Path31" parent="Paths" instance=ExtResource("18_pathc")]
+[node name="Path31" type="Node3D" parent="Paths"]
 transform = Transform3D(0, 0, -1.08, 0, 1.08, 0, 1.08, 0, 0, -0.9892, 0, 6.9838)
+script = ExtResource("ph_script")
+kind = "Weg"
+size = Vector3(1.85, 0.04, 1.857)
+offset = Vector3(0.012, 0, 0.003)
 
-[node name="Path32" parent="Paths" instance=ExtResource("16_pathb")]
+[node name="Path32" type="Node3D" parent="Paths"]
 transform = Transform3D(0, 0, -1.08, 0, 1.08, 0, 1.08, 0, 0, 1, 0, 6.9838)
+script = ExtResource("ph_script")
+kind = "Weg"
+size = Vector3(1.886, 0.04, 1.856)
+offset = Vector3(0.01, 0, -0.002)
 
-[node name="Path33" parent="Paths" instance=ExtResource("16_pathb")]
+[node name="Path33" type="Node3D" parent="Paths"]
 transform = Transform3D(1.08, 0, 0, 0, 1.08, 0, 0, 0, 1.08, -1.0162, 0, 9)
+script = ExtResource("ph_script")
+kind = "Weg"
+size = Vector3(1.886, 0.04, 1.856)
+offset = Vector3(0.01, 0, -0.002)
 
-[node name="Path34" parent="Paths" instance=ExtResource("17_patha")]
+[node name="Path34" type="Node3D" parent="Paths"]
 transform = Transform3D(0, 0, -1.08, 0, 1.08, 0, 1.08, 0, 0, 1, 0, 9.0216)
+script = ExtResource("ph_script")
+kind = "Weg"
+size = Vector3(1.903, 0.04, 1.884)
+offset = Vector3(-0.014, 0, 0.003)
 
-[node name="Path35" parent="Paths" instance=ExtResource("17_patha")]
+[node name="Path35" type="Node3D" parent="Paths"]
 transform = Transform3D(-1.08, 0, 0, 0, 1.08, 0, 0, 0, -1.08, -1.0216, 0, 11)
+script = ExtResource("ph_script")
+kind = "Weg"
+size = Vector3(1.903, 0.04, 1.884)
+offset = Vector3(-0.014, 0, 0.003)
 
-[node name="Path36" parent="Paths" instance=ExtResource("17_patha")]
+[node name="Path36" type="Node3D" parent="Paths"]
 transform = Transform3D(0, 0, -1.08, 0, 1.08, 0, 1.08, 0, 0, 1, 0, 11.0216)
+script = ExtResource("ph_script")
+kind = "Weg"
+size = Vector3(1.903, 0.04, 1.884)
+offset = Vector3(-0.014, 0, 0.003)
 
-[node name="Path37" parent="Paths" instance=ExtResource("16_pathb")]
+[node name="Path37" type="Node3D" parent="Paths"]
 transform = Transform3D(1.08, 0, 0, 0, 1.08, 0, 0, 0, 1.08, -1.0162, 0, 13)
+script = ExtResource("ph_script")
+kind = "Weg"
+size = Vector3(1.886, 0.04, 1.856)
+offset = Vector3(0.01, 0, -0.002)
 
-[node name="Path38" parent="Paths" instance=ExtResource("18_pathc")]
+[node name="Path38" type="Node3D" parent="Paths"]
 transform = Transform3D(1.08, 0, 0, 0, 1.08, 0, 0, 0, 1.08, 0.9838, 0, 12.9892)
+script = ExtResource("ph_script")
+kind = "Weg"
+size = Vector3(1.85, 0.04, 1.857)
+offset = Vector3(0.012, 0, 0.003)
 
-[node name="Path39" parent="Paths" instance=ExtResource("18_pathc")]
+[node name="Path39" type="Node3D" parent="Paths"]
 transform = Transform3D(-1.08, 0, 0, 0, 1.08, 0, 0, 0, -1.08, -0.9838, 0, 15.0108)
+script = ExtResource("ph_script")
+kind = "Weg"
+size = Vector3(1.85, 0.04, 1.857)
+offset = Vector3(0.012, 0, 0.003)
 
-[node name="Path40" parent="Paths" instance=ExtResource("16_pathb")]
+[node name="Path40" type="Node3D" parent="Paths"]
 transform = Transform3D(-1.08, 0, 0, 0, 1.08, 0, 0, 0, -1.08, 1.0162, 0, 15)
+script = ExtResource("ph_script")
+kind = "Weg"
+size = Vector3(1.886, 0.04, 1.856)
+offset = Vector3(0.01, 0, -0.002)
 
-[node name="Fence" parent="Decor" instance=ExtResource("19_fence")]
+[node name="Fence" type="Node3D" parent="Decor"]
 transform = Transform3D(0, 0, 3.5, 0, 3.5, 0, -3.5, 0, 0, -17.9825, 0, -23.5)
+script = ExtResource("ph_script")
+kind = "Zaun"
+size = Vector3(0.1, 0.55, 1.155)
+offset = Vector3(-1, -0.05, -0)
 
-[node name="Fence2" parent="Decor" instance=ExtResource("19_fence")]
+[node name="Fence2" type="Node3D" parent="Decor"]
 transform = Transform3D(0, 0, 3.5, 0, 3.5, 0, -3.5, 0, 0, -17.9825, 0, 16.5)
+script = ExtResource("ph_script")
+kind = "Zaun"
+size = Vector3(0.1, 0.55, 1.155)
+offset = Vector3(-1, -0.05, -0)
 
-[node name="Fence3" parent="Decor" instance=ExtResource("19_fence")]
+[node name="Fence3" type="Node3D" parent="Decor"]
 transform = Transform3D(3.5, 0, 0, 0, 3.5, 0, 0, 0, 3.5, -16.5, 0, -17.9825)
+script = ExtResource("ph_script")
+kind = "Zaun"
+size = Vector3(0.1, 0.55, 1.155)
+offset = Vector3(-1, -0.05, -0)
 
-[node name="Fence4" parent="Decor" instance=ExtResource("19_fence")]
+[node name="Fence4" type="Node3D" parent="Decor"]
 transform = Transform3D(3.5, 0, 0, 0, 3.5, 0, 0, 0, 3.5, 23.5, 0, -17.9825)
+script = ExtResource("ph_script")
+kind = "Zaun"
+size = Vector3(0.1, 0.55, 1.155)
+offset = Vector3(-1, -0.05, -0)
 
-[node name="Fence5" parent="Decor" instance=ExtResource("19_fence")]
+[node name="Fence5" type="Node3D" parent="Decor"]
 transform = Transform3D(0, 0, 3.5, 0, 3.5, 0, -3.5, 0, 0, -13.9825, 0, -23.5)
+script = ExtResource("ph_script")
+kind = "Zaun"
+size = Vector3(0.1, 0.55, 1.155)
+offset = Vector3(-1, -0.05, -0)
 
-[node name="Fence6" parent="Decor" instance=ExtResource("19_fence")]
+[node name="Fence6" type="Node3D" parent="Decor"]
 transform = Transform3D(0, 0, 3.5, 0, 3.5, 0, -3.5, 0, 0, -13.9825, 0, 16.5)
+script = ExtResource("ph_script")
+kind = "Zaun"
+size = Vector3(0.1, 0.55, 1.155)
+offset = Vector3(-1, -0.05, -0)
 
-[node name="Fence7" parent="Decor" instance=ExtResource("19_fence")]
+[node name="Fence7" type="Node3D" parent="Decor"]
 transform = Transform3D(3.5, 0, 0, 0, 3.5, 0, 0, 0, 3.5, -16.5, 0, -13.9825)
+script = ExtResource("ph_script")
+kind = "Zaun"
+size = Vector3(0.1, 0.55, 1.155)
+offset = Vector3(-1, -0.05, -0)
 
-[node name="Fence8" parent="Decor" instance=ExtResource("19_fence")]
+[node name="Fence8" type="Node3D" parent="Decor"]
 transform = Transform3D(3.5, 0, 0, 0, 3.5, 0, 0, 0, 3.5, 23.5, 0, -13.9825)
+script = ExtResource("ph_script")
+kind = "Zaun"
+size = Vector3(0.1, 0.55, 1.155)
+offset = Vector3(-1, -0.05, -0)
 
-[node name="Fence9" parent="Decor" instance=ExtResource("19_fence")]
+[node name="Fence9" type="Node3D" parent="Decor"]
 transform = Transform3D(0, 0, 3.5, 0, 3.5, 0, -3.5, 0, 0, -9.9825, 0, -23.5)
+script = ExtResource("ph_script")
+kind = "Zaun"
+size = Vector3(0.1, 0.55, 1.155)
+offset = Vector3(-1, -0.05, -0)
 
-[node name="Fence10" parent="Decor" instance=ExtResource("19_fence")]
+[node name="Fence10" type="Node3D" parent="Decor"]
 transform = Transform3D(0, 0, 3.5, 0, 3.5, 0, -3.5, 0, 0, -9.9825, 0, 16.5)
+script = ExtResource("ph_script")
+kind = "Zaun"
+size = Vector3(0.1, 0.55, 1.155)
+offset = Vector3(-1, -0.05, -0)
 
-[node name="Fence11" parent="Decor" instance=ExtResource("19_fence")]
+[node name="Fence11" type="Node3D" parent="Decor"]
 transform = Transform3D(3.5, 0, 0, 0, 3.5, 0, 0, 0, 3.5, -16.5, 0, -9.9825)
+script = ExtResource("ph_script")
+kind = "Zaun"
+size = Vector3(0.1, 0.55, 1.155)
+offset = Vector3(-1, -0.05, -0)
 
-[node name="Fence12" parent="Decor" instance=ExtResource("19_fence")]
+[node name="Fence12" type="Node3D" parent="Decor"]
 transform = Transform3D(3.5, 0, 0, 0, 3.5, 0, 0, 0, 3.5, 23.5, 0, -9.9825)
+script = ExtResource("ph_script")
+kind = "Zaun"
+size = Vector3(0.1, 0.55, 1.155)
+offset = Vector3(-1, -0.05, -0)
 
-[node name="Fence13" parent="Decor" instance=ExtResource("19_fence")]
+[node name="Fence13" type="Node3D" parent="Decor"]
 transform = Transform3D(0, 0, 3.5, 0, 3.5, 0, -3.5, 0, 0, -5.9825, 0, -23.5)
+script = ExtResource("ph_script")
+kind = "Zaun"
+size = Vector3(0.1, 0.55, 1.155)
+offset = Vector3(-1, -0.05, -0)
 
-[node name="Fence14" parent="Decor" instance=ExtResource("19_fence")]
+[node name="Fence14" type="Node3D" parent="Decor"]
 transform = Transform3D(0, 0, 3.5, 0, 3.5, 0, -3.5, 0, 0, -5.9825, 0, 16.5)
+script = ExtResource("ph_script")
+kind = "Zaun"
+size = Vector3(0.1, 0.55, 1.155)
+offset = Vector3(-1, -0.05, -0)
 
-[node name="Fence15" parent="Decor" instance=ExtResource("19_fence")]
+[node name="Fence15" type="Node3D" parent="Decor"]
 transform = Transform3D(3.5, 0, 0, 0, 3.5, 0, 0, 0, 3.5, -16.5, 0, -5.9825)
+script = ExtResource("ph_script")
+kind = "Zaun"
+size = Vector3(0.1, 0.55, 1.155)
+offset = Vector3(-1, -0.05, -0)
 
-[node name="Fence16" parent="Decor" instance=ExtResource("19_fence")]
+[node name="Fence16" type="Node3D" parent="Decor"]
 transform = Transform3D(3.5, 0, 0, 0, 3.5, 0, 0, 0, 3.5, 23.5, 0, -5.9825)
+script = ExtResource("ph_script")
+kind = "Zaun"
+size = Vector3(0.1, 0.55, 1.155)
+offset = Vector3(-1, -0.05, -0)
 
-[node name="Fence17" parent="Decor" instance=ExtResource("19_fence")]
+[node name="Fence17" type="Node3D" parent="Decor"]
 transform = Transform3D(0, 0, 3.5, 0, 3.5, 0, -3.5, 0, 0, -1.9825, 0, -23.5)
+script = ExtResource("ph_script")
+kind = "Zaun"
+size = Vector3(0.1, 0.55, 1.155)
+offset = Vector3(-1, -0.05, -0)
 
-[node name="Fence18" parent="Decor" instance=ExtResource("19_fence")]
+[node name="Fence18" type="Node3D" parent="Decor"]
 transform = Transform3D(0, 0, 3.5, 0, 3.5, 0, -3.5, 0, 0, -1.9825, 0, 16.5)
+script = ExtResource("ph_script")
+kind = "Zaun"
+size = Vector3(0.1, 0.55, 1.155)
+offset = Vector3(-1, -0.05, -0)
 
-[node name="Fence19" parent="Decor" instance=ExtResource("19_fence")]
+[node name="Fence19" type="Node3D" parent="Decor"]
 transform = Transform3D(3.5, 0, 0, 0, 3.5, 0, 0, 0, 3.5, -16.5, 0, -1.9825)
+script = ExtResource("ph_script")
+kind = "Zaun"
+size = Vector3(0.1, 0.55, 1.155)
+offset = Vector3(-1, -0.05, -0)
 
-[node name="Fence20" parent="Decor" instance=ExtResource("19_fence")]
+[node name="Fence20" type="Node3D" parent="Decor"]
 transform = Transform3D(3.5, 0, 0, 0, 3.5, 0, 0, 0, 3.5, 23.5, 0, -1.9825)
+script = ExtResource("ph_script")
+kind = "Zaun"
+size = Vector3(0.1, 0.55, 1.155)
+offset = Vector3(-1, -0.05, -0)
 
-[node name="Fence21" parent="Decor" instance=ExtResource("19_fence")]
+[node name="Fence21" type="Node3D" parent="Decor"]
 transform = Transform3D(0, 0, 3.5, 0, 3.5, 0, -3.5, 0, 0, 2.0175, 0, -23.5)
+script = ExtResource("ph_script")
+kind = "Zaun"
+size = Vector3(0.1, 0.55, 1.155)
+offset = Vector3(-1, -0.05, -0)
 
-[node name="Fence22" parent="Decor" instance=ExtResource("19_fence")]
+[node name="Fence22" type="Node3D" parent="Decor"]
 transform = Transform3D(0, 0, 3.5, 0, 3.5, 0, -3.5, 0, 0, 2.0175, 0, 16.5)
+script = ExtResource("ph_script")
+kind = "Zaun"
+size = Vector3(0.1, 0.55, 1.155)
+offset = Vector3(-1, -0.05, -0)
 
-[node name="Fence23" parent="Decor" instance=ExtResource("19_fence")]
+[node name="Fence23" type="Node3D" parent="Decor"]
 transform = Transform3D(3.5, 0, 0, 0, 3.5, 0, 0, 0, 3.5, -16.5, 0, 2.0175)
+script = ExtResource("ph_script")
+kind = "Zaun"
+size = Vector3(0.1, 0.55, 1.155)
+offset = Vector3(-1, -0.05, -0)
 
-[node name="Fence24" parent="Decor" instance=ExtResource("19_fence")]
+[node name="Fence24" type="Node3D" parent="Decor"]
 transform = Transform3D(3.5, 0, 0, 0, 3.5, 0, 0, 0, 3.5, 23.5, 0, 2.0175)
+script = ExtResource("ph_script")
+kind = "Zaun"
+size = Vector3(0.1, 0.55, 1.155)
+offset = Vector3(-1, -0.05, -0)
 
-[node name="Fence25" parent="Decor" instance=ExtResource("19_fence")]
+[node name="Fence25" type="Node3D" parent="Decor"]
 transform = Transform3D(0, 0, 3.5, 0, 3.5, 0, -3.5, 0, 0, 6.0175, 0, -23.5)
+script = ExtResource("ph_script")
+kind = "Zaun"
+size = Vector3(0.1, 0.55, 1.155)
+offset = Vector3(-1, -0.05, -0)
 
-[node name="Fence26" parent="Decor" instance=ExtResource("19_fence")]
+[node name="Fence26" type="Node3D" parent="Decor"]
 transform = Transform3D(0, 0, 3.5, 0, 3.5, 0, -3.5, 0, 0, 6.0175, 0, 16.5)
+script = ExtResource("ph_script")
+kind = "Zaun"
+size = Vector3(0.1, 0.55, 1.155)
+offset = Vector3(-1, -0.05, -0)
 
-[node name="Fence27" parent="Decor" instance=ExtResource("19_fence")]
+[node name="Fence27" type="Node3D" parent="Decor"]
 transform = Transform3D(3.5, 0, 0, 0, 3.5, 0, 0, 0, 3.5, -16.5, 0, 6.0175)
+script = ExtResource("ph_script")
+kind = "Zaun"
+size = Vector3(0.1, 0.55, 1.155)
+offset = Vector3(-1, -0.05, -0)
 
-[node name="Fence28" parent="Decor" instance=ExtResource("19_fence")]
+[node name="Fence28" type="Node3D" parent="Decor"]
 transform = Transform3D(3.5, 0, 0, 0, 3.5, 0, 0, 0, 3.5, 23.5, 0, 6.0175)
+script = ExtResource("ph_script")
+kind = "Zaun"
+size = Vector3(0.1, 0.55, 1.155)
+offset = Vector3(-1, -0.05, -0)
 
-[node name="Fence29" parent="Decor" instance=ExtResource("19_fence")]
+[node name="Fence29" type="Node3D" parent="Decor"]
 transform = Transform3D(0, 0, 3.5, 0, 3.5, 0, -3.5, 0, 0, 10.0175, 0, -23.5)
+script = ExtResource("ph_script")
+kind = "Zaun"
+size = Vector3(0.1, 0.55, 1.155)
+offset = Vector3(-1, -0.05, -0)
 
-[node name="Fence30" parent="Decor" instance=ExtResource("19_fence")]
+[node name="Fence30" type="Node3D" parent="Decor"]
 transform = Transform3D(0, 0, 3.5, 0, 3.5, 0, -3.5, 0, 0, 10.0175, 0, 16.5)
+script = ExtResource("ph_script")
+kind = "Zaun"
+size = Vector3(0.1, 0.55, 1.155)
+offset = Vector3(-1, -0.05, -0)
 
-[node name="Fence31" parent="Decor" instance=ExtResource("19_fence")]
+[node name="Fence31" type="Node3D" parent="Decor"]
 transform = Transform3D(3.5, 0, 0, 0, 3.5, 0, 0, 0, 3.5, -16.5, 0, 10.0175)
+script = ExtResource("ph_script")
+kind = "Zaun"
+size = Vector3(0.1, 0.55, 1.155)
+offset = Vector3(-1, -0.05, -0)
 
-[node name="Fence32" parent="Decor" instance=ExtResource("19_fence")]
+[node name="Fence32" type="Node3D" parent="Decor"]
 transform = Transform3D(3.5, 0, 0, 0, 3.5, 0, 0, 0, 3.5, 23.5, 0, 10.0175)
+script = ExtResource("ph_script")
+kind = "Zaun"
+size = Vector3(0.1, 0.55, 1.155)
+offset = Vector3(-1, -0.05, -0)
 
-[node name="Fence33" parent="Decor" instance=ExtResource("19_fence")]
+[node name="Fence33" type="Node3D" parent="Decor"]
 transform = Transform3D(0, 0, 3.5, 0, 3.5, 0, -3.5, 0, 0, 14.0175, 0, -23.5)
+script = ExtResource("ph_script")
+kind = "Zaun"
+size = Vector3(0.1, 0.55, 1.155)
+offset = Vector3(-1, -0.05, -0)
 
-[node name="Fence34" parent="Decor" instance=ExtResource("19_fence")]
+[node name="Fence34" type="Node3D" parent="Decor"]
 transform = Transform3D(0, 0, 3.5, 0, 3.5, 0, -3.5, 0, 0, 14.0175, 0, 16.5)
+script = ExtResource("ph_script")
+kind = "Zaun"
+size = Vector3(0.1, 0.55, 1.155)
+offset = Vector3(-1, -0.05, -0)
 
-[node name="Fence35" parent="Decor" instance=ExtResource("19_fence")]
+[node name="Fence35" type="Node3D" parent="Decor"]
 transform = Transform3D(3.5, 0, 0, 0, 3.5, 0, 0, 0, 3.5, -16.5, 0, 14.0175)
+script = ExtResource("ph_script")
+kind = "Zaun"
+size = Vector3(0.1, 0.55, 1.155)
+offset = Vector3(-1, -0.05, -0)
 
-[node name="Fence36" parent="Decor" instance=ExtResource("19_fence")]
+[node name="Fence36" type="Node3D" parent="Decor"]
 transform = Transform3D(3.5, 0, 0, 0, 3.5, 0, 0, 0, 3.5, 23.5, 0, 14.0175)
+script = ExtResource("ph_script")
+kind = "Zaun"
+size = Vector3(0.1, 0.55, 1.155)
+offset = Vector3(-1, -0.05, -0)
 
-[node name="Fence37" parent="Decor" instance=ExtResource("19_fence")]
+[node name="Fence37" type="Node3D" parent="Decor"]
 transform = Transform3D(0, 0, 3.5, 0, 3.5, 0, -3.5, 0, 0, 18.0175, 0, -23.5)
+script = ExtResource("ph_script")
+kind = "Zaun"
+size = Vector3(0.1, 0.55, 1.155)
+offset = Vector3(-1, -0.05, -0)
 
-[node name="Fence38" parent="Decor" instance=ExtResource("19_fence")]
+[node name="Fence38" type="Node3D" parent="Decor"]
 transform = Transform3D(0, 0, 3.5, 0, 3.5, 0, -3.5, 0, 0, 18.0175, 0, 16.5)
+script = ExtResource("ph_script")
+kind = "Zaun"
+size = Vector3(0.1, 0.55, 1.155)
+offset = Vector3(-1, -0.05, -0)
 
-[node name="Fence39" parent="Decor" instance=ExtResource("19_fence")]
+[node name="Fence39" type="Node3D" parent="Decor"]
 transform = Transform3D(3.5, 0, 0, 0, 3.5, 0, 0, 0, 3.5, -16.5, 0, 18.0175)
+script = ExtResource("ph_script")
+kind = "Zaun"
+size = Vector3(0.1, 0.55, 1.155)
+offset = Vector3(-1, -0.05, -0)
 
-[node name="Fence40" parent="Decor" instance=ExtResource("19_fence")]
+[node name="Fence40" type="Node3D" parent="Decor"]
 transform = Transform3D(3.5, 0, 0, 0, 3.5, 0, 0, 0, 3.5, 23.5, 0, 18.0175)
+script = ExtResource("ph_script")
+kind = "Zaun"
+size = Vector3(0.1, 0.55, 1.155)
+offset = Vector3(-1, -0.05, -0)
 
-[node name="Tree" parent="Decor" instance=ExtResource("20_trees")]
+[node name="Tree" type="Node3D" parent="Decor"]
 transform = Transform3D(3.3059, 0, 1.5244, 0, 3.6404, 0, -1.5244, 0, 3.3059, -29.7653, 0, -26.8165)
+script = ExtResource("ph_script")
+kind = "Bäume"
+size = Vector3(1.864, 1.174, 1.833)
+offset = Vector3(0.04, -0.021, -0.057)
 
-[node name="Tree2" parent="Decor" instance=ExtResource("21_trees")]
+[node name="Tree2" type="Node3D" parent="Decor"]
 transform = Transform3D(4.2255, 0, 1.6936, 0, 4.5522, 0, -1.6936, 0, 4.2255, -25.1267, 0, -27.7821)
+script = ExtResource("ph_script")
+kind = "Baum"
+size = Vector3(0.574, 1.196, 0.547)
+offset = Vector3(-0.001, -0.103, -0.028)
 
-[node name="Tree3" parent="Decor" instance=ExtResource("20_trees")]
+[node name="Tree3" type="Node3D" parent="Decor"]
 transform = Transform3D(-0.8796, 0, 3.9827, 0, 4.0787, 0, -3.9827, 0, -0.8796, -18.3044, 0, -29.8407)
+script = ExtResource("ph_script")
+kind = "Bäume"
+size = Vector3(1.864, 1.174, 1.833)
+offset = Vector3(0.04, -0.021, -0.057)
 
-[node name="Tree4" parent="Decor" instance=ExtResource("20_trees")]
+[node name="Tree4" type="Node3D" parent="Decor"]
 transform = Transform3D(-2.717, 0, 3.4817, 0, 4.4164, 0, -3.4817, 0, -2.717, -12.6939, 0, -23.1681)
+script = ExtResource("ph_script")
+kind = "Bäume"
+size = Vector3(1.864, 1.174, 1.833)
+offset = Vector3(0.04, -0.021, -0.057)
 
-[node name="Tree5" parent="Decor" instance=ExtResource("22_trees")]
+[node name="Tree5" type="Node3D" parent="Decor"]
 transform = Transform3D(2.6618, 0, 2.8111, 0, 3.8714, 0, -2.8111, 0, 2.6618, -8.1572, 0, -24.5785)
+script = ExtResource("ph_script")
+kind = "Bäume"
+size = Vector3(1.751, 1.295, 1.814)
+offset = Vector3(0.014, -0.02, 0.034)
 
-[node name="Tree6" parent="Decor" instance=ExtResource("21_trees")]
+[node name="Tree6" type="Node3D" parent="Decor"]
 transform = Transform3D(2.0579, 0, 3.549, 0, 4.1025, 0, -3.549, 0, 2.0579, -2.7281, 0, -29.0663)
+script = ExtResource("ph_script")
+kind = "Baum"
+size = Vector3(0.574, 1.196, 0.547)
+offset = Vector3(-0.001, -0.103, -0.028)
 
-[node name="Tree7" parent="Decor" instance=ExtResource("20_trees")]
+[node name="Tree7" type="Node3D" parent="Decor"]
 transform = Transform3D(2.572, 0, -2.9551, 0, 3.9176, 0, 2.9551, 0, 2.572, 2.0681, 0, -23.9352)
+script = ExtResource("ph_script")
+kind = "Bäume"
+size = Vector3(1.864, 1.174, 1.833)
+offset = Vector3(0.04, -0.021, -0.057)
 
-[node name="Tree8" parent="Decor" instance=ExtResource("20_trees")]
+[node name="Tree8" type="Node3D" parent="Decor"]
 transform = Transform3D(3.5957, 0, -0.9781, 0, 3.7264, 0, 0.9781, 0, 3.5957, 8.0483, 0, -25.3528)
+script = ExtResource("ph_script")
+kind = "Bäume"
+size = Vector3(1.864, 1.174, 1.833)
+offset = Vector3(0.04, -0.021, -0.057)
 
-[node name="Tree9" parent="Decor" instance=ExtResource("23_trees")]
+[node name="Tree9" type="Node3D" parent="Decor"]
 transform = Transform3D(4.733, 0, 0.3594, 0, 4.7466, 0, -0.3594, 0, 4.733, 13.0287, 0, -24.6237)
+script = ExtResource("ph_script")
+kind = "Baum"
+size = Vector3(0.685, 1.213, 0.72)
+offset = Vector3(0, -0.1, -0)
 
-[node name="Tree10" parent="Decor" instance=ExtResource("23_trees")]
+[node name="Tree10" type="Node3D" parent="Decor"]
 transform = Transform3D(-3.5394, 0, 1.9764, 0, 4.0539, 0, -1.9764, 0, -3.5394, 18.547, 0, -24.9735)
+script = ExtResource("ph_script")
+kind = "Baum"
+size = Vector3(0.685, 1.213, 0.72)
+offset = Vector3(0, -0.1, -0)
 
-[node name="Tree11" parent="Decor" instance=ExtResource("21_trees")]
+[node name="Tree11" type="Node3D" parent="Decor"]
 transform = Transform3D(-4.6292, 0, 1.2932, 0, 4.8065, 0, -1.2932, 0, -4.6292, 25.2082, 0, -29.7939)
+script = ExtResource("ph_script")
+kind = "Baum"
+size = Vector3(0.574, 1.196, 0.547)
+offset = Vector3(-0.001, -0.103, -0.028)
 
-[node name="Tree12" parent="Decor" instance=ExtResource("20_trees")]
+[node name="Tree12" type="Node3D" parent="Decor"]
 transform = Transform3D(-3.2804, 0, 2.4447, 0, 4.0912, 0, -2.4447, 0, -3.2804, 32.1213, 0, -27.8467)
+script = ExtResource("ph_script")
+kind = "Bäume"
+size = Vector3(1.864, 1.174, 1.833)
+offset = Vector3(0.04, -0.021, -0.057)
 
-[node name="Tree13" parent="Decor" instance=ExtResource("23_trees")]
+[node name="Tree13" type="Node3D" parent="Decor"]
 transform = Transform3D(3.4768, 0, 1.5658, 0, 3.8131, 0, -1.5658, 0, 3.4768, -30.0554, 0, 25.8031)
+script = ExtResource("ph_script")
+kind = "Baum"
+size = Vector3(0.685, 1.213, 0.72)
+offset = Vector3(0, -0.1, -0)
 
-[node name="Tree14" parent="Decor" instance=ExtResource("21_trees")]
+[node name="Tree14" type="Node3D" parent="Decor"]
 transform = Transform3D(3.4807, 0, 2.6093, 0, 4.3502, 0, -2.6093, 0, 3.4807, -25.4305, 0, 25.4543)
+script = ExtResource("ph_script")
+kind = "Baum"
+size = Vector3(0.574, 1.196, 0.547)
+offset = Vector3(-0.001, -0.103, -0.028)
 
-[node name="Tree15" parent="Decor" instance=ExtResource("21_trees")]
+[node name="Tree15" type="Node3D" parent="Decor"]
 transform = Transform3D(3.4459, 0, 1.6299, 0, 3.8119, 0, -1.6299, 0, 3.4459, -18.8322, 0, 29.7206)
+script = ExtResource("ph_script")
+kind = "Baum"
+size = Vector3(0.574, 1.196, 0.547)
+offset = Vector3(-0.001, -0.103, -0.028)
 
-[node name="Tree16" parent="Decor" instance=ExtResource("22_trees")]
+[node name="Tree16" type="Node3D" parent="Decor"]
 transform = Transform3D(-3.3712, 0, -2.5238, 0, 4.2112, 0, 2.5238, 0, -3.3712, -13.7324, 0, 27.521)
+script = ExtResource("ph_script")
+kind = "Bäume"
+size = Vector3(1.751, 1.295, 1.814)
+offset = Vector3(0.014, -0.02, 0.034)
 
-[node name="Tree17" parent="Decor" instance=ExtResource("20_trees")]
+[node name="Tree17" type="Node3D" parent="Decor"]
 transform = Transform3D(-3.9377, 0, 0.4875, 0, 3.9678, 0, -0.4875, 0, -3.9377, -8.9696, 0, 26.2194)
+script = ExtResource("ph_script")
+kind = "Bäume"
+size = Vector3(1.864, 1.174, 1.833)
+offset = Vector3(0.04, -0.021, -0.057)
 
-[node name="Tree18" parent="Decor" instance=ExtResource("22_trees")]
+[node name="Tree18" type="Node3D" parent="Decor"]
 transform = Transform3D(-4.4972, 0, 0.6077, 0, 4.5381, 0, -0.6077, 0, -4.4972, -3.5215, 0, 28.4142)
+script = ExtResource("ph_script")
+kind = "Bäume"
+size = Vector3(1.751, 1.295, 1.814)
+offset = Vector3(0.014, -0.02, 0.034)
 
-[node name="Tree19" parent="Decor" instance=ExtResource("22_trees")]
+[node name="Tree19" type="Node3D" parent="Decor"]
 transform = Transform3D(2.6101, 0, 3.4358, 0, 4.3148, 0, -3.4358, 0, 2.6101, 2.8896, 0, 24.3967)
+script = ExtResource("ph_script")
+kind = "Bäume"
+size = Vector3(1.751, 1.295, 1.814)
+offset = Vector3(0.014, -0.02, 0.034)
 
-[node name="Tree20" parent="Decor" instance=ExtResource("21_trees")]
+[node name="Tree20" type="Node3D" parent="Decor"]
 transform = Transform3D(-1.2907, 0, -3.6714, 0, 3.8917, 0, 3.6714, 0, -1.2907, 6.9829, 0, 26.6829)
+script = ExtResource("ph_script")
+kind = "Baum"
+size = Vector3(0.574, 1.196, 0.547)
+offset = Vector3(-0.001, -0.103, -0.028)
 
-[node name="Tree21" parent="Decor" instance=ExtResource("23_trees")]
+[node name="Tree21" type="Node3D" parent="Decor"]
 transform = Transform3D(-4.571, 0, -0.9494, 0, 4.6686, 0, 0.9494, 0, -4.571, 13.6001, 0, 24.1693)
+script = ExtResource("ph_script")
+kind = "Baum"
+size = Vector3(0.685, 1.213, 0.72)
+offset = Vector3(0, -0.1, -0)
 
-[node name="Tree22" parent="Decor" instance=ExtResource("23_trees")]
+[node name="Tree22" type="Node3D" parent="Decor"]
 transform = Transform3D(1.6315, 0, -4.4371, 0, 4.7275, 0, 4.4371, 0, 1.6315, 18.989, 0, 24.5613)
+script = ExtResource("ph_script")
+kind = "Baum"
+size = Vector3(0.685, 1.213, 0.72)
+offset = Vector3(0, -0.1, -0)
 
-[node name="Tree23" parent="Decor" instance=ExtResource("20_trees")]
+[node name="Tree23" type="Node3D" parent="Decor"]
 transform = Transform3D(-2.1817, 0, 2.7922, 0, 3.5435, 0, -2.7922, 0, -2.1817, 25.9605, 0, 24.5789)
+script = ExtResource("ph_script")
+kind = "Bäume"
+size = Vector3(1.864, 1.174, 1.833)
+offset = Vector3(0.04, -0.021, -0.057)
 
-[node name="Tree24" parent="Decor" instance=ExtResource("22_trees")]
+[node name="Tree24" type="Node3D" parent="Decor"]
 transform = Transform3D(1.5283, 0, 4.1343, 0, 4.4077, 0, -4.1343, 0, 1.5283, 28.9162, 0, 24.9645)
+script = ExtResource("ph_script")
+kind = "Bäume"
+size = Vector3(1.751, 1.295, 1.814)
+offset = Vector3(0.014, -0.02, 0.034)
 
-[node name="Tree25" parent="Decor" instance=ExtResource("22_trees")]
+[node name="Tree25" type="Node3D" parent="Decor"]
 transform = Transform3D(3.8863, 0, -1.129, 0, 4.047, 0, 1.129, 0, 3.8863, -28.6787, 0, -30.6201)
+script = ExtResource("ph_script")
+kind = "Bäume"
+size = Vector3(1.751, 1.295, 1.814)
+offset = Vector3(0.014, -0.02, 0.034)
 
-[node name="Tree26" parent="Decor" instance=ExtResource("23_trees")]
+[node name="Tree26" type="Node3D" parent="Decor"]
 transform = Transform3D(-2.2124, 0, 3.5982, 0, 4.224, 0, -3.5982, 0, -2.2124, -24.5879, 0, -25.3386)
+script = ExtResource("ph_script")
+kind = "Baum"
+size = Vector3(0.685, 1.213, 0.72)
+offset = Vector3(0, -0.1, -0)
 
-[node name="Tree27" parent="Decor" instance=ExtResource("21_trees")]
+[node name="Tree27" type="Node3D" parent="Decor"]
 transform = Transform3D(-4.4423, 0, 0.5761, 0, 4.4795, 0, -0.5761, 0, -4.4423, -27.2796, 0, -17.6582)
+script = ExtResource("ph_script")
+kind = "Baum"
+size = Vector3(0.574, 1.196, 0.547)
+offset = Vector3(-0.001, -0.103, -0.028)
 
-[node name="Tree28" parent="Decor" instance=ExtResource("21_trees")]
+[node name="Tree28" type="Node3D" parent="Decor"]
 transform = Transform3D(3.9424, 0, -2.5097, 0, 4.6735, 0, 2.5097, 0, 3.9424, -23.6365, 0, -12.49)
+script = ExtResource("ph_script")
+kind = "Baum"
+size = Vector3(0.574, 1.196, 0.547)
+offset = Vector3(-0.001, -0.103, -0.028)
 
-[node name="Tree29" parent="Decor" instance=ExtResource("23_trees")]
+[node name="Tree29" type="Node3D" parent="Decor"]
 transform = Transform3D(-4.0754, 0, 1.7964, 0, 4.4538, 0, -1.7964, 0, -4.0754, -26.3462, 0, -7.2496)
+script = ExtResource("ph_script")
+kind = "Baum"
+size = Vector3(0.685, 1.213, 0.72)
+offset = Vector3(0, -0.1, -0)
 
-[node name="Tree30" parent="Decor" instance=ExtResource("20_trees")]
+[node name="Tree30" type="Node3D" parent="Decor"]
 transform = Transform3D(-4.4919, 0, 1.0587, 0, 4.615, 0, -1.0587, 0, -4.4919, -29.3852, 0, -3.9445)
+script = ExtResource("ph_script")
+kind = "Bäume"
+size = Vector3(1.864, 1.174, 1.833)
+offset = Vector3(0.04, -0.021, -0.057)
 
-[node name="Tree31" parent="Decor" instance=ExtResource("23_trees")]
+[node name="Tree31" type="Node3D" parent="Decor"]
 transform = Transform3D(4.3207, 0, 0.7554, 0, 4.3862, 0, -0.7554, 0, 4.3207, -24.112, 0, 1.7548)
+script = ExtResource("ph_script")
+kind = "Baum"
+size = Vector3(0.685, 1.213, 0.72)
+offset = Vector3(0, -0.1, -0)
 
-[node name="Tree32" parent="Decor" instance=ExtResource("20_trees")]
+[node name="Tree32" type="Node3D" parent="Decor"]
 transform = Transform3D(-2.215, 0, -3.3614, 0, 4.0256, 0, 3.3614, 0, -2.215, -27.6873, 0, 8.1398)
+script = ExtResource("ph_script")
+kind = "Bäume"
+size = Vector3(1.864, 1.174, 1.833)
+offset = Vector3(0.04, -0.021, -0.057)
 
-[node name="Tree33" parent="Decor" instance=ExtResource("21_trees")]
+[node name="Tree33" type="Node3D" parent="Decor"]
 transform = Transform3D(1.4006, 0, -4.3706, 0, 4.5896, 0, 4.3706, 0, 1.4006, -24.0191, 0, 14.2028)
+script = ExtResource("ph_script")
+kind = "Baum"
+size = Vector3(0.574, 1.196, 0.547)
+offset = Vector3(-0.001, -0.103, -0.028)
 
-[node name="Tree34" parent="Decor" instance=ExtResource("23_trees")]
+[node name="Tree34" type="Node3D" parent="Decor"]
 transform = Transform3D(-4.3978, 0, 1.9423, 0, 4.8076, 0, -1.9423, 0, -4.3978, -28.2465, 0, 18.3083)
+script = ExtResource("ph_script")
+kind = "Baum"
+size = Vector3(0.685, 1.213, 0.72)
+offset = Vector3(0, -0.1, -0)
 
-[node name="Tree35" parent="Decor" instance=ExtResource("22_trees")]
+[node name="Tree35" type="Node3D" parent="Decor"]
 transform = Transform3D(0.9853, 0, 4.136, 0, 4.2517, 0, -4.136, 0, 0.9853, -24.6368, 0, 26.006)
+script = ExtResource("ph_script")
+kind = "Bäume"
+size = Vector3(1.751, 1.295, 1.814)
+offset = Vector3(0.014, -0.02, 0.034)
 
-[node name="Tree36" parent="Decor" instance=ExtResource("20_trees")]
+[node name="Tree36" type="Node3D" parent="Decor"]
 transform = Transform3D(1.8125, 0, -3.1004, 0, 3.5914, 0, 3.1004, 0, 1.8125, -25.5249, 0, 31.2667)
+script = ExtResource("ph_script")
+kind = "Bäume"
+size = Vector3(1.864, 1.174, 1.833)
+offset = Vector3(0.04, -0.021, -0.057)
 
-[node name="Tree37" parent="Decor" instance=ExtResource("20_trees")]
+[node name="Tree37" type="Node3D" parent="Decor"]
 transform = Transform3D(2.2445, 0, -4.2624, 0, 4.8173, 0, 4.2624, 0, 2.2445, 28.9597, 0, -29.3273)
+script = ExtResource("ph_script")
+kind = "Bäume"
+size = Vector3(1.864, 1.174, 1.833)
+offset = Vector3(0.04, -0.021, -0.057)
 
-[node name="Tree38" parent="Decor" instance=ExtResource("21_trees")]
+[node name="Tree38" type="Node3D" parent="Decor"]
 transform = Transform3D(3.2527, 0, -3.3436, 0, 4.6648, 0, 3.3436, 0, 3.2527, 23.9955, 0, -25.5097)
+script = ExtResource("ph_script")
+kind = "Baum"
+size = Vector3(0.574, 1.196, 0.547)
+offset = Vector3(-0.001, -0.103, -0.028)
 
-[node name="Tree39" parent="Decor" instance=ExtResource("23_trees")]
+[node name="Tree39" type="Node3D" parent="Decor"]
 transform = Transform3D(1.9737, 0, 3.719, 0, 4.2102, 0, -3.719, 0, 1.9737, 28.4323, 0, -18.6743)
+script = ExtResource("ph_script")
+kind = "Baum"
+size = Vector3(0.685, 1.213, 0.72)
+offset = Vector3(0, -0.1, -0)
 
-[node name="Tree40" parent="Decor" instance=ExtResource("22_trees")]
+[node name="Tree40" type="Node3D" parent="Decor"]
 transform = Transform3D(-1.7721, 0, -3.9136, 0, 4.2961, 0, 3.9136, 0, -1.7721, 27.0589, 0, -12.8211)
+script = ExtResource("ph_script")
+kind = "Bäume"
+size = Vector3(1.751, 1.295, 1.814)
+offset = Vector3(0.014, -0.02, 0.034)
 
-[node name="Tree41" parent="Decor" instance=ExtResource("21_trees")]
+[node name="Tree41" type="Node3D" parent="Decor"]
 transform = Transform3D(0.037, 0, 3.9152, 0, 3.9154, 0, -3.9152, 0, 0.037, 28.5335, 0, -8.0712)
+script = ExtResource("ph_script")
+kind = "Baum"
+size = Vector3(0.574, 1.196, 0.547)
+offset = Vector3(-0.001, -0.103, -0.028)
 
-[node name="Tree42" parent="Decor" instance=ExtResource("21_trees")]
+[node name="Tree42" type="Node3D" parent="Decor"]
 transform = Transform3D(0.3055, 0, -4.8591, 0, 4.8687, 0, 4.8591, 0, 0.3055, 26.434, 0, -1.6513)
+script = ExtResource("ph_script")
+kind = "Baum"
+size = Vector3(0.574, 1.196, 0.547)
+offset = Vector3(-0.001, -0.103, -0.028)
 
-[node name="Tree43" parent="Decor" instance=ExtResource("23_trees")]
+[node name="Tree43" type="Node3D" parent="Decor"]
 transform = Transform3D(-1.4713, 0, -3.9109, 0, 4.1785, 0, 3.9109, 0, -1.4713, 27.2877, 0, 2.8297)
+script = ExtResource("ph_script")
+kind = "Baum"
+size = Vector3(0.685, 1.213, 0.72)
+offset = Vector3(0, -0.1, -0)
 
-[node name="Tree44" parent="Decor" instance=ExtResource("23_trees")]
+[node name="Tree44" type="Node3D" parent="Decor"]
 transform = Transform3D(-1.5103, 0, -4.5718, 0, 4.8148, 0, 4.5718, 0, -1.5103, 26.3463, 0, 8.5999)
+script = ExtResource("ph_script")
+kind = "Baum"
+size = Vector3(0.685, 1.213, 0.72)
+offset = Vector3(0, -0.1, -0)
 
-[node name="Tree45" parent="Decor" instance=ExtResource("23_trees")]
+[node name="Tree45" type="Node3D" parent="Decor"]
 transform = Transform3D(1.9856, 0, -3.1288, 0, 3.7057, 0, 3.1288, 0, 1.9856, 24.8171, 0, 15.3265)
+script = ExtResource("ph_script")
+kind = "Baum"
+size = Vector3(0.685, 1.213, 0.72)
+offset = Vector3(0, -0.1, -0)
 
-[node name="Tree46" parent="Decor" instance=ExtResource("21_trees")]
+[node name="Tree46" type="Node3D" parent="Decor"]
 transform = Transform3D(-1.9693, 0, -3.6445, 0, 4.1425, 0, 3.6445, 0, -1.9693, 25.9939, 0, 18.3339)
+script = ExtResource("ph_script")
+kind = "Baum"
+size = Vector3(0.574, 1.196, 0.547)
+offset = Vector3(-0.001, -0.103, -0.028)
 
-[node name="Tree47" parent="Decor" instance=ExtResource("21_trees")]
+[node name="Tree47" type="Node3D" parent="Decor"]
 transform = Transform3D(2.9775, 0, -2.2494, 0, 3.7317, 0, 2.2494, 0, 2.9775, 25.0781, 0, 24.2238)
+script = ExtResource("ph_script")
+kind = "Baum"
+size = Vector3(0.574, 1.196, 0.547)
+offset = Vector3(-0.001, -0.103, -0.028)
 
-[node name="Tree48" parent="Decor" instance=ExtResource("23_trees")]
+[node name="Tree48" type="Node3D" parent="Decor"]
 transform = Transform3D(-0.0724, 0, 3.7052, 0, 3.7059, 0, -3.7052, 0, -0.0724, 27.6218, 0, 31.1484)
+script = ExtResource("ph_script")
+kind = "Baum"
+size = Vector3(0.685, 1.213, 0.72)
+offset = Vector3(0, -0.1, -0)
 
-[node name="Tree49" parent="Decor" instance=ExtResource("23_trees")]
+[node name="Tree49" type="Node3D" parent="Decor"]
 transform = Transform3D(0.7597, 0, 3.9272, 0, 4, 0, -3.9272, 0, 0.7597, -17, 0, -16)
+script = ExtResource("ph_script")
+kind = "Baum"
+size = Vector3(0.685, 1.213, 0.72)
+offset = Vector3(0, -0.1, -0)
 
-[node name="Tree50" parent="Decor" instance=ExtResource("21_trees")]
+[node name="Tree50" type="Node3D" parent="Decor"]
 transform = Transform3D(-3.2101, 0, 2.3864, 0, 4, 0, -2.3864, 0, -3.2101, 17.0436, 0, -16.5922)
+script = ExtResource("ph_script")
+kind = "Baum"
+size = Vector3(0.574, 1.196, 0.547)
+offset = Vector3(-0.001, -0.103, -0.028)
 
-[node name="Tree51" parent="Decor" instance=ExtResource("23_trees")]
+[node name="Tree51" type="Node3D" parent="Decor"]
 transform = Transform3D(2.0837, 0, 3.4144, 0, 4, 0, -3.4144, 0, 2.0837, -17, 0, 16.5)
+script = ExtResource("ph_script")
+kind = "Baum"
+size = Vector3(0.685, 1.213, 0.72)
+offset = Vector3(0, -0.1, -0)
 
-[node name="Tree52" parent="Decor" instance=ExtResource("21_trees")]
+[node name="Tree52" type="Node3D" parent="Decor"]
 transform = Transform3D(2.1121, 0, 3.3969, 0, 4, 0, -3.3969, 0, 2.1121, 17.5955, 0, 16.0358)
+script = ExtResource("ph_script")
+kind = "Baum"
+size = Vector3(0.574, 1.196, 0.547)
+offset = Vector3(-0.001, -0.103, -0.028)
 
-[node name="Tree53" parent="Decor" instance=ExtResource("23_trees")]
+[node name="Tree53" type="Node3D" parent="Decor"]
 transform = Transform3D(3.9972, 0, -0.1489, 0, 4, 0, 0.1489, 0, 3.9972, -6, 0, 17.5)
+script = ExtResource("ph_script")
+kind = "Baum"
+size = Vector3(0.685, 1.213, 0.72)
+offset = Vector3(0, -0.1, -0)
 
-[node name="Tree54" parent="Decor" instance=ExtResource("23_trees")]
+[node name="Tree54" type="Node3D" parent="Decor"]
 transform = Transform3D(-2.1245, 0, 3.3892, 0, 4, 0, -3.3892, 0, -2.1245, 7, 0, -17.5)
+script = ExtResource("ph_script")
+kind = "Baum"
+size = Vector3(0.685, 1.213, 0.72)
+offset = Vector3(0, -0.1, -0)
 
-[node name="Church" parent="Decor" instance=ExtResource("24_build")]
+[node name="Church" type="Node3D" parent="Decor"]
 transform = Transform3D(5, 0, 0, 0, 5, 0, 0, 0, 5, -9.025, 0, -28.1)
+script = ExtResource("ph_script")
+kind = "Haus"
+size = Vector3(1.029, 1.645, 1.155)
+offset = Vector3(-0, -0, 0.018)
+label_text = "Kirche"
 
-[node name="Windmill" parent="Decor" instance=ExtResource("25_build")]
+[node name="Windmill" type="Node3D" parent="Decor"]
 transform = Transform3D(0, 0, -5, 0, 5, 0, 5, 0, 0, 28.15, 0, -8.025)
+script = ExtResource("ph_script")
+kind = "Haus"
+size = Vector3(1.126, 1.186, 0.794)
+offset = Vector3(0.005, -0, 0.018)
+label_text = "Windmühle"
 
-[node name="Tower" parent="Decor" instance=ExtResource("26_build")]
+[node name="Tower" type="Node3D" parent="Decor"]
 transform = Transform3D(0, 0, 4.5, 0, 4.5, 0, -4.5, 0, 0, -28.0225, 0, 9.9775)
+script = ExtResource("ph_script")
+kind = "Turm"
+size = Vector3(0.993, 2.192, 1.153)
+offset = Vector3(-0, 0, 0.003)
+label_text = "Turm"
 
-[node name="FarHouse" parent="Decor" instance=ExtResource("27_build")]
+[node name="FarHouse" type="Node3D" parent="Decor"]
 transform = Transform3D(-3.5355, 0, -3.5355, 0, 5, 0, 3.5355, 0, -3.5355, 25.8232, 0, 21.8586)
+script = ExtResource("ph_script")
+kind = "Haus"
+size = Vector3(0.792, 0.93, 0.854)
+offset = Vector3(-0, -0, -0.042)
 
-[node name="FarHouse2" parent="Decor" instance=ExtResource("28_build")]
+[node name="FarHouse2" type="Node3D" parent="Decor"]
 transform = Transform3D(3.5355, 0, 3.5355, 0, 5, 0, -3.5355, 0, 3.5355, -24.0177, 0, -24.053)
+script = ExtResource("ph_script")
+kind = "Haus"
+size = Vector3(0.875, 1.28, 1.099)
+offset = Vector3(-0.001, -0, 0.011)
 
-[node name="barrel" parent="Decor" instance=ExtResource("29_barre")]
-transform = Transform3D(5, 0, 0, 0, 5, 0, 0, 0, 5, -7.6, 0, -5)
+[node name="barrel" parent="Decor" instance=ExtResource("q_Barrel")]
+transform = Transform3D(1.1, 0, 0, 0, 1.1, 0, 0, 0, 1.1, -7.6, 0, -5)
 
-[node name="barrel2" parent="Decor" instance=ExtResource("29_barre")]
-transform = Transform3D(3.8302, 0, 3.2139, 0, 5, 0, -3.2139, 0, 3.8302, -7.4, 0, -6.3)
+[node name="barrel2" parent="Decor" instance=ExtResource("q_Barrel")]
+transform = Transform3D(0.8427, 0, 0.7071, 0, 1.1, 0, -0.7071, 0, 0.8427, -7.4, 0, -6.3)
 
-[node name="weaponrack" parent="Decor" instance=ExtResource("30_weapo")]
-transform = Transform3D(0, 0, 5, 0, 5, 0, -5, 0, 0, -7.375, 0, -11.5)
+[node name="weaponrack" parent="Decor" instance=ExtResource("q_WeaponStand")]
+transform = Transform3D(0, 0, 1.1, 0, 1.1, 0, -1.1, 0, 0, -7.375, 0, -11.5)
 
-[node name="crate_A_big" parent="Decor" instance=ExtResource("31_crate")]
-transform = Transform3D(4.8296, 0, 1.2941, 0, 5, 0, -1.2941, 0, 4.8296, -7.5694, 0, -12.9823)
+[node name="crate_A_big" parent="Decor" instance=ExtResource("q_Crate_Wooden")]
+transform = Transform3D(0.9659, 0, 0.2588, 0, 1, 0, -0.2588, 0, 0.9659, -7.5694, 0, -12.9823)
 
-[node name="resource_lumber" parent="Decor" instance=ExtResource("32_resou")]
+[node name="resource_lumber" type="Node3D" parent="Decor"]
 transform = Transform3D(4, 0, 0, 0, 4, 0, 0, 0, 4, -15.52, 0, -3.82)
+script = ExtResource("ph_script")
+kind = "Kasten"
+size = Vector3(0.686, 0.21, 0.33)
+offset = Vector3(-0.002, -0, 0.002)
 
-[node name="crate_B_small" parent="Decor" instance=ExtResource("33_crate")]
-transform = Transform3D(5, 0, 0, 0, 5, 0, 0, 0, 5, 7.8, 0, -5)
+[node name="crate_B_small" parent="Decor" instance=ExtResource("q_Crate_Metal")]
+transform = Transform3D(0.8, 0, 0, 0, 0.8, 0, 0, 0, 0.8, 7.8, 0, -5)
 
-[node name="barrel3" parent="Decor" instance=ExtResource("29_barre")]
-transform = Transform3D(5, 0, 0, 0, 5, 0, 0, 0, 5, 7.5, 0, -6.2)
+[node name="barrel3" parent="Decor" instance=ExtResource("q_Barrel")]
+transform = Transform3D(1.1, 0, 0, 0, 1.1, 0, 0, 0, 1.1, 7.5, 0, -6.2)
 
-[node name="sack" parent="Decor" instance=ExtResource("34_sackg")]
-transform = Transform3D(5.1962, 0, 3, 0, 6, 0, -3, 0, 5.1962, 7.904, 0, -6.933)
+[node name="sack" parent="Decor" instance=ExtResource("q_Bag")]
+transform = Transform3D(0.866, 0, 0.5, 0, 1, 0, -0.5, 0, 0.866, 7.904, 0, -6.933)
 
-[node name="tent" parent="Decor" instance=ExtResource("35_tentg")]
-transform = Transform3D(0, 0, -5, 0, 5, 0, 5, 0, 0, 15.5, 0, 4.5)
+[node name="tent" parent="Decor" instance=ExtResource("q_Stall_Empty")]
+transform = Transform3D(0, 0, -1.1, 0, 1.1, 0, 1.1, 0, 0, 15.5, 0, 4.5)
 
-[node name="crate_open" parent="Decor" instance=ExtResource("36_crate")]
-transform = Transform3D(4.6985, 0, 1.7101, 0, 5, 0, -1.7101, 0, 4.6985, 8.6946, 0, 3.3112)
+[node name="crate_open" parent="Decor" instance=ExtResource("q_FarmCrate_Apple")]
+transform = Transform3D(1.2216, 0, 0.4446, 0, 1.3, 0, -0.4446, 0, 1.2216, 8.6946, 0, 3.3112)
 
-[node name="sack2" parent="Decor" instance=ExtResource("34_sackg")]
-transform = Transform3D(2.0521, 0, 5.6382, 0, 6, 0, -5.6382, 0, 2.0521, 9.2461, 0, -2.5513)
+[node name="sack2" parent="Decor" instance=ExtResource("q_Bag")]
+transform = Transform3D(0.342, 0, 0.9397, 0, 1, 0, -0.9397, 0, 0.342, 9.2461, 0, -2.5513)
 
-[node name="wheelbarrow" parent="Decor" instance=ExtResource("37_wheel")]
+[node name="wheelbarrow" type="Node3D" parent="Decor"]
 transform = Transform3D(4.3301, 0, 2.5, 0, 5, 0, -2.5, 0, 4.3301, -7.1125, 0, 13.3051)
+script = ExtResource("ph_script")
+kind = "Kasten"
+size = Vector3(0.238, 0.188, 0.506)
+offset = Vector3(0, -0, 0.04)
 
-[node name="crate_A_big2" parent="Decor" instance=ExtResource("31_crate")]
-transform = Transform3D(5, 0, 0, 0, 5, 0, 0, 0, 5, -7.575, 0, 5.525)
+[node name="crate_A_big2" parent="Decor" instance=ExtResource("q_Crate_Wooden")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7.575, 0, 5.525)
 
-[node name="barrel4" parent="Decor" instance=ExtResource("29_barre")]
-transform = Transform3D(5, 0, 0, 0, 5, 0, 0, 0, 5, 7.5, 0, 13)
+[node name="barrel4" parent="Decor" instance=ExtResource("q_Barrel")]
+transform = Transform3D(1.1, 0, 0, 0, 1.1, 0, 0, 0, 1.1, 7.5, 0, 13)
 
-[node name="bucket_water" parent="Decor" instance=ExtResource("38_bucke")]
-transform = Transform3D(5, 0, 0, 0, 5, 0, 0, 0, 5, 7.8, 0, 3.8)
+[node name="bucket_water" parent="Decor" instance=ExtResource("q_Bucket_Wooden_1")]
+transform = Transform3D(1.2, 0, 0, 0, 1.2, 0, 0, 0, 1.2, 7.8, 0, 3.8)
 
-[node name="flag_red" parent="Decor" instance=ExtResource("39_flagr")]
+[node name="flag_red" type="Node3D" parent="Decor"]
 transform = Transform3D(6, 0, 0, 0, 6, 0, 0, 0, 6, -2.6, 0, 18.16)
+script = ExtResource("ph_script")
+kind = "Fahne"
+size = Vector3(0.055, 0.277, 0.264)
+offset = Vector3(0, 0, -0.11)
 
-[node name="flag_blue" parent="Decor" instance=ExtResource("40_flagb")]
+[node name="flag_blue" type="Node3D" parent="Decor"]
 transform = Transform3D(6, 0, 0, 0, 6, 0, 0, 0, 6, 2.6, 0, 18.16)
+script = ExtResource("ph_script")
+kind = "Fahne"
+size = Vector3(0.055, 0.277, 0.264)
+offset = Vector3(0, 0, -0.11)
 
-[node name="rock_single_A" parent="Decor" instance=ExtResource("41_rocks")]
+[node name="rock_single_A" type="Node3D" parent="Decor"]
 transform = Transform3D(5, 0, 0, 0, 5, 0, 0, 0, 5, -16, 0, 2.1)
+script = ExtResource("ph_script")
+kind = "Fels"
+size = Vector3(0.298, 0.069, 0.284)
+offset = Vector3(0, 0, -0.015)
 
-[node name="rock_single_B" parent="Decor" instance=ExtResource("42_rocks")]
+[node name="rock_single_B" type="Node3D" parent="Decor"]
 transform = Transform3D(3.2139, 0, 3.8302, 0, 5, 0, -3.8302, 0, 3.2139, 4.0031, 0, 16.0352)
+script = ExtResource("ph_script")
+kind = "Fels"
+size = Vector3(0.287, 0.135, 0.25)
+offset = Vector3(0.001, -0, -0.003)
 
-[node name="rock_single_C" parent="Decor" instance=ExtResource("43_rocks")]
+[node name="rock_single_C" type="Node3D" parent="Decor"]
 transform = Transform3D(-2.5, 0, 4.3301, 0, 5, 0, -4.3301, 0, -2.5, -4.0067, 0, -17.6116)
+script = ExtResource("ph_script")
+kind = "Fels"
+size = Vector3(0.344, 0.195, 0.344)
+offset = Vector3(-0.013, -0, -0.01)
 
-[node name="bench" parent="Decor" instance=ExtResource("44_bench")]
+[node name="bench" parent="Decor" instance=ExtResource("q_Bench")]
 transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, 3.205, 0, 2)
 
-[node name="bench2" parent="Decor" instance=ExtResource("44_bench")]
+[node name="bench2" parent="Decor" instance=ExtResource("q_Bench")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6, 0, 5.205)
 
-[node name="Lantern" parent="Decor" instance=ExtResource("45_postl")]
+[node name="Lantern" type="Node3D" parent="Decor"]
 transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, -7.5, 0, -4)
+script = ExtResource("ph_script")
+kind = "Pfahl"
+size = Vector3(0.16, 2.5, 0.16)
 
-[node name="Lantern2" parent="Decor" instance=ExtResource("45_postl")]
+[node name="Lantern" parent="Decor/Lantern" instance=ExtResource("q_Lantern_Wall")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.0, 0.08)
+
+[node name="Lantern2" type="Node3D" parent="Decor"]
 transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, 7.5, 0, -4)
+script = ExtResource("ph_script")
+kind = "Pfahl"
+size = Vector3(0.16, 2.5, 0.16)
 
-[node name="Lantern3" parent="Decor" instance=ExtResource("45_postl")]
+[node name="Lantern" parent="Decor/Lantern2" instance=ExtResource("q_Lantern_Wall")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.0, 0.08)
+
+[node name="Lantern3" type="Node3D" parent="Decor"]
 transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, -7.5, 0, 12)
+script = ExtResource("ph_script")
+kind = "Pfahl"
+size = Vector3(0.16, 2.5, 0.16)
 
-[node name="Lantern4" parent="Decor" instance=ExtResource("45_postl")]
+[node name="Lantern" parent="Decor/Lantern3" instance=ExtResource("q_Lantern_Wall")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.0, 0.08)
+
+[node name="Lantern4" type="Node3D" parent="Decor"]
 transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, 7.5, 0, 12)
+script = ExtResource("ph_script")
+kind = "Pfahl"
+size = Vector3(0.16, 2.5, 0.16)
+
+[node name="Lantern" parent="Decor/Lantern4" instance=ExtResource("q_Lantern_Wall")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.0, 0.08)
 
 [node name="Lights" type="Node3D" parent="." unique_id=1300292559]
 

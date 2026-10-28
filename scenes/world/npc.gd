@@ -1,6 +1,6 @@
 class_name Npc
 extends Interactable
-## Figur in der Stadt (Schmied, Händler ...). Steht da und atmet (Animation "Idle").
+## Figur in der Stadt (Schmied, Händler ...). Steht da und spielt ihre Steh-Animation ab.
 ## Anklicken öffnet das passende Fenster in der Benutzeroberfläche (HUD).
 
 ## Welches Fenster sich öffnet (siehe hud.gd, open_window): "smith", "merchant" ...
@@ -8,13 +8,9 @@ extends Interactable
 ## Name über dem Kopf.
 @export var display_name: String = "Bewohner"
 @export var name_color: Color = Color(1.0, 0.9, 0.6)
-## Modell (KayKit-Figur).
+## Aussehen: eine Figuren-Vorlage aus scenes/characters/ (z. B. smith.tscn).
+## Was die Figur in den Händen hält und welche Animation sie im Stehen abspielt, steht dort.
 @export var model: PackedScene
-@export var model_scale: float = 0.75
-## Diese Gegenstände in den Händen bleiben sichtbar, alle anderen werden versteckt.
-@export var held_items: PackedStringArray = []
-## Animation im Stehen.
-@export var idle_animation: String = "Idle"
 
 
 func _ready() -> void:
@@ -22,18 +18,7 @@ func _ready() -> void:
 	collision_mask = 0
 	interact_range = 2.8
 	if model:
-		var figure: Node3D = model.instantiate()
-		figure.scale = Vector3.ONE * model_scale
-		add_child(figure)
-		for hand in figure.find_children("handslot_*", "", true, false):
-			for held in hand.get_children():
-				held.visible = held.name in held_items
-		var animation: AnimationPlayer = figure.find_child("AnimationPlayer", true, false)
-		if animation and animation.has_animation(idle_animation):
-			animation.get_animation(idle_animation).loop_mode = Animation.LOOP_LINEAR
-			animation.play(idle_animation)
-			# Nicht alle Figuren im Gleichtakt.
-			animation.seek(randf() * animation.current_animation_length)
+		add_child(model.instantiate())
 	var shape := CollisionShape3D.new()
 	var capsule := CapsuleShape3D.new()
 	capsule.radius = 0.5

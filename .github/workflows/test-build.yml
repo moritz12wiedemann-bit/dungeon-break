@@ -1,0 +1,67 @@
+# Test-Build für Arbeits-Zweige (claude/...): importiert das Projekt, macht Bildschirmfotos
+# von Figuren, Stadt und Dungeon und baut die Web-Version, ohne sie zu veröffentlichen.
+# Die Fotos landen im Zweig "ci-bildschirmfotos" (Ordner = Name des Arbeitszweigs).
+name: Test-Build
+
+on:
+  push:
+    branches: ["claude/**"]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+env:
+  GODOT_VERSION: "4.7"
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Godot und Export-Vorlagen laden
+        run: |
+          base="https://github.com/godotengine/godot/releases/download/${GODOT_VERSION}-stable"
+          curl -sSLf -o godot.zip "$base/Godot_v${GODOT_VERSION}-stable_linux.x86_64.zip"
+          unzip -q godot.zip
+          mv "Godot_v${GODOT_VERSION}-stable_linux.x86_64" godot
+          curl -sSLf -o templates.tpz "$base/Godot_v${GODOT_VERSION}-stable_export_templates.tpz"
+          dest="$HOME/.local/share/godot/export_templates/${GODOT_VERSION}.stable"
+          mkdir -p "$dest"
+          unzip -qj templates.tpz 'templates/web*' 'templates/version.txt' -d "$dest"
+          rm godot.zip templates.tpz
+          sudo apt-get update -qq && sudo apt-get install -y -qq xvfb libgl1-mesa-dri > /dev/null
+
+      - name: Projekt importieren
+        run: ./godot --headless --import 2>&1 | tee import.log || true
+
+      - name: Bildschirmfotos
+        run: |
+          shots="$RUNNER_TEMP/shots"
+          mkdir -p "$shots"
+          SHOT_DIR="$shots" timeout 300 xvfb-run -a -s "-screen 0 1280x720x24" \
+            ./godot --rendering-driver opengl3 --resolution 1280x720 res://tools/ci/capture.tscn 2>&1 | tee run.log || true
+          grep -E -A3 "ERROR|WARNING" run.log > "$shots/fehler.txt" || echo "keine Fehler" > "$shots/fehler.txt"
+          grep -E -A3 "ERROR" import.log > "$shots/import_fehler.txt" || echo "keine Fehler" > "$shots/import_fehler.txt"
+          cp import.log run.log "$shots/"
+          echo "----- Fehler beim Spielen -----"; cat "$shots/fehler.txt"
+
+      - name: Fotos in den Zweig ci-bildschirmfotos legen
+        run: |
+          branch="${GITHUB_REF_NAME//\//_}"
+          git config user.name "github-actions"
+          git config user.email "github-actions@users.noreply.github.com"
+          git fetch origin ci-bildschirmfotos && git worktree add ../fotos origin/ci-bildschirmfotos \
+            || { git worktree add --detach ../fotos && (cd ../fotos && git checkout --orphan tmp && git rm -rfq .); }
+          cd ../fotos
+          rm -rf "$branch" && mkdir -p "$branch" && cp "$RUNNER_TEMP"/shots/* "$branch/"
+          git add -A && git commit -qm "Bildschirmfotos $GITHUB_SHA" && git push -f origin HEAD:refs/heads/ci-bildschirmfotos
+
+      - name: Web-Export
+        run: |
+          mkdir -p build/web
+          ./godot --headless --export-release "Web" build/web/index.html
+          test -f build/web/index.wasm
+          du -sh build/web
+          ls -la build/web

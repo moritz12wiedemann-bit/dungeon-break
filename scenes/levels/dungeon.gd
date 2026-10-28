@@ -1,7 +1,8 @@
 extends Node3D
 ## Zufällig erzeugter Dungeon. Jedes Mal, wenn man ihn über den Altar betritt,
 ## sieht die Karte anders aus (siehe dungeon_generator.gd).
-## Baut Boden und Wände (unsichtbare Kästen für Kollision, darüber die KayKit-Modelle),
+## Baut Boden und Wände (unsichtbare Kästen für Kollision, darüber graue Platzhalter, weil es
+## noch keinen Dungeon-Baukasten gibt) und stellt Möbel aus dem Fantasy Props MegaKit auf,
 ## berechnet das Navigations-Netz, setzt Spieler, Gegner, Fackeln und Deko.
 ## Nach dem Sieg über den Boss erscheint ein Portal in die Stadt.
 
@@ -10,35 +11,25 @@ const BRUTE_SCENE := preload("res://scenes/enemies/enemy_brute.tscn")
 const BOSS_SCENE := preload("res://scenes/enemies/enemy_boss.tscn")
 const PORTAL_SCENE := preload("res://scenes/world/town_portal.tscn")
 const TORCH_FLICKER := preload("res://scenes/world/torch_flicker.gd")
-## Ordner mit den Dungeon-Modellen (KayKit Dungeon Remastered).
-const KIT := "res://assets/models/kaykit/dungeon/"
-## Bodenplatten und wie oft sie vorkommen (Gewicht).
-const FLOOR_TILES := {
-	"floor_tile_small": 70,
-	"floor_tile_small_broken_A": 8,
-	"floor_tile_small_broken_B": 8,
-	"floor_tile_small_weeds_A": 5,
-	"floor_tile_small_weeds_B": 5,
-	"floor_dirt_small_A": 2,
-	"floor_dirt_small_B": 2,
-}
-## 4 m breite Wandstücke, die ab und zu statt zwei schmalen Stücken gesetzt werden.
-const WIDE_WALLS := ["wall", "wall", "wall_cracked", "wall_window_closed", "wall_pillar"]
+## Ordner mit den Möbel-Modellen (Quaternius Fantasy Props MegaKit).
+const KIT := "res://assets/models/quaternius/props/"
 ## Möbel und Kisten am Rand der Räume: [Modell, Größe, Radius der Kollision].
 const PROPS := [
-	["barrel_large", 0.6, 0.6],
-	["barrel_small", 0.9, 0.45],
-	["barrel_small_stack", 0.8, 0.75],
-	["box_large", 0.8, 0.65],
-	["box_small", 0.9, 0.5],
-	["crates_stacked", 0.7, 0.8],
-	["keg", 0.8, 0.5],
-	["trunk_medium_A", 0.8, 0.6],
-	["table_small_decorated_A", 0.8, 0.7],
+	["Barrel", 1.0, 0.45],
+	["Barrel_Apples", 1.0, 0.45],
+	["Barrel_Holder", 0.9, 0.7],
+	["Crate_Wooden", 0.9, 0.6],
+	["Crate_Metal", 0.9, 0.55],
+	["Cauldron", 1.0, 0.55],
+	["Cage_Small", 1.0, 0.5],
+	["Vase_2", 1.0, 0.4],
+	["CandleStick_Stand", 1.0, 0.35],
+	["WeaponStand", 0.9, 0.7],
 ]
 ## Kleinkram auf dem Boden, ohne Kollision.
-const CLUTTER := ["sword_shield_broken", "candle_melted", "bottle_A_brown", "plate_small", "candle_triple"]
-const BANNERS := ["banner_red", "banner_patternA_red", "banner_shield_red", "banner_thin_brown", "banner_triple_red", "banner_patternC_brown"]
+const CLUTTER := ["Vase_Rubble_Medium", "Candle_1", "Candle_2", "Bottle_1", "Book_Stack_1", "Coin_Pile",
+	"Chain_Coil", "Table_Plate", "Pot_1", "Scroll_1", "Mug", "Potion_2", "Shield_Wooden"]
+const BANNERS := ["Banner_1", "Banner_2"]
 
 ## Kantenlänge eines Rasterkästchens in Metern.
 @export var cell_size: float = 2.0
@@ -154,7 +145,8 @@ func _add_box(kind: String, first_cell: Vector2i, length: int) -> void:
 	geometry.add_child(body)
 
 
-## Sichtbarer Dungeon aus KayKit-Modellen: Bodenplatten, Wände, Säulen, Fackeln, Banner und Kisten.
+## Sichtbarer Dungeon: graue Platzhalter für Boden, Wände und Säulen (es fehlt noch ein
+## Dungeon-Baukasten), dazu echte Modelle für Fackeln, Banner, Fässer, Kisten und Kleinkram.
 func _build_visuals() -> void:
 	_decor_rng.seed = GameState.dungeon_seed + 1
 	for y in _generator.height:
@@ -169,16 +161,17 @@ func _build_visuals() -> void:
 	_add_walls_along(Vector2i.RIGHT, false)
 	for pillar in _generator.pillars:
 		# Säulen niedriger als die Wände, damit sie die Figur nicht verdecken.
-		_add_model("pillar", _cell_to_world(pillar), 0.0, Vector3(1.2, 0.55, 1.2))
+		_add_placeholder("pillar", _cell_to_world(pillar), 0.0, Vector3(1.2, 0.55, 1.2))
 	for i in _generator.rooms.size():
 		_decorate_room(_generator.rooms[i], i)
 	_batch.build(decor)
 
 
 func _add_floor_tile(cell: Vector2i) -> void:
-	var tile := _weighted_pick(FLOOR_TILES)
-	# Platte so tief setzen, dass ihre Oberseite genau auf Höhe 0 liegt (dort läuft die Figur).
-	_add_model(tile, _cell_to_world(cell) + Vector3(0, -0.05, 0), _decor_rng.randi_range(0, 3) * PI / 2.0)
+	# Schachbrett aus zwei Grautönen, damit man das Raster erkennt.
+	# Die Platte liegt so, dass ihre Oberseite genau auf Höhe 0 ist (dort läuft die Figur).
+	var tile := "floor_a" if (cell.x + cell.y) % 2 == 0 else "floor_b"
+	_add_placeholder(tile, _cell_to_world(cell), 0.0)
 
 
 ## Wände entlang einer Seite aller Bodenkästchen. `side` zeigt vom Boden zur Wand.
@@ -205,9 +198,9 @@ func _add_walls_along(side: Vector2i, is_back: bool) -> void:
 			if is_back and _wall_pair_start(cell, side) and _needs_wall(next, side):
 				# Zwei Kästchen breit: ein großes Wandstück mittig auf der gemeinsamen Kante.
 				center += Vector3(along.x, 0, along.y) * cell_size / 2.0
-				_add_model(WIDE_WALLS[_hash(cell, 3) % WIDE_WALLS.size()], center, angle, scale)
+				_add_placeholder("wall", center, angle, scale)
 			else:
-				_add_model("wall_half", center, angle, scale, 1.0)
+				_add_placeholder("wall_half", center, angle, scale)
 
 
 ## Gibt es auf dieser Seite des Bodenkästchens eine Wand? (Säulen bekommen ihr eigenes Modell.)
@@ -238,8 +231,8 @@ func _add_corner_fillers(cell: Vector2i) -> void:
 			continue
 		var is_low: bool = corner == Vector2i(1, 1)
 		var height := front_wall_height if is_low else back_wall_height
-		_add_model("wall_half", center + Vector3(corner.x * offset, 0, corner.y * offset), 0.0,
-			Vector3(0.5, height / 4.0, 1.0), 1.0)
+		_add_placeholder("wall_half", center + Vector3(corner.x * offset, 0, corner.y * offset), 0.0,
+			Vector3(0.5, height / 4.0, 1.0))
 
 
 ## Fackeln und Banner an den hinteren Wänden, Kisten und Fässer am Rand, Kleinkram auf dem Boden.
@@ -289,7 +282,7 @@ func _decorate_room(room: Rect2i, room_index: int) -> void:
 		var cell := _generator.random_cell_in(room, _decor_rng, 1)
 		var jitter := Vector3(_decor_rng.randf_range(-0.6, 0.6), 0, _decor_rng.randf_range(-0.6, 0.6))
 		_add_model(CLUTTER[_decor_rng.randi() % CLUTTER.size()], _cell_to_world(cell) + jitter,
-			_decor_rng.randf() * TAU, Vector3.ONE * 0.7)
+			_decor_rng.randf() * TAU, Vector3.ONE * 1.2)
 
 
 ## Wand auf dieser Seite, und auch bei beiden Nachbarn daneben (also kein Durchgang direkt daneben).
@@ -302,14 +295,14 @@ func _add_torch(cell: Vector2i, side: Vector2i) -> void:
 	var facing := -Vector3(side.x, 0, side.y)
 	var wall_face := _cell_to_world(cell) - facing * cell_size / 2.0
 	var angle := atan2(facing.x, facing.z)
-	_add_model("torch_mounted", wall_face + Vector3(0, 1.6, 0), angle)
+	_add_model("Torch_Metal", wall_face + Vector3(0, 1.6, 0), angle, Vector3.ONE * 1.2)
 	var light := OmniLight3D.new()
 	light.set_script(TORCH_FLICKER)
 	light.light_color = Color(1.0, 0.6, 0.3)
 	light.light_energy = 2.2
 	light.omni_range = 7.0
 	lights.add_child(light)
-	light.global_position = wall_face + facing * 0.45 + Vector3(0, 2.15, 0)
+	light.global_position = wall_face + facing * 0.4 + Vector3(0, 2.15, 0)
 	# Kleine leuchtende Flamme an der Fackel.
 	var flame := MeshInstance3D.new()
 	flame.mesh = _flame_mesh()
@@ -335,8 +328,9 @@ func _flame_mesh() -> SphereMesh:
 func _add_banner(cell: Vector2i, side: Vector2i) -> void:
 	var facing := -Vector3(side.x, 0, side.y)
 	var wall_face := _cell_to_world(cell) - facing * cell_size / 2.0
-	_add_model(BANNERS[_decor_rng.randi() % BANNERS.size()], wall_face - facing * 0.285,
-		atan2(facing.x, facing.z), Vector3.ONE * 0.75)
+	# Die Banner-Stange zeigt im Modell nach +X, darum eine Vierteldrehung weiter.
+	_add_model(BANNERS[_decor_rng.randi() % BANNERS.size()], wall_face + Vector3(0, 2.3, 0),
+		atan2(facing.x, facing.z) - PI / 2.0, Vector3.ONE * 0.9)
 
 
 ## Kiste, Fass o. Ä. am Raumrand, mit Kollision (wird beim Navigations-Netz berücksichtigt).
@@ -360,25 +354,36 @@ func _add_prop(cell: Vector2i) -> void:
 	body.global_position = where + Vector3(0, 0.75, 0)
 
 
-## Merkt ein Modell aus dem Dungeon-Baukasten zum Zeichnen vor.
-## `model_center_x`: wie weit der Ursprung des Modells von seiner Mitte entfernt ist (wall_half: 1 m).
-func _add_model(model: String, where: Vector3, angle: float = 0.0, scale: Vector3 = Vector3.ONE,
-		model_center_x: float = 0.0) -> void:
+## Merkt ein Möbel-Modell zum Zeichnen vor.
+func _add_model(model: String, where: Vector3, angle: float = 0.0, scale: Vector3 = Vector3.ONE) -> void:
 	var basis := Basis(Vector3.UP, angle) * Basis.from_scale(scale)
-	var placement := Transform3D(basis, where) * Transform3D(Basis.IDENTITY, Vector3(-model_center_x, 0, 0))
-	_batch.add(KIT + model + ".gltf", placement)
+	_batch.add(KIT + model + ".gltf", Transform3D(basis, where))
 
 
-func _weighted_pick(weights: Dictionary) -> String:
-	var total := 0
-	for key in weights:
-		total += weights[key]
-	var roll := _decor_rng.randi_range(1, total)
-	for key in weights:
-		roll -= weights[key]
-		if roll <= 0:
-			return key
-	return weights.keys()[0]
+## Graue Platzhalter-Kästen: [Größe, Farbe]. Unterkante bei y = 0 (Boden: Oberkante bei 0).
+## Wände sind 4 m hoch gebaut und werden über `scale` auf die gewünschte Höhe gestaucht.
+const PLACEHOLDERS := {
+	"floor_a": [Vector3(2.0, 0.1, 2.0), "stone"],
+	"floor_b": [Vector3(2.0, 0.1, 2.0), "path"],
+	"wall": [Vector3(4.0, 4.0, 1.0), "wall"],
+	"wall_half": [Vector3(2.0, 4.0, 1.0), "wall"],
+	"pillar": [Vector3(1.0, 4.0, 1.0), "roof"],
+}
+var _placeholder_meshes: Dictionary = {}
+
+
+func _add_placeholder(kind: String, where: Vector3, angle: float = 0.0, scale: Vector3 = Vector3.ONE) -> void:
+	var entry: Array = PLACEHOLDERS[kind]
+	var box_size: Vector3 = entry[0]
+	if not _placeholder_meshes.has(kind):
+		var box := BoxMesh.new()
+		box.size = box_size
+		box.material = Placeholder.material(entry[1])
+		_placeholder_meshes[kind] = box
+	var lift := -box_size.y / 2.0 if kind.begins_with("floor") else box_size.y / 2.0
+	var basis := Basis(Vector3.UP, angle) * Basis.from_scale(scale)
+	_batch.add_mesh(kind, _placeholder_meshes[kind], Transform3D(basis, where),
+		Transform3D(Basis.IDENTITY, Vector3(0, lift, 0)))
 
 
 ## Fester "Zufallswert" für ein Kästchen (gleiches Kästchen = gleicher Wert).
