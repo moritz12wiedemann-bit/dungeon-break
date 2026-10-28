@@ -16,6 +16,8 @@ var bag: Array[ItemData] = []
 var equipped: Dictionary = {}
 ## Materialien und Orbs: Name (siehe GameMaterials) → Anzahl. Liegen nicht in der Tasche.
 var materials: Dictionary = GameMaterials.STARTING.duplicate()
+## Gold zum Kaufen beim Händler und bei der Mystikerin.
+var gold: int = 0
 
 
 func _ready() -> void:
@@ -29,6 +31,20 @@ func get_material_count(id: String) -> int:
 func add_material(id: String, amount: int = 1) -> void:
 	materials[id] = get_material_count(id) + amount
 	changed.emit()
+
+
+func add_gold(amount: int) -> void:
+	gold += amount
+	changed.emit()
+
+
+## Zieht Gold ab. Gibt false zurück (und zieht nichts ab), wenn es nicht reicht.
+func spend_gold(amount: int) -> bool:
+	if gold < amount:
+		return false
+	gold -= amount
+	changed.emit()
+	return true
 
 
 ## Wendet den Orb `id` auf `item` an (in der Tasche oder angezogen) und verbraucht ihn.

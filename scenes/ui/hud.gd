@@ -28,9 +28,31 @@ var _player: Node = null
 var _message_action: Callable
 var _second_action: Callable
 var _toast_tween: Tween
+## Fenster der Stadt-Figuren: Name → GameWindow (siehe open_window).
+var _windows: Dictionary = {}
+var _gold_label := Label.new()
 
 
 func _ready() -> void:
+	add_to_group("hud")
+	_windows = {
+		"smith": preload("res://scenes/ui/smith_window.gd").new(),
+		"merchant": preload("res://scenes/ui/merchant_window.gd").new(),
+	}
+	for window in _windows.values():
+		add_child(window)
+	# Fenster unter dem Meldungsfenster ("Gestorben") halten.
+	move_child(message_panel, -1)
+	_gold_label.add_theme_color_override("font_color", Color(1.0, 0.85, 0.3))
+	_gold_label.add_theme_constant_override("outline_size", 4)
+	_gold_label.add_theme_font_size_override("font_size", 16)
+	_gold_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_gold_label.set_anchors_preset(Control.PRESET_CENTER_BOTTOM)
+	_gold_label.offset_left = 212
+	_gold_label.offset_right = 360
+	_gold_label.offset_top = -88
+	_gold_label.offset_bottom = -64
+	add_child(_gold_label)
 	message_panel.hide()
 	toast_label.hide()
 	enemies_label.hide()
@@ -62,6 +84,10 @@ func _unhandled_input(event: InputEvent) -> void:
 func close_top_window() -> bool:
 	if inventory_panel.cancel_orb():
 		return true
+	for window in _windows.values():
+		if window.visible:
+			window.hide()
+			return true
 	if inventory_panel.visible:
 		inventory_panel.hide()
 		return true
@@ -76,9 +102,24 @@ func track_player(player: Node) -> void:
 	player.died.connect(_show_game_over)
 	player.revived.connect(message_panel.hide)
 	inventory_panel.track_player(player)
+	player.inventory.changed.connect(_update_gold)
+	_update_gold()
 	_on_player_health_changed(player.health.current, player.health.max_health)
 	var xp: Experience = player.experience
 	_on_player_xp_changed(xp.level, xp.xp, xp.xp_for_next_level())
+
+
+## Öffnet das Fenster `window_name` (z. B. "smith") für die Figur `source`. Andere Figuren-Fenster schließen sich.
+func open_window(window_name: String, player: Node, source: Node3D) -> void:
+	for other in _windows:
+		if other != window_name:
+			_windows[other].hide()
+	if _windows.has(window_name):
+		_windows[window_name].open(player, source)
+
+
+func _update_gold() -> void:
+	_gold_label.text = "Gold: %d" % _player.inventory.gold
 
 
 func set_enemies_left(count: int) -> void:

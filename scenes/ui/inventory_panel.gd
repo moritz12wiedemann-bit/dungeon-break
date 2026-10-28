@@ -111,7 +111,7 @@ func refresh() -> void:
 		_bag_slots[i].set_item(inventory.bag[i], orb_active)
 	for id in _material_slots:
 		_material_slots[id].set_count(inventory.get_material_count(id), id == _selected_orb)
-	stats_label.text = "Stufe %d\nLeben: %d\nSchaden: %d–%d\nRüstung: %d\nLeben/Sek.: %.1f\nAngriffe/Sek.: %.2f\nTempo: %.1f m/s" % [
+	stats_label.text = "Stufe %d\nLeben: %d\nSchaden: %d–%d\nRüstung: %d\nLeben/Sek.: %.1f\nAngriffe/Sek.: %.2f\nTempo: %.1f m/s\nGold: %d" % [
 		_player.experience.level,
 		_player.health.max_health,
 		_player.damage_min + _player.bonus_damage,
@@ -120,6 +120,7 @@ func refresh() -> void:
 		_player.health.regen_per_second,
 		1.0 / _player.attack_cooldown,
 		_player.move_speed,
+		_player.inventory.gold,
 	]
 
 
