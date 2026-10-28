@@ -7,6 +7,9 @@ extends MeshInstance3D
 const DURATION := 0.45
 ## Ab dieser Haltedauer gilt der Klick als "Gedrückthalten".
 const HOLD_TIME := 0.18
+## Größe am Anfang und am Ende der Animation (1 = Ring mit 0,42 m Radius).
+const START_SIZE := 0.75
+const END_SIZE := 0.25
 
 static var _material: StandardMaterial3D
 static var _mesh: TorusMesh
@@ -41,7 +44,7 @@ func _ready() -> void:
 	# Jede Markierung blendet für sich aus, daher eigene Kopie des Materials.
 	material_override = _material.duplicate()
 	cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
-	scale = Vector3(1.6, 0.15, 1.6)
+	scale = Vector3(START_SIZE, 0.15, START_SIZE)
 
 
 func _process(delta: float) -> void:
@@ -50,7 +53,7 @@ func _process(delta: float) -> void:
 		queue_free()
 		return
 	var t := clampf(_age / DURATION, 0.0, 1.0)
-	var size := lerpf(1.6, 0.5, t)
+	var size := lerpf(START_SIZE, END_SIZE, t)
 	scale = Vector3(size, 0.15, size)
 	material_override.albedo_color.a = 1.0 - t * t
 	if t >= 1.0:
