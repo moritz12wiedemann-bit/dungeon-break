@@ -4,11 +4,21 @@ extends StaticBody3D
 ## Der Spieler klickt darauf, läuft hin und hebt ihn auf.
 
 const SCENE_PATH := "res://scenes/items/ground_item.tscn"
+## Waffen liegen als echte Waffe am Boden (KayKit Adventurers), alles andere als kleine Truhe.
+const WEAPON_MODELS := [
+	"res://assets/models/kaykit/adventurers/sword_1handed.gltf",
+	"res://assets/models/kaykit/adventurers/axe_1handed.gltf",
+	"res://assets/models/kaykit/adventurers/dagger.gltf",
+	"res://assets/models/kaykit/adventurers/sword_2handed.gltf",
+	"res://assets/models/kaykit/adventurers/staff.gltf",
+]
+const BAG_MODEL := "res://assets/models/kaykit/dungeon/trunk_small_A.gltf"
 
 var item: ItemData
 
 @onready var label: Label3D = $Label
-@onready var mesh: MeshInstance3D = $Mesh
+@onready var model: Node3D = $Model
+@onready var glow: MeshInstance3D = $Glow
 @onready var beam: MeshInstance3D = $Beam
 
 
@@ -26,12 +36,13 @@ func _ready() -> void:
 	var color := item.get_color()
 	label.text = item.item_name
 	label.modulate = color
-	var material := StandardMaterial3D.new()
-	material.albedo_color = color
-	material.emission_enabled = true
-	material.emission = color
-	material.emission_energy_multiplier = 0.6
-	mesh.material_override = material
+	_add_model()
+	# Leuchtender Fleck am Boden in der Farbe der Seltenheit.
+	var glow_material := StandardMaterial3D.new()
+	glow_material.albedo_color = Color(color, 0.45)
+	glow_material.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+	glow_material.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+	glow.material_override = glow_material
 	# Lichtstrahl nur ab "Selten", damit gute Beute auffällt.
 	beam.visible = item.rarity >= ItemData.Rarity.RARE
 	if beam.visible:
@@ -42,5 +53,21 @@ func _ready() -> void:
 		beam_material.cull_mode = BaseMaterial3D.CULL_DISABLED
 		beam.material_override = beam_material
 	# Kleiner Hüpfer beim Fallen.
-	mesh.position.y = 1.0
-	create_tween().tween_property(mesh, "position:y", 0.15, 0.35).set_ease(Tween.EASE_IN).set_trans(Tween.TRANS_BOUNCE)
+	var rest_height := model.position.y
+	model.position.y = rest_height + 1.0
+	create_tween().tween_property(model, "position:y", rest_height, 0.35).set_ease(Tween.EASE_IN).set_trans(Tween.TRANS_BOUNCE)
+
+
+## Setzt das passende 3D-Modell ein: Waffe flach auf den Boden gelegt, sonst eine kleine Truhe.
+func _add_model() -> void:
+	var path: String = BAG_MODEL
+	if item.slot == ItemData.Slot.WEAPON:
+		# Gleicher Name = gleiches Modell, auch wenn man den Gegenstand wieder fallen lässt.
+		path = WEAPON_MODELS[absi(item.item_name.hash()) % WEAPON_MODELS.size()]
+		model.rotation = Vector3(0, randf() * TAU, PI / 2.0)
+		model.scale = Vector3.ONE * 0.8
+		model.position.y = 0.1
+	else:
+		model.rotation.y = randf() * TAU
+		model.scale = Vector3.ONE * 0.8
+	model.add_child(load(path).instantiate())

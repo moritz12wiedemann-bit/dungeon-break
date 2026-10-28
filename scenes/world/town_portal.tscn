@@ -1,6 +1,7 @@
 [gd_scene format=3]
 
 [ext_resource type="Script" path="res://scenes/world/town_portal.gd" id="1_portl"]
+[ext_resource type="PackedScene" path="res://assets/models/kaykit/halloween/arch.gltf" id="2_arch0"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_po001"]
 albedo_color = Color(0.3, 0.6, 1, 1)
@@ -34,8 +35,11 @@ collision_layer = 8
 collision_mask = 0
 script = ExtResource("1_portl")
 
+[node name="Arch" parent="." instance=ExtResource("2_arch0")]
+transform = Transform3D(0.85, 0, 0, 0, 0.85, 0, 0, 0, 0.85, 0, 0, 0)
+
 [node name="Ring" type="Node3D" parent="." unique_id=1293847569]
-transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, 0, 1.3, 0)
+transform = Transform3D(0.9, 0, 0, 0, -3.934025e-08, -0.9, 0, 0.9, -3.934025e-08, 0, 1.4, 0)
 
 [node name="Torus" type="MeshInstance3D" parent="Ring" unique_id=1657483921]
 mesh = SubResource("TorusMesh_po002")
@@ -54,7 +58,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.3, 0)
 shape = SubResource("CylinderShape3D_po005")
 
 [node name="Label" type="Label3D" parent="." unique_id=1203984757]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.0, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4.2, 0)
 pixel_size = 0.007
 billboard = 1
 no_depth_test = true

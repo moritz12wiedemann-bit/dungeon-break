@@ -23,6 +23,12 @@ enum State { IDLE, CHASE, RETURN, DEAD }
 ## Die Tabellen dazu stehen in scenes/items/item_generator.gd.
 @export_range(0, 2) var loot_tier: int = 0
 
+@export_group("Aussehen")
+## Das 3D-Modell des Gegners (eine Szene aus scenes/characters/). Wird beim Start in "Visual" eingesetzt.
+@export var model_scene: PackedScene
+## Größe des Modells (1 = Originalgröße des KayKit-Modells).
+@export var model_scale: float = 0.75
+
 @export_group("Kampf")
 @export var damage_min: int = 5
 @export var damage_max: int = 9
@@ -36,6 +42,7 @@ enum State { IDLE, CHASE, RETURN, DEAD }
 @onready var health_bar: Node3D = $HealthBar
 @onready var visual: Node3D = $Visual
 @onready var collision: CollisionShape3D = $Collision
+@onready var animator: CharacterAnimator = $Animator
 
 var state: State = State.IDLE
 var _player: Node3D = null
@@ -48,6 +55,10 @@ var _gravity: float = ProjectSettings.get_setting("physics/3d/default_gravity")
 
 func _ready() -> void:
 	add_to_group("enemies")
+	if model_scene:
+		var model: Node3D = model_scene.instantiate()
+		model.scale = Vector3.ONE * model_scale
+		visual.add_child(model)
 	_home = global_position
 	nav_agent.target_position = global_position
 	health.changed.connect(health_bar.set_value)
@@ -159,30 +170,27 @@ func _distance_to_player() -> float:
 func _attack() -> void:
 	_cooldown_left = attack_cooldown
 	_player.take_damage(randi_range(damage_min, damage_max))
-	var tween := create_tween()
-	tween.tween_property(visual, "position:z", 0.4, 0.1)
-	tween.tween_property(visual, "position:z", 0.0, 0.2)
+	animator.play_attack(attack_cooldown)
 
 
 func _on_damaged(amount: int) -> void:
 	DamageNumber.spawn(self, amount, Color(1.0, 0.95, 0.6))
+	animator.play_hit()
 	# Kurz weiß aufblitzen.
 	var flash := StandardMaterial3D.new()
 	flash.albedo_color = Color(1, 1, 1, 0.7)
 	flash.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
 	flash.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
-	for child in visual.get_children():
-		if child is GeometryInstance3D:
-			child.material_overlay = flash
+	for child in visual.find_children("*", "GeometryInstance3D", true, false):
+		child.material_overlay = flash
 	get_tree().create_timer(0.1).timeout.connect(_clear_flash)
 
 
 func _clear_flash() -> void:
 	if not is_instance_valid(visual):
 		return
-	for child in visual.get_children():
-		if child is GeometryInstance3D:
-			child.material_overlay = null
+	for child in visual.find_children("*", "GeometryInstance3D", true, false):
+		child.material_overlay = null
 
 
 func _on_died() -> void:
@@ -196,10 +204,10 @@ func _on_died() -> void:
 		_player.gain_xp(xp_reward)
 	_drop_loot()
 	died.emit()
-	# Umkippen, im Boden versinken, dann verschwinden.
+	# Umfallen, eine Weile liegen bleiben, im Boden versinken, dann verschwinden.
+	animator.play_death()
 	var tween := create_tween()
-	tween.tween_property(visual, "rotation:x", -PI / 2.0, 0.3)
-	tween.tween_property(visual, "position:y", -1.0, 1.0).set_delay(1.5)
+	tween.tween_property(visual, "position:y", -1.5, 1.5).set_delay(2.5)
 	tween.tween_callback(queue_free)
 
 

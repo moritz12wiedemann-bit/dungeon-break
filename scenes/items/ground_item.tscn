@@ -2,8 +2,10 @@
 
 [ext_resource type="Script" path="res://scenes/items/ground_item.gd" id="1_gitem"]
 
-[sub_resource type="BoxMesh" id="BoxMesh_gi001"]
-size = Vector3(0.45, 0.2, 0.3)
+[sub_resource type="CylinderMesh" id="CylinderMesh_gi001"]
+top_radius = 0.55
+bottom_radius = 0.55
+height = 0.02
 
 [sub_resource type="CylinderMesh" id="CylinderMesh_gi002"]
 top_radius = 0.08
@@ -18,9 +20,12 @@ collision_layer = 8
 collision_mask = 0
 script = ExtResource("1_gitem")
 
-[node name="Mesh" type="MeshInstance3D" parent="." unique_id=1475839201]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.15, 0)
-mesh = SubResource("BoxMesh_gi001")
+[node name="Model" type="Node3D" parent="." unique_id=1475839201]
+
+[node name="Glow" type="MeshInstance3D" parent="." unique_id=1475839202]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.03, 0)
+cast_shadow = 0
+mesh = SubResource("CylinderMesh_gi001")
 
 [node name="Beam" type="MeshInstance3D" parent="." unique_id=1928374650]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, 0)

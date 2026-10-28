@@ -4,21 +4,8 @@
 [ext_resource type="Script" path="res://scenes/components/health.gd" id="2_hp4pl"]
 [ext_resource type="Script" path="res://scenes/components/experience.gd" id="3_xp9lv"]
 [ext_resource type="Script" path="res://scenes/components/inventory.gd" id="4_inv7k"]
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_dovo2"]
-albedo_color = Color(0.2, 0.45, 0.9, 1)
-
-[sub_resource type="CapsuleMesh" id="CapsuleMesh_gmlin"]
-material = SubResource("StandardMaterial3D_dovo2")
-radius = 0.4
-height = 1.8
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_lvxji"]
-albedo_color = Color(0.95, 0.8, 0.2, 1)
-
-[sub_resource type="BoxMesh" id="BoxMesh_p47bc"]
-material = SubResource("StandardMaterial3D_lvxji")
-size = Vector3(0.2, 0.2, 0.4)
+[ext_resource type="PackedScene" path="res://scenes/characters/knight.tscn" id="5_knght"]
+[ext_resource type="Script" path="res://scenes/components/character_animator.gd" id="6_anim0"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_75vfm"]
 radius = 0.4
@@ -31,13 +18,8 @@ script = ExtResource("1_8afob")
 
 [node name="Visual" type="Node3D" parent="." unique_id=1602847311]
 
-[node name="Body" type="MeshInstance3D" parent="Visual" unique_id=1944419813]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.9, 0)
-mesh = SubResource("CapsuleMesh_gmlin")
-
-[node name="Nose" type="MeshInstance3D" parent="Visual" unique_id=646711922]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.4, 0.4)
-mesh = SubResource("BoxMesh_p47bc")
+[node name="Knight" parent="Visual" instance=ExtResource("5_knght")]
+transform = Transform3D(0.75, 0, 0, 0, 0.75, 0, 0, 0, 0.75, 0, 0, 0)
 
 [node name="Collision" type="CollisionShape3D" parent="." unique_id=345564196]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.9, 0)
@@ -59,3 +41,8 @@ script = ExtResource("3_xp9lv")
 
 [node name="Inventory" type="Node" parent="." unique_id=1563920184]
 script = ExtResource("4_inv7k")
+
+[node name="Animator" type="Node" parent="."]
+script = ExtResource("6_anim0")
+move_animation_speed = 6.0
+attack_animations = PackedStringArray("1H_Melee_Attack_Chop", "1H_Melee_Attack_Slice_Diagonal", "1H_Melee_Attack_Slice_Horizontal")

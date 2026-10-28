@@ -3,23 +3,8 @@
 [ext_resource type="Script" path="res://scenes/enemies/enemy.gd" id="1_en3my"]
 [ext_resource type="Script" path="res://scenes/components/health.gd" id="2_hp4pl"]
 [ext_resource type="Script" path="res://scenes/ui/health_bar_3d.gd" id="3_hb3dx"]
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_en1bd"]
-albedo_color = Color(0.75, 0.2, 0.18, 1)
-
-[sub_resource type="CapsuleMesh" id="CapsuleMesh_en1bd"]
-material = SubResource("StandardMaterial3D_en1bd")
-radius = 0.4
-height = 1.7
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_en1ey"]
-albedo_color = Color(1, 0.9, 0.3, 1)
-emission_enabled = true
-emission = Color(1, 0.8, 0.2, 1)
-
-[sub_resource type="BoxMesh" id="BoxMesh_en1ey"]
-material = SubResource("StandardMaterial3D_en1ey")
-size = Vector3(0.35, 0.1, 0.15)
+[ext_resource type="PackedScene" path="res://scenes/characters/skeleton_minion.tscn" id="4_model"]
+[ext_resource type="Script" path="res://scenes/components/character_animator.gd" id="5_anim0"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_en1cs"]
 radius = 0.4
@@ -29,16 +14,9 @@ height = 1.7
 collision_layer = 4
 collision_mask = 7
 script = ExtResource("1_en3my")
+model_scene = ExtResource("4_model")
 
 [node name="Visual" type="Node3D" parent="." unique_id=1938274651]
-
-[node name="Body" type="MeshInstance3D" parent="Visual" unique_id=1209384756]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.85, 0)
-mesh = SubResource("CapsuleMesh_en1bd")
-
-[node name="Eyes" type="MeshInstance3D" parent="Visual" unique_id=1584930275]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.35, 0.36)
-mesh = SubResource("BoxMesh_en1ey")
 
 [node name="Collision" type="CollisionShape3D" parent="." unique_id=1093847561]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.85, 0)
@@ -57,3 +35,8 @@ max_health = 40
 [node name="HealthBar" type="Node3D" parent="." unique_id=1738492019]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.1, 0)
 script = ExtResource("3_hb3dx")
+
+[node name="Animator" type="Node" parent="."]
+script = ExtResource("5_anim0")
+move_animation_speed = 4.5
+attack_animations = PackedStringArray("1H_Melee_Attack_Chop", "1H_Melee_Attack_Slice_Diagonal")

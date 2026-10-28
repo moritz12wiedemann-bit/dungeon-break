@@ -50,7 +50,7 @@ signal revived
 @onready var health: Health = $Health
 @onready var experience: Experience = $Experience
 @onready var inventory: Inventory = $Inventory
-@onready var visual: Node3D = $Visual
+@onready var animator: CharacterAnimator = $Animator
 
 var _gravity: float = ProjectSettings.get_setting("physics/3d/default_gravity")
 ## Der Gegner, den wir gerade angreifen (null = keiner).
@@ -124,8 +124,10 @@ func _physics_process(delta: float) -> void:
 		_interact_target = null
 		nav_agent.target_position = global_position
 		if target is GroundItem:
+			animator.play_gesture("PickUp")
 			_try_pickup(target)
 		else:
+			animator.play_gesture("Interact")
 			target.interact(self)
 	elif _attack_target and _in_attack_range(_attack_target):
 		# Nah genug: stehen bleiben, zum Gegner drehen, zuschlagen.
@@ -180,6 +182,7 @@ func drink_potion() -> bool:
 	potion_cooldown_left = potion_cooldown
 	var amount := int(round(health.max_health * potion_heal_ratio))
 	health.heal(amount)
+	animator.play_gesture("Use_Item")
 	DamageNumber.spawn_text(self, "+%d" % amount, Color(0.4, 1.0, 0.4))
 	return true
 
@@ -201,8 +204,7 @@ func revive() -> void:
 	health.revive(int(round(health.max_health * revive_health_ratio)))
 	_protection_left = revive_protection
 	nav_agent.target_position = global_position
-	var tween := create_tween()
-	tween.tween_property(visual, "rotation:x", 0.0, 0.3)
+	animator.revive()
 	revived.emit()
 
 
@@ -286,14 +288,7 @@ func recalculate_stats() -> void:
 func _attack(target: Node3D) -> void:
 	_cooldown_left = attack_cooldown
 	target.take_damage(randi_range(damage_min, damage_max) + bonus_damage)
-	_play_lunge()
-
-
-## Kleiner Ausfallschritt nach vorn, damit man sieht, dass geschlagen wird.
-func _play_lunge() -> void:
-	var tween := create_tween()
-	tween.tween_property(visual, "position:z", 0.35, 0.08)
-	tween.tween_property(visual, "position:z", 0.0, 0.15)
+	animator.play_attack(attack_cooldown)
 
 
 func _on_damaged(amount: int) -> void:
@@ -309,9 +304,7 @@ func _on_leveled_up(new_level: int) -> void:
 func _on_died() -> void:
 	_attack_target = null
 	velocity = Vector3.ZERO
-	# Figur kippt um.
-	var tween := create_tween()
-	tween.tween_property(visual, "rotation:x", -PI / 2.0, 0.4)
+	animator.play_death()
 	died.emit()
 
 
