@@ -42,7 +42,7 @@ Normal- und ORM-Maps weggelassen, damit die Web-Version klein bleibt. Die Modell
 | Im Spiel | Kommt aus |
 | --- | --- |
 | Spieler, Stadtbewohner | Modular Character Outfits + Universal Base Characters (Vorlagen in `scenes/characters/`) |
-| Gegner: Puglin (normal), Imp (groß), roter Imp (Boss) | Bestiary - Dungeon Monsters Kit |
+| Gegner: Puglin (normal), roter Imp (groß), blauer Riesen-Imp (Boss) | Bestiary - Dungeon Monsters Kit |
 | alle Bewegungen der Figuren und Monster | Universal Animation Library 1 + 2 |
 | Waffen in der Hand und am Boden, Beutel, Münzen | Fantasy Props MegaKit |
 | Schatztruhe (golden = eingefärbt) | Fantasy Props MegaKit (`Chest_Wood`) |

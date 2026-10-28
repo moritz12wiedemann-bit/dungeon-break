@@ -28,12 +28,12 @@ func _run() -> void:
 	await _frames(20)
 	_shot("figuren_stehen")
 	for figure in gallery.get_children():
-		if figure is ModularCharacter:
+		if figure.has_method("get_animation_player"):
 			figure.get_animation_player().play("Jog")
 	await _frames(12)
 	_shot("figuren_laufen")
 	for figure in gallery.get_children():
-		if figure is ModularCharacter:
+		if figure.has_method("get_animation_player"):
 			figure.get_animation_player().play("Sword_Attack")
 	await _frames(10)
 	_shot("figuren_angriff")
