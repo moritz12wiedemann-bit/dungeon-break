@@ -45,7 +45,7 @@ func _run() -> void:
 	_overview(Vector3(0, 0, 0), 42.0)
 	await _frames(5)
 	_shot("stadt_uebersicht")
-	_overview(Vector3(-6, 0, -6), 14.0)
+	_overview(Vector3(0, 0, -8), 16.0)
 	await _frames(5)
 	_shot("stadt_nah")
 

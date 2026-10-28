@@ -15,6 +15,8 @@ const TORCH_FLICKER := preload("res://scenes/world/torch_flicker.gd")
 const DUNGEON_KIT := "res://assets/models/quaternius/dungeon/"
 ## Dicke eines Wandstücks aus dem Modular Dungeon.
 const WALL_THICKNESS := 0.44
+## Grundfarbe des Bodens (jede Platte wird noch etwas heller/dunkler gemacht).
+const FLOOR_COLOR := Color(0.36, 0.35, 0.34)
 ## Ordner mit den Möbel-Modellen (Quaternius Fantasy Props MegaKit).
 const KIT := "res://assets/models/quaternius/props/"
 ## Möbel und Kisten am Rand der Räume: [Modell, Größe, Radius der Kollision].
@@ -74,6 +76,7 @@ var _enemies_left: int = 0
 ## Eigener Zufall für die Deko, damit sie die Gegner-Verteilung nicht verändert.
 var _decor_rng := RandomNumberGenerator.new()
 var _batch := ModelBatch.new()
+var _floor_material: StandardMaterial3D
 ## Kästchen, auf denen schon Deko steht.
 var _used_cells: Dictionary = {}
 
@@ -161,8 +164,7 @@ func _build_visuals() -> void:
 		for x in _generator.width:
 			var cell := Vector2i(x, y)
 			if _generator.is_floor(cell):
-				# Die Platte ist 0,25 m dick und mittig, ihre Oberseite soll auf Höhe 0 liegen.
-				_add_model(DUNGEON_KIT + "Floor_Modular", _cell_to_world(cell) + Vector3(0, -0.13, 0))
+				_add_floor_tile(cell)
 				_add_corner_fillers(cell)
 	_add_walls_along(Vector2i.UP, true)
 	_add_walls_along(Vector2i.LEFT, true)
@@ -174,6 +176,38 @@ func _build_visuals() -> void:
 	for i in _generator.rooms.size():
 		_decorate_room(_generator.rooms[i], i)
 	_batch.build(decor)
+
+
+## Bodenplatte: grau, jede Platte etwas heller oder dunkler und zufällig gedreht, dazu ab und zu
+## lose Steine, ein Gitter im Boden oder ein Totenkopf, damit der Boden nicht überall gleich aussieht.
+func _add_floor_tile(cell: Vector2i) -> void:
+	var floor_path := DUNGEON_KIT + "Floor_Modular.gltf"
+	if _floor_material == null:
+		_floor_material = StandardMaterial3D.new()
+		_floor_material.albedo_color = FLOOR_COLOR
+		_floor_material.vertex_color_use_as_albedo = true
+		_floor_material.roughness = 0.95
+		_batch.set_material(floor_path, _floor_material)
+	var center := _cell_to_world(cell)
+	var shade := _decor_rng.randf_range(0.8, 1.15)
+	# Mal etwas wärmer (bräunlich), mal etwas kühler.
+	var warm := _decor_rng.randf_range(-0.04, 0.05)
+	var tint := Color(shade + warm, shade, shade - warm)
+	var turn := (_decor_rng.randi() % 4) * PI / 2.0
+	# Die Platte ist 0,25 m dick und mittig, ihre Oberseite soll auf Höhe 0 liegen.
+	_batch.add(floor_path, Transform3D(Basis(Vector3.UP, turn), center + Vector3(0, -0.13, 0)), tint)
+	var roll := _decor_rng.randf()
+	var jitter := Vector3(_decor_rng.randf_range(-0.5, 0.5), 0, _decor_rng.randf_range(-0.5, 0.5))
+	if roll < 0.06:
+		_add_model(DUNGEON_KIT + "Floor_BricksSeparate", center + jitter + Vector3(0, -0.12, 0), _decor_rng.randf() * TAU)
+	elif roll < 0.1:
+		_add_model(DUNGEON_KIT + "Floor_BricksSeparate2", center + jitter + Vector3(0, -0.2, 0), _decor_rng.randf() * TAU)
+	elif roll < 0.13:
+		_add_model(DUNGEON_KIT + "Trap_empty", center + Vector3(0, -0.1, 0), turn)
+	elif roll < 0.2:
+		_add_model(DUNGEON_KIT + "Brick", center + jitter, _decor_rng.randf() * TAU)
+	elif roll < 0.215:
+		_add_model(DUNGEON_KIT + "Skull", center + jitter, _decor_rng.randf() * TAU, Vector3.ONE * 0.8)
 
 
 ## Wände entlang einer Seite aller Bodenkästchen. `side` zeigt vom Boden zur Wand.
