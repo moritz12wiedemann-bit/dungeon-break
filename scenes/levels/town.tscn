@@ -41,6 +41,9 @@
 [ext_resource type="PackedScene" path="res://assets/models/kaykit/town/rock_single_C.gltf" id="43_rocks"]
 [ext_resource type="PackedScene" path="res://assets/models/kaykit/halloween/bench.gltf" id="44_bench"]
 [ext_resource type="PackedScene" path="res://assets/models/kaykit/halloween/post_lantern.gltf" id="45_postl"]
+[ext_resource type="Script" path="res://scenes/world/npc.gd" id="46_npc00"]
+[ext_resource type="PackedScene" path="res://assets/models/kaykit/adventurers/Barbarian.gltf" id="47_barba"]
+[ext_resource type="PackedScene" path="res://assets/models/kaykit/adventurers/Rogue.gltf" id="48_rogue"]
 
 [sub_resource type="Environment" id="Environment_tw001"]
 background_mode = 1
@@ -204,6 +207,23 @@ collision_mask = 0
 
 [node name="Collision" type="CollisionShape3D" parent="NavigationRegion3D/Geometry/Well"]
 shape = SubResource("Shape_Well")
+
+[node name="Smith" type="StaticBody3D" parent="NavigationRegion3D/Geometry"]
+transform = Transform3D(0.825336, 0, 0.564642, 0, 1, 0, -0.564642, 0, 0.825336, -6.5, 0, -8)
+script = ExtResource("46_npc00")
+window_name = "smith"
+display_name = "Schmied"
+name_color = Color(1, 0.65, 0.35, 1)
+model = ExtResource("47_barba")
+held_items = PackedStringArray("1H_Axe")
+
+[node name="Merchant" type="StaticBody3D" parent="NavigationRegion3D/Geometry"]
+transform = Transform3D(0.621610, 0, -0.783327, 0, 1, 0, 0.783327, 0, 0.621610, 9, 0, 1.5)
+script = ExtResource("46_npc00")
+window_name = "merchant"
+display_name = "Händler"
+name_color = Color(1, 0.85, 0.3, 1)
+model = ExtResource("48_rogue")
 
 [node name="Decor" type="Node3D" parent="."]
 

@@ -33,12 +33,11 @@ const PROPS := [
 	["box_small", 0.9, 0.5],
 	["crates_stacked", 0.7, 0.8],
 	["keg", 0.8, 0.5],
-	["chest", 0.8, 0.7],
 	["trunk_medium_A", 0.8, 0.6],
 	["table_small_decorated_A", 0.8, 0.7],
 ]
 ## Kleinkram auf dem Boden, ohne Kollision.
-const CLUTTER := ["sword_shield_broken", "coin_stack_small", "candle_melted", "bottle_A_brown", "plate_small", "candle_triple"]
+const CLUTTER := ["sword_shield_broken", "candle_melted", "bottle_A_brown", "plate_small", "candle_triple"]
 const BANNERS := ["banner_red", "banner_patternA_red", "banner_shield_red", "banner_thin_brown", "banner_triple_red", "banner_patternC_brown"]
 
 ## Kantenlänge eines Rasterkästchens in Metern.
@@ -56,6 +55,10 @@ const BANNERS := ["banner_red", "banner_patternA_red", "banner_shield_red", "ban
 @export var enemies_per_room_max: int = 4
 ## Chance, dass in einem Raum zusätzlich ein großer Gegner steht.
 @export_range(0.0, 1.0) var brute_chance: float = 0.35
+## Chance, dass in einem Raum eine Schatzkiste steht (mindestens eine gibt es immer).
+@export_range(0.0, 1.0) var chest_chance: float = 0.4
+## Chance, dass eine Kiste golden ist (doppelte Beute).
+@export_range(0.0, 1.0) var golden_chest_chance: float = 0.15
 
 @onready var nav_region: NavigationRegion3D = $NavigationRegion3D
 @onready var geometry: Node3D = $NavigationRegion3D/Geometry
@@ -81,6 +84,7 @@ func _ready() -> void:
 	_generator.generate(_rng)
 	_build_geometry()
 	_build_visuals()
+	_place_chests()
 	nav_region.bake_navigation_mesh(false)
 
 	player.global_position = _cell_to_world(_generator.start_room().get_center())
@@ -373,6 +377,43 @@ func _hash(cell: Vector2i, salt: int) -> int:
 	return absi(hash(Vector3i(cell.x, cell.y, salt + GameState.dungeon_seed)))
 
 
+## Schatzkisten am Rand der mittleren Räume, mit dem Deckel zur Wand.
+func _place_chests() -> void:
+	var middle := range(1, _generator.rooms.size() - 1)
+	middle.shuffle()
+	var placed := 0
+	for i in middle:
+		if placed > 0 and _decor_rng.randf() > chest_chance:
+			continue
+		var spot := _free_wall_spot(_generator.rooms[i])
+		if spot.is_empty():
+			continue
+		var cell: Vector2i = spot[0]
+		var side: Vector2i = spot[1]
+		_used_cells[cell] = true
+		var chest := Chest.create(GameState.dungeon_level, _decor_rng.randf() < golden_chest_chance)
+		geometry.add_child(chest)
+		chest.global_position = _cell_to_world(cell) + Vector3(side.x, 0, side.y) * 0.3
+		chest.rotation.y = atan2(-side.x, -side.y)
+		placed += 1
+
+
+## Ein freies Bodenkästchen direkt an einer geschlossenen Wand: [Kästchen, Richtung zur Wand] oder [].
+func _free_wall_spot(room: Rect2i) -> Array:
+	var spots: Array = []
+	for y in range(room.position.y, room.end.y):
+		for x in range(room.position.x, room.end.x):
+			var cell := Vector2i(x, y)
+			if not _generator.is_floor(cell) or _used_cells.has(cell):
+				continue
+			for side in [Vector2i.UP, Vector2i.LEFT, Vector2i.DOWN, Vector2i.RIGHT]:
+				if _is_closed_wall(cell, side):
+					spots.append([cell, side])
+	if spots.is_empty():
+		return []
+	return spots[_decor_rng.randi() % spots.size()]
+
+
 func _spawn_enemies() -> void:
 	var rooms := _generator.rooms
 	# Startraum (0) bleibt leer, damit man in Ruhe ankommt.
@@ -416,6 +457,7 @@ func _on_enemy_died() -> void:
 
 
 func _on_boss_died(boss: Node3D) -> void:
+	GameState.complete_dungeon()
 	var portal := PORTAL_SCENE.instantiate()
 	add_child(portal)
 	# Etwas neben den Boss stellen, damit die Beute nicht verdeckt wird.

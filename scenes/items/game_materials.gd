@@ -7,6 +7,9 @@ extends RefCounted
 const ORB_ADD := "orb_add"
 const ORB_REMOVE := "orb_remove"
 const ORB_REROLL := "orb_reroll"
+const SCRAP := "scrap"
+## Orbs, die zufällig als Beute fallen können.
+const ORBS := [ORB_ADD, ORB_REMOVE, ORB_REROLL]
 
 ## Alle Materialien: Name, Beschreibung, Bild und ob man es auf Gegenstände anwenden kann.
 const INFO := {
@@ -28,7 +31,14 @@ const INFO := {
 		"icon": preload("res://assets/icons/orb_reroll.svg"),
 		"usable": true,
 	},
+	SCRAP: {
+		"name": "Altmetall",
+		"text": "Bekommt man beim Schmied, wenn man Gegenstände zerlegt.\nWird später zum Herstellen gebraucht.",
+		"icon": preload("res://assets/icons/scrap.svg"),
+		"usable": false,
+	},
 }
+const GOLD_ICON := preload("res://assets/icons/gold.svg")
 ## So viele hat jeder Spieler am Anfang (zum Ausprobieren).
 const STARTING := {ORB_ADD: 5, ORB_REMOVE: 5, ORB_REROLL: 5}
 

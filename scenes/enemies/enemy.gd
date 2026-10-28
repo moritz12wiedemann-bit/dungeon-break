@@ -211,9 +211,10 @@ func _on_died() -> void:
 	tween.tween_callback(queue_free)
 
 
-## Würfelt Beute aus und verteilt sie um die Leiche herum.
+## Würfelt Beute (Gegenstände, Gold, Orbs) aus und verteilt sie um die Leiche herum.
 func _drop_loot() -> void:
 	var item_level: int = GameState.dungeon_level
+	Loot.drop_extras(loot_tier, item_level, global_position, get_tree())
 	var items := ItemGenerator.roll_drops(loot_tier, item_level)
 	for i in items.size():
 		var angle := TAU * i / items.size() + randf() * 0.5
