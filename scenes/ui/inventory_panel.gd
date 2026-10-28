@@ -1,6 +1,7 @@
 extends PanelContainer
-## Inventar-Fenster: links die angezogene Ausrüstung und die Werte des Spielers,
-## rechts die Tasche, darunter der aufklappbare Reiter "Materialien" (Orbs usw.).
+## Inventar-Fenster (schmal, am rechten Rand, damit man die eigene Figur noch sieht):
+## oben Gold, darunter die angezogene Ausrüstung wie eine Figur angeordnet und daneben
+## die Werte des Spielers, dann die Tasche und der aufklappbare Reiter "Materialien" (Orbs usw.).
 ## Öffnen/Schließen mit Taste I oder Escape.
 ## Linksklick in der Tasche = anziehen, Linksklick auf Ausrüstung = ausziehen,
 ## Rechtsklick in der Tasche = auf den Boden werfen.
@@ -9,12 +10,28 @@ extends PanelContainer
 
 @onready var equipment_grid: GridContainer = %EquipmentGrid
 @onready var bag_grid: GridContainer = %BagGrid
-@onready var stats_label: Label = %StatsLabel
+@onready var stats_grid: GridContainer = %StatsGrid
+@onready var gold_label: Label = %GoldLabel
+@onready var bag_title: Label = %BagTitle
 @onready var materials_toggle: Button = %MaterialsToggle
 @onready var materials_box: HFlowContainer = %MaterialsBox
 @onready var status_label: Label = %StatusLabel
 
+## Ausrüstung wie eine Figur: Helm oben, Waffe | Rüstung | Handschuhe, darunter Hose und Schuhe.
+## -1 = leeres Feld.
+const EQUIPMENT_LAYOUT := [
+	-1, ItemData.Slot.HELM, -1,
+	ItemData.Slot.WEAPON, ItemData.Slot.ARMOR, ItemData.Slot.GLOVES,
+	-1, ItemData.Slot.PANTS, -1,
+	-1, ItemData.Slot.BOOTS, -1,
+]
+const EQUIPMENT_SLOT_SIZE := Vector2(46, 46)
+const BAG_SLOT_SIZE := Vector2(42, 42)
+const STAT_NAMES := ["Stufe", "Leben", "Erholung", "Mana", "Schaden", "Angriffe", "Rüstung", "Tempo"]
+
 var _player: Node = null
+## Wert-Spalte der Werte-Tabelle (in der Reihenfolge von STAT_NAMES).
+var _stat_values: Array[Label] = []
 var _equipment_slots: Dictionary = {}
 var _bag_slots: Array[ItemSlot] = []
 ## Material-Name → Kästchen im Reiter.
@@ -27,15 +44,34 @@ var _cursor := TextureRect.new()
 
 func _ready() -> void:
 	hide()
-	for slot in ItemData.Slot.values():
+	for slot in EQUIPMENT_LAYOUT:
+		if slot == -1:
+			var spacer := Control.new()
+			spacer.custom_minimum_size = EQUIPMENT_SLOT_SIZE
+			spacer.mouse_filter = Control.MOUSE_FILTER_IGNORE
+			equipment_grid.add_child(spacer)
+			continue
 		var button := ItemSlot.new()
+		button.custom_minimum_size = EQUIPMENT_SLOT_SIZE
 		button.empty_icon = ItemData.SLOT_ICONS[slot]
 		button.pressed.connect(_on_equipment_pressed.bind(slot))
 		button.right_clicked.connect(cancel_orb)
 		equipment_grid.add_child(button)
 		_equipment_slots[slot] = button
+	for stat_name in STAT_NAMES:
+		var name_label := Label.new()
+		name_label.text = stat_name
+		name_label.add_theme_font_size_override("font_size", 13)
+		name_label.add_theme_color_override("font_color", Color(0.6, 0.57, 0.5))
+		stats_grid.add_child(name_label)
+		var value_label := Label.new()
+		value_label.add_theme_font_size_override("font_size", 13)
+		value_label.add_theme_color_override("font_color", Color(0.92, 0.88, 0.8))
+		stats_grid.add_child(value_label)
+		_stat_values.append(value_label)
 	for id in GameMaterials.INFO:
 		var slot := MaterialSlot.new(id)
+		slot.custom_minimum_size = BAG_SLOT_SIZE
 		slot.selected.connect(_select_orb.bind(id))
 		materials_box.add_child(slot)
 		_material_slots[id] = slot
@@ -91,6 +127,7 @@ func track_player(player: Node) -> void:
 	var inventory: Inventory = player.inventory
 	for i in inventory.bag_size:
 		var button := ItemSlot.new()
+		button.custom_minimum_size = BAG_SLOT_SIZE
 		button.pressed.connect(_on_bag_pressed.bind(i))
 		button.right_clicked.connect(_on_bag_right_clicked.bind(i))
 		bag_grid.add_child(button)
@@ -111,17 +148,24 @@ func refresh() -> void:
 		_bag_slots[i].set_item(inventory.bag[i], orb_active)
 	for id in _material_slots:
 		_material_slots[id].set_count(inventory.get_material_count(id), id == _selected_orb)
-	stats_label.text = "Stufe %d  ·  Gold %d\nLeben %d  (+%.1f/s)\nSchaden %d–%d  ·  %.2f/s\nRüstung %d  ·  Tempo %.1f" % [
-		_player.experience.level,
-		_player.inventory.gold,
-		_player.health.max_health,
-		_player.health.regen_per_second,
-		_player.damage_min + _player.bonus_damage,
-		_player.damage_max + _player.bonus_damage,
-		1.0 / _player.attack_cooldown,
-		_player.armor,
-		_player.move_speed,
+	gold_label.text = str(inventory.gold)
+	var used := 0
+	for item in inventory.bag:
+		if item != null:
+			used += 1
+	bag_title.text = "Tasche  (%d / %d)" % [used, inventory.bag.size()]
+	var values := [
+		str(_player.experience.level),
+		str(_player.health.max_health),
+		"%.1f / s" % _player.health.regen_per_second,
+		str(int(_player.max_mana)),
+		"%d–%d" % [_player.damage_min + _player.bonus_damage, _player.damage_max + _player.bonus_damage],
+		"%.2f / s" % (1.0 / _player.attack_cooldown),
+		"%d" % _player.armor,
+		"%.1f" % _player.move_speed,
 	]
+	for i in values.size():
+		_stat_values[i].text = values[i]
 
 
 func _toggle_materials() -> void:
