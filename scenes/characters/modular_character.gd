@@ -51,6 +51,9 @@ const HELD_ITEMS := {
 }
 
 ## Diese Animationen wiederholen sich endlos (alle anderen laufen einmal ab).
+## So viel (Meter) steht die Figur über ihrem Ursprung.
+const FOOT_LIFT := 0.03
+
 const LOOPING := [
 	"Idle", "Walk", "Jog", "Sprint", "Sword_Idle", "Spell_Idle", "Shield_Idle", "Talk", "Torch_Idle",
 	"FoldArms", "Lantern", "Sitting", "Chop", "Dance", "Zombie_Idle", "Zombie_Walk", "Crouch_Walk",
@@ -181,6 +184,8 @@ func _rebuild() -> void:
 	_model = load(CHARACTER_DIR + BODY_FILES[body]).instantiate()
 	_model.name = "Model"
 	_model.scale = Vector3.ONE * size
+	# Ein paar Zentimeter höher, sonst versinken die Schuhe in den Animationen leicht im Boden.
+	_model.position.y = FOOT_LIFT * size
 	add_child(_model)
 	var wanted := _wanted_parts()
 	for mesh: MeshInstance3D in _model.find_children("*", "MeshInstance3D", true, false):

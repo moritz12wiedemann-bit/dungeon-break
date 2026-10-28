@@ -74,8 +74,8 @@ func _build_ground_and_forest() -> void:
 			var inside := absf(center.x) < town_half_size and absf(center.z) < town_half_size
 			var turn := Basis(Vector3.UP, (_rng.randi() % 4) * PI / 2.0)
 			if inside and _is_paved(center):
-				# Die Pflasterplatte liegt einen Hauch über der Erde, damit nichts flimmert.
-				_batch.add(cobble, Transform3D(turn, center + Vector3(0, 0.01, 0)))
+				# Die Pflasterplatte ist 2 cm dick, ihre Oberseite liegt genau auf Höhe 0.
+				_batch.add(cobble, Transform3D(turn, center + Vector3(0, -0.01, 0)))
 				_batch_color(cobble, cobble_material, 0.03)
 			elif inside:
 				_batch.add_mesh("earth", plane, Transform3D(turn, center))
