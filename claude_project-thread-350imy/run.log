@@ -17,11 +17,6 @@ ERROR: Condition "status < 0" is true. Returning: ERR_CANT_OPEN
 WARNING: All audio drivers failed, falling back to the dummy driver.
      at: initialize (servers/audio/audio_server.cpp:258)
 
-ERROR: Node not inside tree. Use look_at_from_position() instead.
-   at: look_at (scene/3d/node_3d.cpp:1253)
-   GDScript backtrace (most recent call first):
-       [0] _gallery (res://tools/ci/capture.gd:82)
-       [1] _run (res://tools/ci/capture.gd:25)
 SHOT figuren_stehen
 SHOT figuren_laufen
 SHOT figuren_angriff
