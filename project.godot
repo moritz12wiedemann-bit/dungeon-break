@@ -34,6 +34,10 @@ renderer/rendering_method="gl_compatibility"
 renderer/rendering_method.mobile="gl_compatibility"
 rendering_device/driver.windows="d3d12"
 
+[gui]
+
+timers/tooltip_delay_sec=0.0
+
 [input]
 
 move={
