@@ -19,9 +19,8 @@ const PLANTS := [
 	["Grass_Common_Tall", 0.7, 1.0], ["Grass_Wispy_Short", 0.8, 1.2], ["Flower_3_Group", 0.5, 0.8],
 	["Flower_4_Group", 0.5, 0.8], ["Clover_1", 0.6, 0.9], ["Mushroom_Common", 0.6, 1.0],
 ]
-## Ein bisschen Grün und Steinchen in der Stadt (auf der Erde, nicht auf dem Pflaster).
-const TOWN_PLANTS := [["Grass_Common_Short", 0.5, 0.8], ["Grass_Wispy_Short", 0.5, 0.8],
-	["Pebble_Round_1", 1.0, 1.6], ["Pebble_Round_3", 1.0, 1.6], ["Plant_7", 0.6, 0.9]]
+## Ein paar Grasbüschel in der Stadt (auf der Erde, nicht auf dem Pflaster).
+const TOWN_PLANTS := [["Grass_Common_Short", 0.4, 0.7], ["Grass_Wispy_Short", 0.4, 0.7]]
 
 ## Halbe Kantenlänge der Stadt innerhalb des Zauns (in Metern).
 @export var town_half_size: float = 20.0
@@ -39,6 +38,8 @@ const TOWN_PLANTS := [["Grass_Common_Short", 0.5, 0.8], ["Grass_Wispy_Short", 0.
 ## Farbe von Erde (in der Stadt) und Wiese (außerhalb).
 @export var earth_color: Color = Color(0.2, 0.17, 0.14)
 @export var grass_color: Color = Color(0.2, 0.3, 0.11)
+## Farbe, mit der die Pflaster-Textur abgedunkelt wird (grauer Stein statt hellem Sand).
+@export var cobble_color: Color = Color(0.52, 0.5, 0.48)
 
 @onready var nav_region: NavigationRegion3D = $NavigationRegion3D
 @onready var player: CharacterBody3D = $Player
@@ -63,6 +64,9 @@ func _build_ground_and_forest() -> void:
 	var earth := _tile_material(earth_color)
 	var grass := _tile_material(grass_color)
 	var cobble := VILLAGE + "Floor_UnevenBrick.gltf"
+	var cobble_material := _batch.copy_model_material(cobble)
+	cobble_material.albedo_color = cobble_color
+	cobble_material.vertex_color_use_as_albedo = true
 	var steps := int(world_half_size / TILE)
 	for iz in range(-steps, steps):
 		for ix in range(-steps, steps):
@@ -72,14 +76,15 @@ func _build_ground_and_forest() -> void:
 			if inside and _is_paved(center):
 				# Die Pflasterplatte liegt einen Hauch über der Erde, damit nichts flimmert.
 				_batch.add(cobble, Transform3D(turn, center + Vector3(0, 0.01, 0)))
+				_batch_color(cobble, cobble_material, 0.06)
 			elif inside:
 				_batch.add_mesh("earth", plane, Transform3D(turn, center))
-				_batch_color("earth", earth, 0.1)
-				if _rng.randf() < 0.07 and not _near_fence(center):
+				_batch_color("earth", earth, 0.035)
+				if _rng.randf() < 0.04 and not _near_fence(center):
 					_add_plant(TOWN_PLANTS, center)
 			else:
 				_batch.add_mesh("grass", plane, Transform3D(turn, center))
-				_batch_color("grass", grass, 0.12)
+				_batch_color("grass", grass, 0.04)
 				_add_forest_cell(center)
 	_batch.build($Decor)
 

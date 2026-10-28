@@ -32,6 +32,14 @@ func set_material(path: String, material: Material) -> void:
 	_materials[path] = material
 
 
+## Kopie des Original-Materials von `path` (z. B. um es einzufärben und mit set_material() zu setzen).
+func copy_model_material(path: String) -> StandardMaterial3D:
+	if not _parts.has(path):
+		_parts[path] = _load_parts(path)
+	var mesh: Mesh = _parts[path][0][0]
+	return mesh.surface_get_material(0).duplicate()
+
+
 ## Wie add(), aber für ein selbst gebautes Mesh (z. B. eine einfache Bodenplatte).
 ## `key` unterscheidet verschiedene Meshes, `offset` verschiebt das Mesh innerhalb des Modells.
 func add_mesh(key: String, mesh: Mesh, where: Transform3D, offset := Transform3D.IDENTITY) -> void:

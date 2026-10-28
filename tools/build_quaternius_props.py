@@ -36,7 +36,7 @@ NATURE = [
     "Pine_1", "Pine_2", "Pine_3", "Pine_5", "Rock_Medium_1", "Rock_Medium_2", "Rock_Medium_3",
     "Bush_Common", "Bush_Common_Flowers", "Fern_1", "Plant_1", "Plant_7", "Grass_Common_Short",
     "Grass_Common_Tall", "Grass_Wispy_Short", "Flower_3_Group", "Flower_4_Group", "Clover_1",
-    "Mushroom_Common", "Pebble_Round_1", "Pebble_Round_3",
+    "Mushroom_Common",
 ]
 LISTS = {"VILLAGE": VILLAGE, "NATURE": NATURE}
 

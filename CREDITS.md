@@ -22,7 +22,7 @@ Nicht erlaubt ist, die Modelle selbst als Asset-Pack weiterzugeben oder zu verka
 | Bestiary - Dungeon Monsters Kit (QAL) | Monster: Puglin und Imp, je 3 Farbvarianten | `monsters/` |
 | Updated Modular Dungeon (Mai 2019) | Dungeon-Boden, -Wände, Säulen, Torbogen, Sockel, dazu Fässer, Kisten, Tische, Totenköpfe ... (alle 47 Modelle) | `dungeon/` |
 | Medieval Village MegaKit | Teile für die Häuser (Wände mit Tür/Fenster, Ecken, Dächer, Giebel, Schornstein), Holzzaun, Pflaster | `village/` |
-| Stylized Nature MegaKit | Laub- und Nadelbäume, Felsen, Büsche, Farne, Gras, Blumen, Pilze, Kiesel | `nature/` |
+| Stylized Nature MegaKit | Laub- und Nadelbäume, Felsen, Büsche, Farne, Gras, Blumen, Pilze | `nature/` |
 | Fantasy Props MegaKit | alle 94 Modelle: Fässer, Kisten, Truhe, Möbel, Fackel, Laterne, Banner, Kerzen, Waffen (Schwert, Axt, Spitzhacke, Schild), Münzen, Tränke, Bücher, Marktstand ... | `props/` |
 
 (Alle Ordner liegen unter `assets/models/quaternius/`.)
@@ -52,7 +52,7 @@ Normal- und ORM-Maps weggelassen, damit die Web-Version klein bleibt. Die Modell
 | Stadt: Häuser (Schmiede, Taverne, Wohnhäuser) | Medieval Village MegaKit (in `scenes/world/houses/` zusammengesetzt) |
 | Stadt: Zäune, Laternenpfähle | Medieval Village MegaKit (Laterne aus dem Fantasy Props MegaKit) |
 | Stadt: Pflaster | Medieval Village MegaKit (`Floor_UnevenBrick`) |
-| Stadt: Bäume, Büsche, Farne, Gras, Blumen, Pilze, Kiesel | Stylized Nature MegaKit |
+| Stadt: Bäume, Büsche, Farne, Gras, Blumen, Pilze | Stylized Nature MegaKit |
 | Stadt: Fässer, Kisten, Bank, Eimer, Waffenständer, Marktstände, Handkarren, Beutel | Fantasy Props MegaKit |
 | Altar: Sockel und Torbogen, Portalbogen | Modular Dungeon |
 | Altar: Kerzenständer | Fantasy Props MegaKit |
