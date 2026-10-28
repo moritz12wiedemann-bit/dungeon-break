@@ -86,9 +86,19 @@ func equip_from_bag(index: int) -> void:
 	var item := bag[index]
 	if item == null:
 		return
-	bag[index] = equipped.get(item.slot)
-	equipped[item.slot] = item
+	var target := equip_target(item)
+	bag[index] = equipped.get(target)
+	equipped[target] = item
 	changed.emit()
+
+
+## Ausrüstungsplatz für `item`. Ringe kommen in den ersten freien Ring-Platz,
+## sind beide belegt, wird der erste Ring getauscht.
+func equip_target(item: ItemData) -> ItemData.Slot:
+	if item.slot == ItemData.Slot.RING and equipped.has(ItemData.Slot.RING) \
+			and not equipped.has(ItemData.Slot.RING_2):
+		return ItemData.Slot.RING_2
+	return item.slot
 
 
 ## Zieht den Gegenstand im Ausrüstungsplatz `slot` aus und legt ihn in die Tasche.

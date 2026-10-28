@@ -7,7 +7,8 @@ extends Resource
 ## 3 = Selten, 4 = Legendär. Set-Gegenstände haben auch 4 Werte und stehen auf
 ## einer Stufe mit Legendär (eine Alternative dazu, nicht besser).
 
-enum Slot { HELM, GLOVES, ARMOR, PANTS, BOOTS, WEAPON }
+## RING_2 ist nur der zweite Ring-Platz in der Ausrüstung: Ringe selbst haben immer RING.
+enum Slot { HELM, GLOVES, ARMOR, PANTS, BOOTS, WEAPON, AMULET, BRACERS, RING, RING_2 }
 enum Rarity { NORMAL, MAGIC, RARE, LEGENDARY, SET }
 
 const SLOT_NAMES := {
@@ -17,7 +18,14 @@ const SLOT_NAMES := {
 	Slot.PANTS: "Hose",
 	Slot.BOOTS: "Schuhe",
 	Slot.WEAPON: "Waffe",
+	Slot.AMULET: "Amulett",
+	Slot.BRACERS: "Armschienen",
+	Slot.RING: "Ring",
+	Slot.RING_2: "Ring",
 }
+## Plätze, die ein Gegenstand haben kann (alle außer dem zweiten Ring-Platz).
+const ITEM_SLOTS := [Slot.HELM, Slot.GLOVES, Slot.ARMOR, Slot.PANTS, Slot.BOOTS, Slot.WEAPON,
+	Slot.AMULET, Slot.BRACERS, Slot.RING]
 ## Bildchen je Platz (helle Zeichnung, wird in der Farbe der Seltenheit eingefärbt).
 const SLOT_ICONS := {
 	Slot.HELM: preload("res://assets/icons/helm.svg"),
@@ -26,6 +34,10 @@ const SLOT_ICONS := {
 	Slot.PANTS: preload("res://assets/icons/pants.svg"),
 	Slot.BOOTS: preload("res://assets/icons/boots.svg"),
 	Slot.WEAPON: preload("res://assets/icons/weapon.svg"),
+	Slot.AMULET: preload("res://assets/icons/amulet.svg"),
+	Slot.BRACERS: preload("res://assets/icons/bracers.svg"),
+	Slot.RING: preload("res://assets/icons/ring.svg"),
+	Slot.RING_2: preload("res://assets/icons/ring.svg"),
 }
 const RARITY_NAMES := {
 	Rarity.NORMAL: "Normal",
@@ -73,7 +85,7 @@ const MAX_STATS := 4
 @export var stats: Dictionary = {}
 ## Wertebereich je Wert: Vector2(Minimum, Maximum). Neu auswürfeln bleibt in diesem Bereich.
 @export var ranges: Dictionary = {}
-## Der Grundwert (Waffe: Schaden, sonst Rüstung). Ihn hat jeder Gegenstand, er kann nicht entfernt werden.
+## Der Grundwert (Waffe und Ring: Schaden, Amulett: Leben, sonst Rüstung). Ihn hat jeder Gegenstand, er kann nicht entfernt werden.
 @export var base_stat: String = ""
 
 
