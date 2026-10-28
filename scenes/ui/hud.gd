@@ -43,6 +43,8 @@ func _ready() -> void:
 		"merchant": preload("res://scenes/ui/merchant_window.gd").new(),
 		"altar": preload("res://scenes/ui/altar_window.gd").new(false),
 		"endless": preload("res://scenes/ui/altar_window.gd").new(true),
+		"mystic": preload("res://scenes/ui/mystic_window.gd").new(),
+		"elder": preload("res://scenes/ui/elder_window.gd").new(),
 	}
 	for window in _windows.values():
 		add_child(window)

@@ -44,6 +44,7 @@
 [ext_resource type="Script" path="res://scenes/world/npc.gd" id="46_npc00"]
 [ext_resource type="PackedScene" path="res://assets/models/kaykit/adventurers/Barbarian.gltf" id="47_barba"]
 [ext_resource type="PackedScene" path="res://assets/models/kaykit/adventurers/Rogue.gltf" id="48_rogue"]
+[ext_resource type="PackedScene" path="res://assets/models/kaykit/adventurers/Mage.gltf" id="49_mage0"]
 
 [sub_resource type="Environment" id="Environment_tw001"]
 background_mode = 1
@@ -231,6 +232,25 @@ window_name = "merchant"
 display_name = "Händler"
 name_color = Color(1, 0.85, 0.3, 1)
 model = ExtResource("48_rogue")
+
+[node name="Mystic" type="StaticBody3D" parent="NavigationRegion3D/Geometry"]
+transform = Transform3D(0.621610, 0, 0.783327, 0, 1, 0, -0.783327, 0, 0.621610, -4.5, 0, 6.5)
+script = ExtResource("46_npc00")
+window_name = "mystic"
+display_name = "Mystikerin"
+name_color = Color(0.8, 0.6, 1, 1)
+model = ExtResource("49_mage0")
+held_items = PackedStringArray("Spellbook_open")
+
+[node name="Elder" type="StaticBody3D" parent="NavigationRegion3D/Geometry"]
+transform = Transform3D(0.764842, 0, 0.644218, 0, 1, 0, -0.644218, 0, 0.764842, -6.5, 0, -1.5)
+script = ExtResource("46_npc00")
+window_name = "elder"
+display_name = "Magischer Ältester"
+name_color = Color(0.55, 0.85, 1, 1)
+model = ExtResource("49_mage0")
+model_scale = 0.85
+held_items = PackedStringArray("2H_Staff")
 
 [node name="Decor" type="Node3D" parent="."]
 

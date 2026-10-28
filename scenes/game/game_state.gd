@@ -18,6 +18,18 @@ var chosen_level: int = 0
 ## Zufalls-Startwert des aktuellen Dungeons. Gleicher Wert = gleiche Karte.
 var dungeon_seed: int = 0
 
+## Wird ausgelöst, wenn sich Karten, Arcana, Unterklasse oder Fähigkeiten ändern
+## (der Spieler rechnet dann seine Werte neu aus).
+signal progress_changed
+
+## Augment-Karten (siehe AugmentCards): gekaufte und ausgerüstete Karten, maximales Arcana.
+var owned_cards: Array[String] = []
+var equipped_cards: Array[String] = []
+var max_arcana: int = AugmentCards.START_ARCANA
+## Unterklasse beim magischen Ältesten ("" = noch keine gewählt) und Stufen der Fähigkeiten.
+var subclass: String = ""
+var skill_levels: Dictionary = {}
+
 ## Angebot des Händlers (3 Gegenstände). Leer = beim nächsten Besuch neu würfeln.
 var shop_items: Array[ItemData] = []
 
@@ -52,6 +64,22 @@ func _enter(player: Node, monster_level: int, scene: String) -> void:
 ## Wird aufgerufen, wenn der Boss eines Dungeons besiegt ist: der Händler bekommt neue Ware.
 func complete_dungeon() -> void:
 	shop_items.clear()
+
+
+## Arcana, das die ausgerüsteten Karten gerade verbrauchen.
+func used_arcana() -> int:
+	var total := 0
+	for id in equipped_cards:
+		total += AugmentCards.CARDS[id].arcana
+	return total
+
+
+## Summe eines Werts (z. B. "health") über alle ausgerüsteten Karten.
+func card_stat_total(stat: String) -> float:
+	var total := 0.0
+	for id in equipped_cards:
+		total += AugmentCards.CARDS[id].stats.get(stat, 0)
+	return total
 
 
 ## Bringt den Spieler in die Stadt. `full_health`: dort mit vollem Leben ankommen (z. B. nach dem Tod).

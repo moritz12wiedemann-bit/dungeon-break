@@ -93,6 +93,7 @@ func _ready() -> void:
 	_base_attack_cooldown = attack_cooldown
 	mana = max_mana
 	inventory.changed.connect(recalculate_stats)
+	GameState.progress_changed.connect(recalculate_stats)
 	# Kommt der Spieler aus der Stadt oder einem Dungeon, bekommt er seine Werte zurück.
 	GameState.restore_player(self)
 
@@ -294,18 +295,23 @@ func drop_item_from_bag(index: int) -> void:
 	GroundItem.drop(item, global_position + offset, get_tree())
 
 
-## Berechnet Leben, Regeneration, Tempo, Angriffstempo, Rüstung und Schaden aus Grundwert + Stufe + Ausrüstung neu.
+## Berechnet Leben, Regeneration, Tempo, Angriffstempo, Rüstung und Schaden aus
+## Grundwert + Stufe + Ausrüstung + Augment-Karten neu.
 func recalculate_stats() -> void:
 	var level_bonus := experience.level - 1
-	health.set_max_health(_base_max_health + level_bonus * health_per_level
-		+ int(inventory.get_stat_total("health")))
-	health.regen_per_second = _base_regen + inventory.get_stat_total("regen")
-	# Höchstens +25 % Laufgeschwindigkeit aus Ausrüstung.
-	move_speed = _base_move_speed * (1.0 + minf(inventory.get_stat_total("move_speed"), 25.0) / 100.0)
+	health.set_max_health(_base_max_health + level_bonus * health_per_level + int(_stat_total("health")))
+	health.regen_per_second = _base_regen + _stat_total("regen")
+	# Höchstens +25 % Laufgeschwindigkeit.
+	move_speed = _base_move_speed * (1.0 + minf(_stat_total("move_speed"), 25.0) / 100.0)
 	# Angriffstempo: höchstens +50 %.
-	attack_cooldown = _base_attack_cooldown / (1.0 + minf(inventory.get_stat_total("attack_speed"), 50.0) / 100.0)
-	armor = inventory.get_stat_total("armor")
-	bonus_damage = level_bonus * damage_per_level + int(inventory.get_stat_total("damage"))
+	attack_cooldown = _base_attack_cooldown / (1.0 + minf(_stat_total("attack_speed"), 50.0) / 100.0)
+	armor = _stat_total("armor")
+	bonus_damage = level_bonus * damage_per_level + int(_stat_total("damage"))
+
+
+## Ein Wert aus Ausrüstung und ausgerüsteten Augment-Karten zusammen.
+func _stat_total(stat: String) -> float:
+	return inventory.get_stat_total(stat) + GameState.card_stat_total(stat)
 
 
 func _attack(target: Node3D) -> void:

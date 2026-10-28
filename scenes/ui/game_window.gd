@@ -55,6 +55,8 @@ func _init(title: String) -> void:
 	_status.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	box.add_child(_status)
 	_build()
+	# Bleibt senkrecht in der Mitte, auch wenn sich der Inhalt ändert.
+	minimum_size_changed.connect(func(): _recenter.call_deferred())
 
 
 ## Hier bauen erbende Fenster ihren Inhalt in `content`.
@@ -75,7 +77,13 @@ func open(for_player: Node, from: Node3D) -> void:
 	_status.text = ""
 	show()
 	refresh()
+	_recenter.call_deferred()
+
+
+func _recenter() -> void:
 	reset_size()
+	offset_top = -size.y / 2.0
+	offset_bottom = size.y / 2.0
 
 
 func _process(_delta: float) -> void:
