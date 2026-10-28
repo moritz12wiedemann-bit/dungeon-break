@@ -11,7 +11,7 @@ config_version=5
 [application]
 
 config/name="Dungeon Break"
-config/features=PackedStringArray("4.7", "Forward Plus")
+config/features=PackedStringArray("4.7", "GL Compatibility")
 run/main_scene="res://scenes/levels/town.tscn"
 config/icon="res://icon.svg"
 
@@ -30,6 +30,8 @@ window/stretch/aspect="expand"
 
 [rendering]
 
+renderer/rendering_method="gl_compatibility"
+renderer/rendering_method.mobile="gl_compatibility"
 rendering_device/driver.windows="d3d12"
 
 [input]

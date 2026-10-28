@@ -1,8 +1,14 @@
 # Dungeon Break
 
-Ein Action-RPG im Stil von Diablo 3, gebaut mit **Godot 4.7** (GDScript, Forward+), 3D mit fester Iso-Kamera.
+Ein Action-RPG im Stil von Diablo 3, gebaut mit **Godot 4.7** (GDScript, Compatibility-Renderer, damit es im Browser läuft), 3D mit fester Iso-Kamera.
 
-## Starten
+## Im Browser spielen
+
+**https://moritz12wiedemann-bit.github.io/dungeon-break/**
+
+Bei jedem Push auf `main` baut die GitHub Action `.github/workflows/web.yml` automatisch den Web-Export (Preset „Web“ in `export_presets.cfg`, Single-Thread) und veröffentlicht ihn dort. Nach ein paar Minuten einfach die Seite neu laden.
+
+## Starten (in Godot)
 
 1. Godot 4.7 öffnen, im Projekt-Manager auf **Importieren** klicken und die Datei `project.godot` in diesem Ordner auswählen.
 2. Im Editor oben rechts auf **▶ (F5)** drücken. Du startest in der Stadt.
