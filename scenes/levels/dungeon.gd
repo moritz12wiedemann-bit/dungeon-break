@@ -52,6 +52,8 @@ const BANNERS := ["Banner_1", "Banner_2"]
 ## Wie viele Fackeln höchstens pro Raum.
 @export var torches_per_room: int = 2
 ## Wie viele normale Gegner pro Raum (zufällig dazwischen).
+## Name oben links (der erste Dungeon ist der Kalksteintempel).
+@export var dungeon_name: String = "Kalksteintempel"
 @export var enemies_per_room_min: int = 2
 @export var enemies_per_room_max: int = 4
 ## Chance, dass in einem Raum zusätzlich ein großer Gegner steht.
@@ -106,7 +108,7 @@ func _generate_layout() -> void:
 
 
 func _setup_hud() -> void:
-	hud.set_location("Dungeon · Monsterstufe %d" % GameState.dungeon_level)
+	hud.set_location("%s · Monsterstufe %d" % [dungeon_name, GameState.dungeon_level])
 	hud.set_enemies_left(_enemies_left)
 	hud.show_toast("Besiege den Boss! (T = zurück in die Stadt)")
 
@@ -180,7 +182,7 @@ func _build_visuals() -> void:
 
 ## Bodenplatte: einheitlich grau und zufällig gedreht, nur selten eine etwas hellere oder dunklere
 ## Platte. Dazu ab und zu
-## lose Steine, ein Gitter im Boden oder ein Totenkopf, damit der Boden nicht überall gleich aussieht.
+## lose Steine oder ein Totenkopf, damit der Boden nicht überall gleich aussieht.
 func _add_floor_tile(cell: Vector2i) -> void:
 	var floor_path := DUNGEON_KIT + "Floor_Modular.gltf"
 	if _floor_material == null:
@@ -203,11 +205,9 @@ func _add_floor_tile(cell: Vector2i) -> void:
 		_add_model(DUNGEON_KIT + "Floor_BricksSeparate", center + jitter + Vector3(0, -0.12, 0), _decor_rng.randf() * TAU)
 	elif roll < 0.1:
 		_add_model(DUNGEON_KIT + "Floor_BricksSeparate2", center + jitter + Vector3(0, -0.2, 0), _decor_rng.randf() * TAU)
-	elif roll < 0.13:
-		_add_model(DUNGEON_KIT + "Trap_empty", center + Vector3(0, -0.1, 0), turn)
-	elif roll < 0.2:
+	elif roll < 0.17:
 		_add_model(DUNGEON_KIT + "Brick", center + jitter, _decor_rng.randf() * TAU)
-	elif roll < 0.215:
+	elif roll < 0.185:
 		_add_model(DUNGEON_KIT + "Skull", center + jitter, _decor_rng.randf() * TAU, Vector3.ONE * 0.8)
 
 

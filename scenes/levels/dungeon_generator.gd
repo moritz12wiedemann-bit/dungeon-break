@@ -1,17 +1,23 @@
 class_name DungeonGenerator
 extends RefCounted
 ## Erzeugt eine zufällige Dungeon-Karte auf einem Raster.
-## Ablauf: Räume zufällig verteilen (ohne Überlappung), vom Startraum aus der Reihe nach
-## mit Gängen verbinden, der Boss-Raum kommt zuletzt. Ergebnis ist ein Raster aus
+## Ablauf: Räume zufällig verteilen (ohne Überlappung, mit wenig Abstand), dann jeden Raum mit
+## dem nächstgelegenen schon verbundenen Raum per Gang verbinden (so bleiben die Gänge kurz).
+## Der Startraum liegt möglichst weit vom Boss-Raum weg. Ergebnis ist ein Raster aus
 ## Boden (1) und Wand (0) plus die Liste der Räume.
 ## Gleicher Zufalls-Startwert (seed) = gleiche Karte.
 
 ## Größe des Rasters in Kästchen.
-var width: int = 48
-var height: int = 48
+var width: int = 90
+var height: int = 90
 ## Wie viele Räume (inklusive Start und Boss).
-var min_rooms: int = 6
-var max_rooms: int = 8
+var min_rooms: int = 18
+var max_rooms: int = 22
+## Größe der normalen Räume in Kästchen (von, bis) und des Boss-Raums.
+var room_size := Vector2i(7, 14)
+var boss_room_size := Vector2i(12, 15)
+## Mindestabstand zwischen zwei Räumen in Kästchen (klein = kurze Gänge).
+var room_gap: int = 2
 ## Breite der Gänge in Kästchen.
 var corridor_width: int = 3
 
@@ -34,8 +40,7 @@ func generate(rng: RandomNumberGenerator) -> void:
 	rooms = _order_rooms(placed)
 	for room in rooms:
 		_carve_rect(room)
-	for i in rooms.size() - 1:
-		_carve_corridor(rooms[i].get_center(), rooms[i + 1].get_center(), rng)
+	_connect_rooms(rng)
 	_place_pillars(rng)
 
 
@@ -89,17 +94,16 @@ func _place_rooms(rng: RandomNumberGenerator) -> Array[Rect2i]:
 	var result: Array[Rect2i] = []
 	var target := rng.randi_range(min_rooms, max_rooms)
 	# Erster Raum wird der große Boss-Raum.
-	var sizes := [Vector2i(10, 12)]
-	for attempt in 300:
+	for attempt in 2000:
 		if result.size() >= target:
 			break
-		var size_range: Vector2i = sizes[0] if result.is_empty() else Vector2i(5, 9)
+		var size_range: Vector2i = boss_room_size if result.is_empty() else room_size
 		var size := Vector2i(rng.randi_range(size_range.x, size_range.y), rng.randi_range(size_range.x, size_range.y))
 		var pos := Vector2i(rng.randi_range(1, width - size.x - 1), rng.randi_range(1, height - size.y - 1))
 		var rect := Rect2i(pos, size)
 		var free := true
 		for other in result:
-			if other.grow(3).intersects(rect):
+			if other.grow(room_gap).intersects(rect):
 				free = false
 				break
 		if free:
@@ -107,19 +111,39 @@ func _place_rooms(rng: RandomNumberGenerator) -> Array[Rect2i]:
 	return result
 
 
-## Startraum = am weitesten vom Boss-Raum entfernt. Danach immer der nächstgelegene
-## noch nicht besuchte Raum. Der Boss-Raum kommt ans Ende.
+## Startraum = am weitesten vom Boss-Raum entfernt. Danach die Räume nach Entfernung vom Start.
+## Der Boss-Raum kommt ans Ende.
 func _order_rooms(placed: Array[Rect2i]) -> Array[Rect2i]:
 	var boss := placed[0]
 	var rest := placed.slice(1)
 	rest.sort_custom(func(a, b): return _dist(a, boss) > _dist(b, boss))
-	var ordered: Array[Rect2i] = [rest.pop_front()]
-	while not rest.is_empty():
-		var last: Rect2i = ordered[ordered.size() - 1]
-		rest.sort_custom(func(a, b): return _dist(a, last) < _dist(b, last))
-		ordered.append(rest.pop_front())
+	var start: Rect2i = rest.pop_front()
+	rest.sort_custom(func(a, b): return _dist(a, start) < _dist(b, start))
+	var ordered: Array[Rect2i] = [start]
+	ordered.append_array(rest)
 	ordered.append(boss)
 	return ordered
+
+
+## Vom Startraum aus wird immer der Raum angeschlossen, der einem schon verbundenen Raum am
+## nächsten liegt, mit einem Gang zu genau diesem Raum. Alle Räume sind so erreichbar.
+func _connect_rooms(rng: RandomNumberGenerator) -> void:
+	var connected: Array[Rect2i] = [rooms[0]]
+	var open := rooms.slice(1)
+	while not open.is_empty():
+		var best_open := 0
+		var best_from := rooms[0]
+		var best_dist := INF
+		for i in open.size():
+			for other in connected:
+				var d := _dist(open[i], other)
+				if d < best_dist:
+					best_dist = d
+					best_open = i
+					best_from = other
+		var room: Rect2i = open.pop_at(best_open)
+		_carve_corridor(best_from.get_center(), room.get_center(), rng)
+		connected.append(room)
 
 
 func _dist(a: Rect2i, b: Rect2i) -> float:
