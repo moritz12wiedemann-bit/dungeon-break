@@ -13,19 +13,12 @@ const DROP_TABLE := [
 ]
 ## Pro Beute-Stufe: Gewichte für Normal, Magisch, Selten, Legendär, Set.
 ## Höhere Zahl = häufiger. Beispiel normaler Gegner: 70 von 100 Drops sind weiß.
+## Legendär und Set sind gleich selten (Set ist eine Alternative zu Legendär).
 const RARITY_WEIGHTS := [
-	[70.0, 25.0, 4.5, 0.4, 0.1],
-	[35.0, 40.0, 20.0, 3.5, 1.5],
-	[5.0, 35.0, 40.0, 12.0, 8.0],
+	[70.0, 25.0, 4.4, 0.3, 0.3],
+	[35.0, 40.0, 20.0, 2.5, 2.5],
+	[5.0, 35.0, 40.0, 10.0, 10.0],
 ]
-## Wie viele Zusatzwerte jede Seltenheit bekommt.
-const AFFIX_COUNT := {
-	ItemData.Rarity.NORMAL: 0,
-	ItemData.Rarity.MAGIC: 1,
-	ItemData.Rarity.RARE: 3,
-	ItemData.Rarity.LEGENDARY: 4,
-	ItemData.Rarity.SET: 3,
-}
 ## Grundnamen je Platz.
 const BASE_NAMES := {
 	ItemData.Slot.HELM: ["Lederkappe", "Eisenhelm", "Kapuze", "Hörnerhelm"],
@@ -45,14 +38,23 @@ const SETS := {
 	"Erbe des Grabwächters": "des Grabwächters",
 	"Schwarzer Mond": "des Schwarzen Mondes",
 }
-## Zusatzwerte: Name → [Minimum, Maximum] auf Gegenstandsstufe 1 (wächst mit der Stufe).
+## Grundwert je Platz: Waffen machen Schaden, alles andere gibt Rüstung.
+## Bereich [Minimum, Maximum] auf Gegenstandsstufe 1 (wächst mit der Stufe).
+const BASE_RANGES := {
+	"damage": [3.0, 7.0],
+	"armor": [5.0, 10.0],
+}
+## Zusatzwerte: Name → [Minimum, Maximum] auf Gegenstandsstufe 1.
 const AFFIXES := {
 	"damage": [1.0, 4.0],
-	"armor": [3.0, 10.0],
+	"armor": [3.0, 8.0],
 	"health": [8.0, 25.0],
 	"regen": [0.5, 2.0],
 	"move_speed": [3.0, 8.0],
+	"attack_speed": [3.0, 8.0],
 }
+## Diese Werte wachsen nicht mit der Stufe (sonst wird man irgendwann zu schnell).
+const FIXED_STATS := ["move_speed", "attack_speed"]
 
 
 ## Würfelt alle Gegenstände aus, die ein besiegter Gegner fallen lässt (kann leer sein).
@@ -62,7 +64,7 @@ static func roll_drops(loot_tier: int, item_level: int) -> Array[ItemData]:
 	if randf() > DROP_TABLE[tier].chance:
 		return result
 	for i in randi_range(DROP_TABLE[tier].min, DROP_TABLE[tier].max):
-		result.append(create_item(_roll_rarity(tier), item_level))
+		result.append(create_item(roll_rarity(tier), item_level))
 	return result
 
 
@@ -72,28 +74,91 @@ static func create_item(rarity: ItemData.Rarity, item_level: int, slot: int = -1
 	item.rarity = rarity
 	item.item_level = maxi(item_level, 1)
 	item.slot = slot if slot >= 0 else ItemData.Slot.values().pick_random()
-	var scale := 1.0 + 0.15 * (item.item_level - 1)
-	# Grundwert: Waffen machen Schaden, alles andere gibt Rüstung.
-	if item.slot == ItemData.Slot.WEAPON:
-		item.stats["damage"] = roundf(randf_range(3.0, 6.0) * scale)
-	else:
-		item.stats["armor"] = roundf(randf_range(4.0, 8.0) * scale)
-	# Zusatzwerte je nach Seltenheit; legendär würfelt mit höheren Werten.
-	var quality := 1.5 if rarity == ItemData.Rarity.LEGENDARY else 1.0
-	var affix_names: Array = AFFIXES.keys()
-	affix_names.shuffle()
-	for affix in affix_names.slice(0, AFFIX_COUNT[rarity]):
-		var range_: Array = AFFIXES[affix]
-		# Laufgeschwindigkeit wächst nicht mit der Stufe, sonst wird man irgendwann zu schnell.
-		var affix_scale := 1.0 if affix == "move_speed" else scale
-		var value := randf_range(range_[0], range_[1]) * affix_scale * quality
-		value = snappedf(value, 0.5) if affix == "regen" else roundf(value)
-		item.stats[affix] = item.stats.get(affix, 0.0) + value
+	item.base_stat = "damage" if item.slot == ItemData.Slot.WEAPON else "armor"
+	item.base_name = BASE_NAMES[item.slot].pick_random()
+	_add_stat(item, item.base_stat)
+	for i in ItemData.STAT_COUNT[rarity] - 1:
+		_add_stat(item, _free_affixes(item).pick_random())
+	if rarity == ItemData.Rarity.SET:
+		item.set_name = SETS.keys().pick_random()
 	item.item_name = _make_name(item)
 	return item
 
 
-static func _roll_rarity(tier: int) -> ItemData.Rarity:
+## Orb der Erweiterung: fügt einen zufälligen neuen Wert hinzu, die Seltenheit steigt.
+## Gibt eine Fehlermeldung zurück oder "" bei Erfolg.
+static func add_random_stat(item: ItemData) -> String:
+	if item.rarity == ItemData.Rarity.SET:
+		return "Set-Gegenstände kann man nur neu auswürfeln."
+	if item.stats.size() >= ItemData.MAX_STATS:
+		return "Der Gegenstand hat schon die meisten Werte (Legendär)."
+	_add_stat(item, _free_affixes(item).pick_random())
+	_update_rarity(item)
+	return ""
+
+
+## Orb der Läuterung: entfernt einen zufälligen Wert (nie den Grundwert), die Seltenheit sinkt.
+static func remove_random_stat(item: ItemData) -> String:
+	if item.rarity == ItemData.Rarity.SET:
+		return "Set-Gegenstände kann man nur neu auswürfeln."
+	var removable := item.sorted_stats().filter(func(stat): return stat != item.base_stat)
+	if removable.is_empty():
+		return "Der Grundwert kann nicht entfernt werden."
+	var stat: String = removable.pick_random()
+	item.stats.erase(stat)
+	item.ranges.erase(stat)
+	_update_rarity(item)
+	return ""
+
+
+## Orb des Wandels: würfelt alle Werte innerhalb ihrer Bereiche neu.
+static func reroll_stats(item: ItemData) -> String:
+	for stat in item.stats:
+		item.stats[stat] = _roll_value(stat, item.ranges[stat])
+	return ""
+
+
+## Bereich eines Werts auf der Stufe des Gegenstands.
+static func stat_range(stat: String, is_base: bool, item_level: int) -> Vector2:
+	var table: Array = BASE_RANGES[stat] if is_base else AFFIXES[stat]
+	var scale := 1.0 if stat in FIXED_STATS else 1.0 + 0.15 * (item_level - 1)
+	var low := _round_stat(stat, table[0] * scale)
+	var high := maxf(_round_stat(stat, table[1] * scale), low)
+	return Vector2(low, high)
+
+
+static func _add_stat(item: ItemData, stat: String) -> void:
+	var r := stat_range(stat, stat == item.base_stat, item.item_level)
+	item.ranges[stat] = r
+	item.stats[stat] = _roll_value(stat, r)
+
+
+static func _roll_value(stat: String, r: Vector2) -> float:
+	if stat == "regen":
+		# In halben Schritten würfeln, jeder Schritt gleich wahrscheinlich.
+		return r.x + 0.5 * randi_range(0, int(roundf((r.y - r.x) * 2.0)))
+	return float(randi_range(int(r.x), int(r.y)))
+
+
+static func _round_stat(stat: String, value: float) -> float:
+	return maxf(snappedf(value, 0.5), 0.5) if stat == "regen" else maxf(roundf(value), 1.0)
+
+
+## Zusatzwerte, die der Gegenstand noch nicht hat.
+static func _free_affixes(item: ItemData) -> Array:
+	return AFFIXES.keys().filter(func(stat): return not item.stats.has(stat))
+
+
+## Seltenheit an die Zahl der Werte anpassen und den Namen neu bauen.
+static func _update_rarity(item: ItemData) -> void:
+	var count := item.stats.size()
+	for rarity in [ItemData.Rarity.NORMAL, ItemData.Rarity.MAGIC, ItemData.Rarity.RARE, ItemData.Rarity.LEGENDARY]:
+		if ItemData.STAT_COUNT[rarity] == count:
+			item.rarity = rarity
+	item.item_name = _make_name(item)
+
+
+static func roll_rarity(tier: int) -> ItemData.Rarity:
 	var weights: Array = RARITY_WEIGHTS[tier]
 	var total := 0.0
 	for w in weights:
@@ -107,7 +172,7 @@ static func _roll_rarity(tier: int) -> ItemData.Rarity:
 
 
 static func _make_name(item: ItemData) -> String:
-	var base: String = BASE_NAMES[item.slot].pick_random()
+	var base := item.base_name
 	match item.rarity:
 		ItemData.Rarity.MAGIC:
 			return "%s %s" % [base, MAGIC_SUFFIXES.pick_random()]
@@ -116,6 +181,5 @@ static func _make_name(item: ItemData) -> String:
 		ItemData.Rarity.LEGENDARY:
 			return "%s (%s)" % [LEGENDARY_NAMES.pick_random(), base]
 		ItemData.Rarity.SET:
-			item.set_name = SETS.keys().pick_random()
 			return "%s %s" % [base, SETS[item.set_name]]
 	return base
