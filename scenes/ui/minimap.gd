@@ -15,9 +15,10 @@ const PIXELS_PER_CELL := 4.0
 const REVEAL_RADIUS := 9
 ## Gleiche Drehung wie die Iso-Kamera (45 Grad).
 const MAP_ROTATION := PI / 4.0
-const BACKGROUND := Color(0.0, 0.0, 0.0, 0.3)
-const FLOOR := Color(0.75, 0.72, 0.65, 0.35)
-const WALL := Color(0.95, 0.88, 0.7, 0.7)
+const BACKGROUND := Color(0.0, 0.0, 0.0, 0.4)
+const BORDER := Color(0.95, 0.8, 0.5, 0.6)
+const FLOOR := Color(0.75, 0.72, 0.65, 0.5)
+const WALL := Color(0.95, 0.88, 0.7, 0.85)
 const PLAYER := Color(0.4, 0.85, 1.0, 0.95)
 const BOSS := Color(0.95, 0.2, 0.15, 0.95)
 
@@ -122,6 +123,8 @@ func _draw() -> void:
 	draw_colored_polygon(PackedVector2Array([
 		center + facing * 7.0, center - facing * 4.0 + side * 4.5, center - facing * 4.0 - side * 4.5,
 	]), PLAYER)
+	# Dünner Rahmen, damit man die Karte auch über hellem Boden sieht.
+	draw_rect(Rect2(Vector2.ZERO, size), BORDER, false, 2.0)
 
 
 ## Rechnet einen Abstand in Kästchen in Pixel auf der (gedrehten) Karte um.
