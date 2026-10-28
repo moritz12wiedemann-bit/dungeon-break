@@ -9,6 +9,17 @@ signal died
 
 enum State { IDLE, CHASE, RETURN, DEAD }
 
+## Wartende Gegner, die weiter als das vom Spieler weg sind, "schlafen": keine Physik,
+## keine Animation. Die Kamera sieht nur gut 30 m weit, man merkt davon also nichts.
+const SLEEP_DISTANCE := 40.0
+## So oft (Sekunden) prüft ein schlafender Gegner, ob der Spieler näher gekommen ist.
+const SLEEP_CHECK_INTERVAL := 0.5
+
+## Alle wachen Gegner, einmal pro Physik-Bild gesammelt (für Gedränge und Ausweichen).
+## Vorher hat jeder Gegner jedes Bild alle anderen ~140 Gegner durchsucht.
+static var _awake: Array[Node] = []
+static var _awake_frame: int = -1
+
 ## Laufgeschwindigkeit in Metern pro Sekunde (etwas langsamer als der Spieler).
 @export var move_speed: float = 3.0
 ## Ab dieser Entfernung (Meter) bemerkt der Gegner den Spieler.
@@ -73,6 +84,8 @@ var _vulnerable_left: float = 0.0
 var _pull_center := Vector3.ZERO
 var _pull_strength: float = 0.0
 var _pull_left: float = 0.0
+var _asleep: bool = false
+var _sleep_check_left: float = 0.0
 
 
 func _ready() -> void:
@@ -88,6 +101,7 @@ func _ready() -> void:
 	health.died.connect(_on_died)
 	# Kurz zufällig verzögern, damit nicht alle Gegner im selben Bild angreifen.
 	_cooldown_left = randf_range(0.0, attack_cooldown)
+	_sleep_check_left = randf() * SLEEP_CHECK_INTERVAL
 
 
 func _physics_process(delta: float) -> void:
@@ -95,6 +109,8 @@ func _physics_process(delta: float) -> void:
 		return
 	if _player == null:
 		_player = get_tree().get_first_node_in_group("player")
+	if _update_sleep(delta):
+		return
 	_cooldown_left = maxf(_cooldown_left - delta, 0.0)
 	_repath_left -= delta
 	_update_effects(delta)
@@ -115,6 +131,34 @@ func _physics_process(delta: float) -> void:
 	_move_along_path(delta)
 
 
+## Schläft der Gegner (weit weg vom Spieler und wartet nur)? Prüft das ein paar Mal pro Sekunde.
+func _update_sleep(delta: float) -> bool:
+	_sleep_check_left -= delta
+	if _sleep_check_left > 0.0:
+		return _asleep
+	_sleep_check_left = SLEEP_CHECK_INTERVAL
+	var should_sleep := state == State.IDLE and not hunt_player and _player != null \
+			and is_on_floor() and _distance_to_player() > SLEEP_DISTANCE
+	if should_sleep != _asleep:
+		_asleep = should_sleep
+		animator.set_sleeping(_asleep)
+		if _asleep:
+			velocity = Vector3.ZERO
+	return _asleep
+
+
+## Wache Gegner in der Nähe (siehe _awake).
+func _awake_enemies() -> Array[Node]:
+	var frame := Engine.get_physics_frames()
+	if frame != _awake_frame:
+		_awake_frame = frame
+		_awake.clear()
+		for other in get_tree().get_nodes_in_group("enemies"):
+			if not other._asleep:
+				_awake.append(other)
+	return _awake
+
+
 ## Wird vom Spieler aufgerufen, wenn er uns trifft.
 func take_damage(amount: int) -> void:
 	if _vulnerable_left > 0.0:
@@ -123,6 +167,9 @@ func take_damage(amount: int) -> void:
 	# Wer geschlagen wird, wehrt sich, auch wenn er den Spieler noch nicht bemerkt hatte.
 	if state != State.DEAD:
 		state = State.CHASE
+		if _asleep:
+			_asleep = false
+			animator.set_sleeping(false)
 
 
 ## Verlangsamt den Gegner für `seconds` Sekunden um `ratio` (0.5 = 50 %). Der stärkere Wert gilt.
@@ -226,6 +273,10 @@ func _move_along_path(delta: float) -> void:
 
 	velocity.x = horizontal.x
 	velocity.z = horizontal.z
+	# Steht still auf dem Boden: nichts zu bewegen, die teure Physik-Abfrage sparen.
+	if horizontal == Vector3.ZERO and is_on_floor():
+		velocity = Vector3.ZERO
+		return
 	if is_on_floor():
 		velocity.y = 0.0
 	else:
@@ -237,7 +288,7 @@ func _move_along_path(delta: float) -> void:
 ## seitlich an ihm vorbeilaufen, damit auch hintere Gegner an den Spieler herankommen.
 func _steer_around_allies(direction: Vector3) -> Vector3:
 	var steer := Vector3.ZERO
-	for other in get_tree().get_nodes_in_group("enemies"):
+	for other in _awake_enemies():
 		if other == self:
 			continue
 		var offset: Vector3 = other.global_position - global_position
@@ -266,7 +317,7 @@ func _steer_around_allies(direction: Vector3) -> Vector3:
 ## Leichtes Auseinanderschieben, wenn sich zwei Gegner überlappen (kleine "Hitbox" untereinander).
 func _crowd_push() -> Vector3:
 	var push := Vector3.ZERO
-	for other in get_tree().get_nodes_in_group("enemies"):
+	for other in _awake_enemies():
 		if other == self:
 			continue
 		var offset: Vector3 = global_position - other.global_position

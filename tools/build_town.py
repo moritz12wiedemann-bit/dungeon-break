@@ -157,7 +157,8 @@ def build():
     sc.node('[node name="WorldEnvironment" type="WorldEnvironment" parent="."]', f"environment = {env}")
     sc.node('[node name="Sun" type="DirectionalLight3D" parent="."]',
             "transform = Transform3D(0.8660254, -0.40957603, 0.28678823, 0, 0.57357645, 0.81915206, -0.5, -0.7094065, 0.49673176, 0, 0, 0)",
-            "light_color = Color(1, 0.88, 0.75, 1)", "light_energy = 1.0", "shadow_enabled = true")
+            "light_color = Color(1, 0.88, 0.75, 1)", "light_energy = 1.0", "shadow_enabled = true",
+            "directional_shadow_max_distance = 45.0")
     sc.node('[node name="NavigationRegion3D" type="NavigationRegion3D" parent="."]', f"navigation_mesh = {nav}")
     geo = "NavigationRegion3D/Geometry"
     sc.node('[node name="Geometry" type="Node3D" parent="NavigationRegion3D"]')

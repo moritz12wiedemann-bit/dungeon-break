@@ -111,6 +111,14 @@ func _play_loop(anim_name: String, speed: float) -> void:
 	_player.speed_scale = clampf(speed, 0.4, 2.0)
 
 
+## Hält die Animation an (die Figur bleibt in ihrer Haltung stehen) bzw. lässt sie weiterlaufen.
+## Für weit entfernte Gegner, die man ohnehin nicht sieht.
+func set_sleeping(sleeping: bool) -> void:
+	set_physics_process(not sleeping)
+	if _find_player():
+		_player.active = not sleeping
+
+
 ## Sucht den AnimationPlayer im Modell. Gegner bekommen ihr Modell erst nach diesem Knoten,
 ## deshalb wird erst beim ersten Gebrauch gesucht.
 func _find_player() -> bool:

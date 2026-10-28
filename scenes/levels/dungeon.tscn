@@ -32,6 +32,7 @@ transform = Transform3D(0.8660254, -0.40957603, 0.28678823, 0, 0.57357645, 0.819
 light_color = Color(0.8, 0.78, 0.75, 1)
 light_energy = 0.4
 shadow_enabled = true
+directional_shadow_max_distance = 45.0
 
 [node name="NavigationRegion3D" type="NavigationRegion3D" parent="." unique_id=1928374104]
 navigation_mesh = SubResource("NavigationMesh_dn001")

@@ -35,6 +35,8 @@ func set_value(current: int, maximum: int) -> void:
 	# Balken links festhalten, damit er nach links "schrumpft".
 	_fill.position.x = -size.x * (1.0 - _ratio) * 0.5
 	visible = not (hide_when_full and _ratio >= 1.0)
+	# Versteckte Balken müssen sich nicht jedes Bild zur Kamera drehen.
+	set_process(visible)
 
 
 func _add_quad(color: Color, priority: int) -> MeshInstance3D:

@@ -194,6 +194,8 @@ func _add_floor_tile(cell: Vector2i) -> void:
 		_floor_material.vertex_color_use_as_albedo = true
 		_floor_material.roughness = 0.95
 		_batch.set_material(floor_path, _floor_material)
+		# Flache Platten: ihr Schatten fällt nirgendwohin, also gar nicht erst berechnen.
+		_batch.disable_shadow(floor_path)
 	var center := _cell_to_world(cell)
 	var tint := Color.WHITE
 	if _decor_rng.randf() < 0.08:
