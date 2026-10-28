@@ -178,7 +178,8 @@ func _build_visuals() -> void:
 	_batch.build(decor)
 
 
-## Bodenplatte: grau, jede Platte etwas heller oder dunkler und zufällig gedreht, dazu ab und zu
+## Bodenplatte: einheitlich grau und zufällig gedreht, nur selten eine etwas hellere oder dunklere
+## Platte. Dazu ab und zu
 ## lose Steine, ein Gitter im Boden oder ein Totenkopf, damit der Boden nicht überall gleich aussieht.
 func _add_floor_tile(cell: Vector2i) -> void:
 	var floor_path := DUNGEON_KIT + "Floor_Modular.gltf"
@@ -189,10 +190,10 @@ func _add_floor_tile(cell: Vector2i) -> void:
 		_floor_material.roughness = 0.95
 		_batch.set_material(floor_path, _floor_material)
 	var center := _cell_to_world(cell)
-	var shade := _decor_rng.randf_range(0.8, 1.15)
-	# Mal etwas wärmer (bräunlich), mal etwas kühler.
-	var warm := _decor_rng.randf_range(-0.04, 0.05)
-	var tint := Color(shade + warm, shade, shade - warm)
+	var tint := Color.WHITE
+	if _decor_rng.randf() < 0.08:
+		var shade := _decor_rng.randf_range(0.9, 0.95) if _decor_rng.randf() < 0.5 else _decor_rng.randf_range(1.05, 1.1)
+		tint = Color(shade, shade, shade)
 	var turn := (_decor_rng.randi() % 4) * PI / 2.0
 	# Die Platte ist 0,25 m dick und mittig, ihre Oberseite soll auf Höhe 0 liegen.
 	_batch.add(floor_path, Transform3D(Basis(Vector3.UP, turn), center + Vector3(0, -0.13, 0)), tint)

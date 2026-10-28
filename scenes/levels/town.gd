@@ -76,7 +76,7 @@ func _build_ground_and_forest() -> void:
 			if inside and _is_paved(center):
 				# Die Pflasterplatte liegt einen Hauch über der Erde, damit nichts flimmert.
 				_batch.add(cobble, Transform3D(turn, center + Vector3(0, 0.01, 0)))
-				_batch_color(cobble, cobble_material, 0.06)
+				_batch_color(cobble, cobble_material, 0.03)
 			elif inside:
 				_batch.add_mesh("earth", plane, Transform3D(turn, center))
 				_batch_color("earth", earth, 0.035)

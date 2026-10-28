@@ -25,15 +25,9 @@ HOUSES = "res://scenes/world/houses/"
 HALF = 20.0  # Zaun bei ±20 m
 
 # Gepflasterte Flächen: (x, z, Breite, Tiefe), auf dem 2-m-Raster.
+# Moritz' Wunsch: die ganze Stadt innerhalb des Zauns ist gepflastert.
 PAVED = [
-    (-10, -11, 20, 16),   # Marktplatz
-    (-8, -19, 16, 8),     # Platz vor den Altären
-    (-2, 5, 4, 15),       # Straße nach Süden
-    (-16, -11, 6, 4),     # Hof vor der Schmiede
-    (10, -10, 6, 4),      # Hof vor der Taverne
-    (-14, -4, 4, 2),      # Weg zum Haus des Ältesten
-    (-14, 6, 4, 2),       # Weg zum kleinen Haus
-    (10, 6, 4, 2),        # Weg zum Karren
+    (-HALF, -HALF, 2 * HALF, 2 * HALF),
 ]
 
 # Häuser: Name, Szene, Mitte (x, z), Blickrichtung der Tür in Grad (0 = Süden/+Z, 90 = Osten/+X),

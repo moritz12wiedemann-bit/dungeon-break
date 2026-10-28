@@ -79,7 +79,7 @@ size = Vector3(1.2, 2, 3.2)
 
 [node name="Town" type="Node3D"]
 script = ExtResource("1_town")
-paved_areas = Array[Rect2]([Rect2(-10, -11, 20, 16), Rect2(-8, -19, 16, 8), Rect2(-2, 5, 4, 15), Rect2(-16, -11, 6, 4), Rect2(10, -10, 6, 4), Rect2(-14, -4, 4, 2), Rect2(-14, 6, 4, 2), Rect2(10, 6, 4, 2)])
+paved_areas = Array[Rect2]([Rect2(-20.0, -20.0, 40.0, 40.0)])
 clearings = Array[Rect2]([Rect2(-31, -6, 6, 0), Rect2(30, -12, 6, 0), Rect2(-8, -31, 6, 0)])
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
