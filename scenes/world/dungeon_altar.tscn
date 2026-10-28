@@ -1,9 +1,9 @@
 [gd_scene format=3]
 
 [ext_resource type="Script" path="res://scenes/world/dungeon_altar.gd" id="1_altar"]
-[ext_resource type="PackedScene" path="res://assets/models/kaykit/halloween/shrine_candles.gltf" id="2_shrin"]
-[ext_resource type="PackedScene" path="res://assets/models/kaykit/halloween/arch_gate.gltf" id="3_arch0"]
-[ext_resource type="PackedScene" path="res://assets/models/kaykit/halloween/skull_candle.gltf" id="4_skull"]
+[ext_resource type="Script" path="res://scenes/world/placeholder.gd" id="2_place"]
+[ext_resource type="PackedScene" path="res://assets/models/quaternius/props/CandleStick_Triple.gltf" id="3_candl"]
+[ext_resource type="PackedScene" path="res://assets/models/quaternius/props/CandleStick_Stand.gltf" id="4_stand"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_al003"]
 albedo_color = Color(0.7, 0.2, 1, 1)
@@ -27,17 +27,24 @@ collision_layer = 9
 collision_mask = 0
 script = ExtResource("1_altar")
 
-[node name="Shrine" parent="." instance=ExtResource("2_shrin")]
-transform = Transform3D(1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0)
+[node name="Shrine" type="Node3D" parent="."]
+script = ExtResource("2_place")
+size = Vector3(1.4, 1.1, 1.4)
 
-[node name="Gate" parent="." instance=ExtResource("3_arch0")]
-transform = Transform3D(1.1, 0, 0, 0, 1.1, 0, 0, 0, 1.1, 0, 0, -1.8)
+[node name="Candles" parent="Shrine" instance=ExtResource("3_candl")]
+transform = Transform3D(1.5, 0, 0, 0, 1.5, 0, 0, 0, 1.5, 0, 1.1, 0)
 
-[node name="SkullLeft" parent="." instance=ExtResource("4_skull")]
-transform = Transform3D(0.8, 0, 0, 0, 0.8, 0, 0, 0, 0.8, -1.6, 0, 0.6)
+[node name="Gate" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -1.8)
+script = ExtResource("2_place")
+kind = "Bogen"
+size = Vector3(4.6, 4.8, 0.8)
 
-[node name="SkullRight" parent="." instance=ExtResource("4_skull")]
-transform = Transform3D(0.8, 0, 0, 0, 0.8, 0, 0, 0, 0.8, 1.6, 0, 0.6)
+[node name="CandleLeft" parent="." instance=ExtResource("4_stand")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.6, 0, 0.6)
+
+[node name="CandleRight" parent="." instance=ExtResource("4_stand")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.6, 0, 0.6)
 
 [node name="Crystal" type="Node3D" parent="." unique_id=1847562039]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.4, 0)

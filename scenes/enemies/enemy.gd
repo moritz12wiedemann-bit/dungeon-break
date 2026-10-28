@@ -31,8 +31,8 @@ enum State { IDLE, CHASE, RETURN, DEAD }
 @export_group("Aussehen")
 ## Das 3D-Modell des Gegners (eine Szene aus scenes/characters/). Wird beim Start in "Visual" eingesetzt.
 @export var model_scene: PackedScene
-## Größe des Modells (1 = Originalgröße des KayKit-Modells).
-@export var model_scale: float = 0.75
+## Größe des Modells (1 = Originalgröße, etwa 1,80 m).
+@export var model_scale: float = 1.0
 
 @export_group("Kampf")
 @export var damage_min: int = 5

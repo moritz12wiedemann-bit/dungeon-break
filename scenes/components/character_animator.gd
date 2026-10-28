@@ -1,25 +1,25 @@
 class_name CharacterAnimator
 extends Node
-## Spielt die Animationen eines KayKit-Modells passend zum Zustand der Figur ab:
+## Spielt die Animationen einer Figur (ModularCharacter) passend zum Zustand ab:
 ## stehen, laufen, zuschlagen, getroffen werden, sterben.
 ## Muss direkt unter einem CharacterBody3D hängen (Spieler oder Gegner).
 ## Das Modell (mit seinem AnimationPlayer) liegt irgendwo darunter, meist im Knoten "Visual".
-## Welche Animationen es gibt, sieht man im Godot-Editor: Modell anklicken → AnimationPlayer.
+## Welche Animationen es gibt, steht in tools/build_quaternius_animations.py (ANIMATIONS).
 
 ## Animation im Stehen.
 @export var idle_animation: String = "Idle"
 ## Animation beim Laufen.
-@export var move_animation: String = "Running_A"
+@export var move_animation: String = "Jog"
 ## Bei dieser Geschwindigkeit (Meter pro Sekunde) läuft die Laufanimation in normalem Tempo.
 ## Ist die Figur schneller oder langsamer, wird die Animation entsprechend schneller oder langsamer.
 @export var move_animation_speed: float = 5.0
 ## Angriffs-Animationen. Bei jedem Schlag wird zufällig eine davon gewählt.
-@export var attack_animations: PackedStringArray = ["1H_Melee_Attack_Chop"]
+@export var attack_animations: PackedStringArray = ["Sword_Regular_A"]
 ## Animation, wenn die Figur getroffen wird (leer = keine).
-@export var hit_animation: String = "Hit_A"
-@export var death_animation: String = "Death_A"
+@export var hit_animation: String = "Hit_Chest"
+@export var death_animation: String = "Death"
 ## Animation beim Wiederbeleben (leer = direkt wieder stehen).
-@export var revive_animation: String = "Lie_StandUp"
+@export var revive_animation: String = "Revive"
 ## Überblendzeit zwischen zwei Animationen in Sekunden.
 @export var blend_time: float = 0.15
 
@@ -103,7 +103,7 @@ func revive() -> void:
 func _play_loop(anim_name: String, speed: float) -> void:
 	if _player.current_animation != anim_name:
 		_player.play(anim_name, blend_time)
-	_player.speed_scale = clampf(speed, 0.5, 2.0)
+	_player.speed_scale = clampf(speed, 0.4, 2.0)
 
 
 ## Sucht den AnimationPlayer im Modell. Gegner bekommen ihr Modell erst nach diesem Knoten,
@@ -114,8 +114,4 @@ func _find_player() -> bool:
 	_player = _body.find_child("AnimationPlayer", true, false) as AnimationPlayer
 	if _player == null:
 		return false
-	# Stehen und Laufen sollen sich endlos wiederholen.
-	for anim_name in [idle_animation, move_animation]:
-		if _player.has_animation(anim_name):
-			_player.get_animation(anim_name).loop_mode = Animation.LOOP_LINEAR
 	return true

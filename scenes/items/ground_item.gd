@@ -4,15 +4,13 @@ extends StaticBody3D
 ## Der Spieler klickt darauf, läuft hin und hebt ihn auf.
 
 const SCENE_PATH := "res://scenes/items/ground_item.tscn"
-## Waffen liegen als echte Waffe am Boden (KayKit Adventurers), alles andere als kleine Truhe.
+## Waffen liegen als echte Waffe am Boden (Fantasy Props MegaKit), alles andere als Beutel.
 const WEAPON_MODELS := [
-	"res://assets/models/kaykit/adventurers/sword_1handed.gltf",
-	"res://assets/models/kaykit/adventurers/axe_1handed.gltf",
-	"res://assets/models/kaykit/adventurers/dagger.gltf",
-	"res://assets/models/kaykit/adventurers/sword_2handed.gltf",
-	"res://assets/models/kaykit/adventurers/staff.gltf",
+	"res://assets/models/quaternius/props/Sword_Bronze.gltf",
+	"res://assets/models/quaternius/props/Axe_Bronze.gltf",
+	"res://assets/models/quaternius/props/Pickaxe_Bronze.gltf",
 ]
-const BAG_MODEL := "res://assets/models/kaykit/dungeon/trunk_small_A.gltf"
+const BAG_MODEL := "res://assets/models/quaternius/props/Bag.gltf"
 
 var item: ItemData
 
@@ -58,7 +56,7 @@ func _ready() -> void:
 	create_tween().tween_property(model, "position:y", rest_height, 0.35).set_ease(Tween.EASE_IN).set_trans(Tween.TRANS_BOUNCE)
 
 
-## Setzt das passende 3D-Modell ein: Waffe flach auf den Boden gelegt, sonst eine kleine Truhe.
+## Setzt das passende 3D-Modell ein: Waffe flach auf den Boden gelegt, sonst ein Beutel.
 func _add_model() -> void:
 	var path: String = BAG_MODEL
 	if item.slot == ItemData.Slot.WEAPON:
@@ -69,5 +67,5 @@ func _add_model() -> void:
 		model.position.y = 0.1
 	else:
 		model.rotation.y = randf() * TAU
-		model.scale = Vector3.ONE * 0.8
+		model.scale = Vector3.ONE * 0.6
 	model.add_child(load(path).instantiate())

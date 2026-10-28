@@ -196,7 +196,7 @@ func drink_potion() -> bool:
 	potion_cooldown_left = potion_cooldown
 	var amount := int(round(health.max_health * potion_heal_ratio))
 	health.heal(amount)
-	animator.play_gesture("Use_Item")
+	animator.play_gesture("Drink")
 	DamageNumber.spawn_text(self, "+%d" % amount, Color(0.4, 1.0, 0.4))
 	return true
 

@@ -19,6 +19,15 @@ func add(path: String, where: Transform3D) -> void:
 	_instances[path].append(where)
 
 
+## Wie add(), aber für ein selbst gebautes Mesh (z. B. einen grauen Platzhalter-Kasten).
+## `key` unterscheidet verschiedene Meshes, `offset` verschiebt das Mesh innerhalb des Modells.
+func add_mesh(key: String, mesh: Mesh, where: Transform3D, offset := Transform3D.IDENTITY) -> void:
+	if not _instances.has(key):
+		_instances[key] = []
+		_parts[key] = [[mesh, offset]]
+	_instances[key].append(where)
+
+
 ## Hängt alle gesammelten Modelle als MultiMeshInstance3D unter `parent`.
 func build(parent: Node3D) -> void:
 	for path in _instances:

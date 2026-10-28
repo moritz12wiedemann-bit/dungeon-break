@@ -1,0 +1,17 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scenes/characters/modular_character.gd" id="1_modch"]
+
+[node name="Mystic" type="Node3D"]
+script = ExtResource("1_modch")
+body = "Frau"
+hood = true
+torso = "Waldläufer"
+arms = "Waldläufer"
+legs = "Waldläufer"
+feet = "Waldläufer"
+ranger_color = "Leder"
+bracers = true
+clothes_tint = Color(0.8, 0.7, 1, 1)
+left_hand = "Buch"
+start_animation = "Spell_Idle"

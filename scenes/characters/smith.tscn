@@ -1,0 +1,13 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scenes/characters/modular_character.gd" id="1_modch"]
+
+[node name="Smith" type="Node3D"]
+script = ExtResource("1_modch")
+hair = "Glatze"
+beard = true
+hair_color = Color(0.2, 0.12, 0.07, 1)
+arms = "Waldläufer"
+bracers = true
+right_hand = "Axt"
+start_animation = "FoldArms"
