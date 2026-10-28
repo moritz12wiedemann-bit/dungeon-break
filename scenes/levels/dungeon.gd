@@ -81,7 +81,7 @@ var _used_cells: Dictionary = {}
 
 func _ready() -> void:
 	_rng.seed = GameState.dungeon_seed
-	_generator.generate(_rng)
+	_generate_layout()
 	_build_geometry()
 	_build_visuals()
 	_place_chests()
@@ -95,7 +95,16 @@ func _ready() -> void:
 	_place_lights()
 
 	hud.track_player(player)
-	hud.set_location("Dungeon · Stufe %d" % GameState.dungeon_level)
+	_setup_hud()
+
+
+## Erzeugt die Karte. Der Endlos-Modus (endless.gd) macht hier stattdessen eine Arena.
+func _generate_layout() -> void:
+	_generator.generate(_rng)
+
+
+func _setup_hud() -> void:
+	hud.set_location("Dungeon · Monsterstufe %d" % GameState.dungeon_level)
 	hud.set_enemies_left(_enemies_left)
 	hud.show_toast("Besiege den Boss! (T = zurück in die Stadt)")
 
@@ -380,6 +389,8 @@ func _hash(cell: Vector2i, salt: int) -> int:
 ## Schatzkisten am Rand der mittleren Räume, mit dem Deckel zur Wand.
 func _place_chests() -> void:
 	var middle := range(1, _generator.rooms.size() - 1)
+	if middle.is_empty():
+		return
 	middle.shuffle()
 	var placed := 0
 	for i in middle:

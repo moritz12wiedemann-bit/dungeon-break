@@ -39,6 +39,27 @@ func generate(rng: RandomNumberGenerator) -> void:
 	_place_pillars(rng)
 
 
+## Eine einzige große, offene Arena (für den Endlos-Modus) mit vier Säulen.
+func generate_arena(size: int) -> void:
+	width = size + 4
+	height = size + 4
+	cells.clear()
+	for y in height:
+		var row := PackedByteArray()
+		row.resize(width)
+		cells.append(row)
+	var room := Rect2i(2, 2, size, size)
+	rooms = [room]
+	_carve_rect(room)
+	pillars.clear()
+	var center := room.get_center()
+	var offset := size / 4
+	for sign in [Vector2i(1, 1), Vector2i(-1, 1), Vector2i(1, -1), Vector2i(-1, -1)]:
+		var cell: Vector2i = center + Vector2i(offset, offset) * sign
+		cells[cell.y][cell.x] = 0
+		pillars.append(cell)
+
+
 func start_room() -> Rect2i:
 	return rooms[0]
 

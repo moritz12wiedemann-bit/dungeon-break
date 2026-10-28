@@ -31,6 +31,9 @@ var _toast_tween: Tween
 ## Fenster der Stadt-Figuren: Name → GameWindow (siehe open_window).
 var _windows: Dictionary = {}
 var _gold_label := Label.new()
+## Ist das gesetzt, ruft der Tod des Spielers das hier auf statt das normale "Gestorben"-Fenster
+## (der Endlos-Modus zeigt dort seine Belohnung).
+var death_handler: Callable
 
 
 func _ready() -> void:
@@ -38,6 +41,8 @@ func _ready() -> void:
 	_windows = {
 		"smith": preload("res://scenes/ui/smith_window.gd").new(),
 		"merchant": preload("res://scenes/ui/merchant_window.gd").new(),
+		"altar": preload("res://scenes/ui/altar_window.gd").new(false),
+		"endless": preload("res://scenes/ui/altar_window.gd").new(true),
 	}
 	for window in _windows.values():
 		add_child(window)
@@ -146,12 +151,15 @@ func show_toast(text: String, seconds: float = 4.0) -> void:
 
 
 func _show_game_over() -> void:
-	_show_message("Du bist gestorben!", "Wiederbeleben", _player.revive,
+	if death_handler.is_valid():
+		death_handler.call()
+		return
+	show_message("Du bist gestorben!", "Wiederbeleben", _player.revive,
 		"In der Stadt neu starten", _player.restart_in_town)
 
 
 ## Zeigt das Meldungsfenster in der Mitte. Der zweite Knopf ist optional.
-func _show_message(text: String, button_text: String, action: Callable,
+func show_message(text: String, button_text: String, action: Callable,
 		second_text: String = "", second_action: Callable = Callable()) -> void:
 	message_label.text = text
 	message_button.text = button_text
