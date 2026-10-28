@@ -14,10 +14,33 @@ signal changed
 var bag: Array[ItemData] = []
 ## Angezogene Ausrüstung: ItemData.Slot → ItemData.
 var equipped: Dictionary = {}
+## Materialien und Orbs: Name (siehe GameMaterials) → Anzahl. Liegen nicht in der Tasche.
+var materials: Dictionary = GameMaterials.STARTING.duplicate()
 
 
 func _ready() -> void:
 	bag.resize(bag_size)
+
+
+func get_material_count(id: String) -> int:
+	return materials.get(id, 0)
+
+
+func add_material(id: String, amount: int = 1) -> void:
+	materials[id] = get_material_count(id) + amount
+	changed.emit()
+
+
+## Wendet den Orb `id` auf `item` an (in der Tasche oder angezogen) und verbraucht ihn.
+## Gibt eine Fehlermeldung zurück oder "" bei Erfolg.
+func use_orb(id: String, item: ItemData) -> String:
+	if get_material_count(id) <= 0:
+		return "Du hast keinen %s mehr." % GameMaterials.display_name(id)
+	var error := GameMaterials.apply_orb(id, item)
+	if error == "":
+		materials[id] -= 1
+		changed.emit()
+	return error
 
 
 func is_full() -> bool:

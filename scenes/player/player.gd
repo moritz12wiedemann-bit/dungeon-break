@@ -67,6 +67,7 @@ var _interact_target: Node3D = null
 var _base_max_health: int
 var _base_regen: float
 var _base_move_speed: float
+var _base_attack_cooldown: float
 ## Rüstung aus der Ausrüstung. Verringert erlittenen Schaden: Schaden × 100 / (100 + Rüstung).
 var armor: float = 0.0
 ## Zusätzlicher Schaden aus Stufe und Ausrüstung.
@@ -89,6 +90,7 @@ func _ready() -> void:
 	_base_max_health = health.max_health
 	_base_regen = health.regen_per_second
 	_base_move_speed = move_speed
+	_base_attack_cooldown = attack_cooldown
 	mana = max_mana
 	inventory.changed.connect(recalculate_stats)
 	# Kommt der Spieler aus der Stadt oder einem Dungeon, bekommt er seine Werte zurück.
@@ -292,7 +294,7 @@ func drop_item_from_bag(index: int) -> void:
 	GroundItem.drop(item, global_position + offset, get_tree())
 
 
-## Berechnet Leben, Regeneration, Tempo, Rüstung und Schaden aus Grundwert + Stufe + Ausrüstung neu.
+## Berechnet Leben, Regeneration, Tempo, Angriffstempo, Rüstung und Schaden aus Grundwert + Stufe + Ausrüstung neu.
 func recalculate_stats() -> void:
 	var level_bonus := experience.level - 1
 	health.set_max_health(_base_max_health + level_bonus * health_per_level
@@ -300,6 +302,8 @@ func recalculate_stats() -> void:
 	health.regen_per_second = _base_regen + inventory.get_stat_total("regen")
 	# Höchstens +25 % Laufgeschwindigkeit aus Ausrüstung.
 	move_speed = _base_move_speed * (1.0 + minf(inventory.get_stat_total("move_speed"), 25.0) / 100.0)
+	# Angriffstempo: höchstens +50 %.
+	attack_cooldown = _base_attack_cooldown / (1.0 + minf(inventory.get_stat_total("attack_speed"), 50.0) / 100.0)
 	armor = inventory.get_stat_total("armor")
 	bonus_damage = level_bonus * damage_per_level + int(inventory.get_stat_total("damage"))
 

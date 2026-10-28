@@ -60,6 +60,8 @@ func _unhandled_input(event: InputEvent) -> void:
 
 ## Schließt das oberste offene Fenster (z. B. Inventar). Gibt false zurück, wenn keins offen war.
 func close_top_window() -> bool:
+	if inventory_panel.cancel_orb():
+		return true
 	if inventory_panel.visible:
 		inventory_panel.hide()
 		return true
