@@ -31,10 +31,10 @@ func _ready() -> void:
 	label.modulate = name_color
 	label.billboard = BaseMaterial3D.BILLBOARD_ENABLED
 	label.no_depth_test = true
-	label.pixel_size = 0.007
+	label.pixel_size = 0.0035
 	label.font_size = 44
-	label.outline_size = 10
-	label.position.y = 2.4
+	label.outline_size = 8
+	label.position.y = 2.1
 	add_child(label)
 
 

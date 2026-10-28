@@ -13,5 +13,4 @@ feet = "Waldläufer"
 ranger_color = "Leder"
 bracers = true
 clothes_tint = Color(0.8, 0.7, 1, 1)
-left_hand = "Buch"
-start_animation = "Spell_Idle"
+start_animation = "Idle"
