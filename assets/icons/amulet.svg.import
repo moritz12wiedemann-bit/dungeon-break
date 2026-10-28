@@ -2,7 +2,8 @@
 
 importer="texture"
 type="CompressedTexture2D"
-path="res://.godot/imported/amulet.svg-9adf9c52ac40e92aad2a15fe56182860.ctex"
+uid="uid://ialwvcnhetr0"
+path="res://.godot/imported/amulet.svg-a63f5d43a54b068dd9324f80c3e1193e.ctex"
 metadata={
 "vram_texture": false
 }
@@ -10,7 +11,7 @@ metadata={
 [deps]
 
 source_file="res://assets/icons/amulet.svg"
-dest_files=["res://.godot/imported/amulet.svg-9adf9c52ac40e92aad2a15fe56182860.ctex"]
+dest_files=["res://.godot/imported/amulet.svg-a63f5d43a54b068dd9324f80c3e1193e.ctex"]
 
 [params]
 

@@ -39,7 +39,8 @@ Das alte Testlevel (`scenes/levels/test_level.tscn`) gibt es noch. Zum Starten d
 - **Schmied** (neben dem Dungeon-Altar): Gegenstände zerlegen → Altmetall, bei guten Gegenständen manchmal ein Orb.
 - **Händler** (am Markt): 3 Gegenstände zum Kaufen, neue Ware nach jedem Boss-Sieg. Verkaufen bringt 25 % des Kaufpreises.
 - **Mystikerin**: Augment-Karten für Gold kaufen und mit **Arcana** ausrüsten (Start 3, für Gold erhöhbar). Die Karten sind Platzhalter (`scenes/game/augment_cards.gd`).
-- **Magischer Ältester**: Unterklasse wählen und Fähigkeiten leveln (1 Punkt pro Stufe). Alles noch Platzhalter ohne Wirkung (`scenes/ui/elder_window.gd`).
+- **Magischer Ältester**: Fähigkeiten leveln (1 Punkt pro Stufe), pro Fähigkeit Grundform oder einen von zwei Skillbäumen wählen, bis zu 3 passive Fähigkeiten wählen (`scenes/ui/elder_window.gd`).
+- **Klassen und Skill-Leiste**: erste Klasse Krieger. Skill-Leiste über dem Erfahrungsbalken mit 6 Plätzen (Q, W, E, R, Linksklick, Rechtsklick); Linksklick ist bei jeder Klasse der Standardangriff. Klassen, Fähigkeiten und Passive stehen in `scenes/game/player_classes.gd`, die Leiste in `scenes/ui/skill_bar.gd`.
 - Die Fenster der Figuren erben von `scenes/ui/game_window.gd`, die Figuren selbst von `scenes/world/npc.gd`.
 
 ## Gegenstände und Orbs

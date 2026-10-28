@@ -1,6 +1,6 @@
 extends CanvasLayer
-## Bildschirm-Anzeige: Lebensbalken, Erfahrungsbalken mit Stufe, Heiltrank-Knopf,
-## Manabalken, Inventar-Fenster, Ort und übrige Gegner, kurze Meldungen und
+## Bildschirm-Anzeige: Lebensbalken, Erfahrungsbalken mit Stufe, Skill-Leiste darüber,
+## Heiltrank-Knopf, Manabalken, Inventar-Fenster, Ort und übrige Gegner, kurze Meldungen und
 ## "Gestorben"-Fenster (Wiederbeleben oder in der Stadt neu starten).
 ## Escape schließt das oberste offene Fenster.
 
@@ -35,6 +35,8 @@ var _windows: Dictionary = {}
 var death_handler: Callable
 ## Karte oben rechts (nur im Dungeon sichtbar, siehe setup_minimap).
 var minimap := Minimap.new()
+## Fähigkeiten über dem Erfahrungsbalken (Q, W, E, R, Linksklick, Rechtsklick).
+var skill_bar := SkillBar.new()
 
 
 func _ready() -> void:
@@ -50,6 +52,8 @@ func _ready() -> void:
 	add_child(minimap)
 	# Ganz nach hinten, damit Inventar und Fenster darüber liegen.
 	move_child(minimap, 0)
+	add_child(skill_bar)
+	move_child(skill_bar, 1)
 	for window in _windows.values():
 		add_child(window)
 	# Fenster unter dem Meldungsfenster ("Gestorben") halten.
@@ -103,6 +107,7 @@ func track_player(player: Node) -> void:
 	player.died.connect(_show_game_over)
 	player.revived.connect(message_panel.hide)
 	inventory_panel.track_player(player)
+	skill_bar.track_player(player)
 	_on_player_health_changed(player.health.current, player.health.max_health)
 	var xp: Experience = player.experience
 	_on_player_xp_changed(xp.level, xp.xp, xp.xp_for_next_level())

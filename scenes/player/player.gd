@@ -3,6 +3,8 @@ extends CharacterBody3D
 ## Linke Maustaste auf den Boden: die Figur läuft dorthin.
 ## Linke Maustaste auf einen Gegner: die Figur läuft hin und schlägt zu, bis er tot ist.
 ## Gedrückt halten funktioniert wie in Diablo: das Ziel folgt dem Mauszeiger.
+## Fähigkeiten liegen auf der Skill-Leiste (Q, W, E, R, Linksklick, Rechtsklick, siehe PlayerClasses);
+## Linksklick ist immer der Standardangriff.
 ## Den Weg um Hindernisse herum berechnet der NavigationAgent3D.
 
 ## Wird ausgelöst, wenn der Spieler stirbt (die Benutzeroberfläche zeigt dann "Gestorben").
@@ -44,7 +46,7 @@ signal revived
 @export var potion_cooldown: float = 20.0
 
 @export_group("Mana")
-## Maximales Mana. Wird noch nicht benutzt (kommt mit den Fähigkeiten).
+## Maximales Mana (Fähigkeiten kosten Mana).
 @export var max_mana: int = 100
 ## So viel Mana kommt pro Sekunde zurück.
 @export var mana_regen: float = 4.0
@@ -81,6 +83,8 @@ var potion_cooldown_left: float = 0.0
 var _protection_left: float = 0.0
 ## Aktuelles Mana (0 bis max_mana).
 var mana: float = 0.0
+## Fähigkeit → Sekunden, bis sie wieder bereit ist.
+var skill_cooldowns: Dictionary = {}
 
 
 func _ready() -> void:
@@ -116,6 +120,8 @@ func _process(delta: float) -> void:
 	_protection_left = maxf(_protection_left - delta, 0.0)
 	if not health.is_dead():
 		mana = minf(mana + mana_regen * delta, max_mana)
+	for id in skill_cooldowns:
+		skill_cooldowns[id] = maxf(skill_cooldowns[id] - delta, 0.0)
 
 
 func _physics_process(delta: float) -> void:
@@ -127,6 +133,17 @@ func _physics_process(delta: float) -> void:
 	# Nicht, wenn die Maus gerade über einem Fenster (z. B. Inventar) steht.
 	if Input.is_action_pressed("move") and get_viewport().gui_get_hovered_control() == null:
 		_pick_target_from_mouse()
+	# Fähigkeiten auf Q, W, E, R und Rechtsklick: Gedrückthalten wirkt immer wieder,
+	# sobald die Abklingzeit vorbei ist. Meldungen ("Nicht genug Mana") nur beim Drücken.
+	for slot in PlayerClasses.SLOT_ACTIONS.size():
+		if slot == PlayerClasses.Slot.LEFT:
+			continue
+		var action: String = PlayerClasses.SLOT_ACTIONS[slot]
+		if not Input.is_action_pressed(action):
+			continue
+		if slot == PlayerClasses.Slot.RIGHT and get_viewport().gui_get_hovered_control() != null:
+			continue
+		use_skill(slot, Input.is_action_just_pressed(action))
 
 	# Ist der angegriffene Gegner inzwischen tot oder verschwunden, vergessen wir ihn.
 	if _attack_target and (not is_instance_valid(_attack_target) or _attack_target.is_dead()):
@@ -204,6 +221,54 @@ func drink_potion() -> bool:
 	return true
 
 
+## Benutzt die Fähigkeit auf Platz `slot` der Skill-Leiste (PlayerClasses.Slot), gezielt auf den
+## Mauszeiger. `show_errors`: kurz anzeigen, warum es nicht geht. Gibt true zurück, wenn es geklappt hat.
+func use_skill(slot: int, show_errors: bool = true) -> bool:
+	if health.is_dead():
+		return false
+	var id: String = GameState.skill_bar[slot]
+	var data := PlayerClasses.skill(id)
+	if data.is_empty():
+		if show_errors:
+			DamageNumber.spawn_text(self, "Keine Fähigkeit auf %s" % PlayerClasses.SLOT_KEYS[slot], Color(0.7, 0.7, 0.7))
+		return false
+	var aim := _mouse_aim()
+	if data.get("basic_attack", false):
+		# Standardangriff auf einer Taste: den Gegner unter dem Mauszeiger angreifen.
+		if aim.target:
+			_interact_target = null
+			_attack_target = aim.target
+		return aim.target != null
+	if skill_cooldowns.get(id, 0.0) > 0.0:
+		if show_errors:
+			DamageNumber.spawn_text(self, "Noch nicht bereit", Color(0.7, 0.7, 0.7))
+		return false
+	if mana < data.mana:
+		if show_errors:
+			DamageNumber.spawn_text(self, "Nicht genug Mana", Color(0.4, 0.6, 1.0))
+		return false
+	if not data.has("script"):
+		return false
+	var level: int = GameState.skill_levels.get(id, 0)
+	if not data.script.call("cast", self, aim.point, aim.target, GameState.skill_path(id), level):
+		return false
+	mana -= data.mana
+	skill_cooldowns[id] = data.cooldown
+	return true
+
+
+## Wie viel der Abklingzeit auf Platz `slot` noch übrig ist (0 = bereit, 1 = gerade benutzt).
+func skill_cooldown_ratio(slot: int) -> float:
+	var data := PlayerClasses.skill(GameState.skill_bar[slot])
+	if data.is_empty():
+		return 0.0
+	if data.get("basic_attack", false):
+		return clampf(_cooldown_left / attack_cooldown, 0.0, 1.0) if attack_cooldown > 0.0 else 0.0
+	if data.cooldown <= 0.0:
+		return 0.0
+	return clampf(skill_cooldowns.get(GameState.skill_bar[slot], 0.0) / data.cooldown, 0.0, 1.0)
+
+
 ## Teleportiert in die Stadt (Taste T). Geht nicht, wenn man tot oder schon in der Stadt ist.
 func teleport_to_town() -> void:
 	if health.is_dead():
@@ -269,6 +334,28 @@ func _pick_target_from_mouse(show_marker: bool = false) -> void:
 		ClickMarker.spawn(get_tree(), hit.position)
 
 
+## Wohin zielt die Maus? "point" = Bodenpunkt (ohne Treffer: Standort des Spielers),
+## "target" = Gegner unter dem Mauszeiger oder null.
+func _mouse_aim() -> Dictionary:
+	var aim := {"point": global_position, "target": null}
+	var camera := get_viewport().get_camera_3d()
+	if camera == null:
+		return aim
+	var mouse_pos := get_viewport().get_mouse_position()
+	var from := camera.project_ray_origin(mouse_pos)
+	var to := from + camera.project_ray_normal(mouse_pos) * 1000.0
+	var picked := _pick_object(camera, mouse_pos, from, to)
+	if picked and picked.is_in_group("enemies"):
+		aim.target = picked
+	var query := PhysicsRayQueryParameters3D.create(from, to, click_mask & 1)
+	var hit := get_world_3d().direct_space_state.intersect_ray(query)
+	if not hit.is_empty():
+		aim.point = hit.position
+	elif aim.target:
+		aim.point = aim.target.global_position
+	return aim
+
+
 ## Gegner, Gegenstand oder Objekt (Truhe, Altar, Portal, Figur) unter dem Mauszeiger, sonst null.
 ## Zuerst ein Strahl nur gegen Gegner und Objekte (Säulen und Wände stören also nicht).
 ## Verfehlt er alles, zählt das Nächste, das höchstens `click_tolerance` Pixel neben dem Mauszeiger ist.
@@ -287,7 +374,9 @@ func _pick_object(camera: Camera3D, mouse_pos: Vector2, from: Vector3, to: Vecto
 		if not node is Node3D or not _is_clickable(node):
 			continue
 		# Mitte der Figur bzw. des Gegenstands und (bei Gegenständen und Truhen) das Namensschild.
-		var points: Array[float] = [1.0] if node.is_in_group("enemies") else [0.4, 0.8]
+		var points: Array[float] = [1.0]
+		if not node.is_in_group("enemies"):
+			points = [0.4, 0.8]
 		for height in points:
 			var world_point: Vector3 = node.global_position + Vector3(0, height, 0)
 			if camera.is_position_behind(world_point):
@@ -352,9 +441,9 @@ func recalculate_stats() -> void:
 	bonus_damage = level_bonus * damage_per_level + int(_stat_total("damage"))
 
 
-## Ein Wert aus Ausrüstung und ausgerüsteten Augment-Karten zusammen.
+## Ein Wert aus Ausrüstung, ausgerüsteten Augment-Karten, Passiven und Skillbäumen zusammen.
 func _stat_total(stat: String) -> float:
-	return inventory.get_stat_total(stat) + GameState.card_stat_total(stat)
+	return inventory.get_stat_total(stat) + GameState.card_stat_total(stat) + GameState.skill_stat_total(stat)
 
 
 func _attack(target: Node3D) -> void:

@@ -2,7 +2,8 @@
 
 importer="texture"
 type="CompressedTexture2D"
-path="res://.godot/imported/ring.svg-9adf9c52ac40e92aad2a15fe56182860.ctex"
+uid="uid://ckmu8hhx7nkbc"
+path="res://.godot/imported/ring.svg-bf7b105034b9d1735908f5f69dc804a7.ctex"
 metadata={
 "vram_texture": false
 }
@@ -10,7 +11,7 @@ metadata={
 [deps]
 
 source_file="res://assets/icons/ring.svg"
-dest_files=["res://.godot/imported/ring.svg-9adf9c52ac40e92aad2a15fe56182860.ctex"]
+dest_files=["res://.godot/imported/ring.svg-bf7b105034b9d1735908f5f69dc804a7.ctex"]
 
 [params]
 

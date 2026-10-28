@@ -18,7 +18,7 @@ var chosen_level: int = 0
 ## Zufalls-Startwert des aktuellen Dungeons. Gleicher Wert = gleiche Karte.
 var dungeon_seed: int = 0
 
-## Wird ausgelöst, wenn sich Karten, Arcana, Unterklasse oder Fähigkeiten ändern
+## Wird ausgelöst, wenn sich Karten, Arcana, Klasse, Fähigkeiten oder Passive ändern
 ## (der Spieler rechnet dann seine Werte neu aus).
 signal progress_changed
 
@@ -26,9 +26,16 @@ signal progress_changed
 var owned_cards: Array[String] = []
 var equipped_cards: Array[String] = []
 var max_arcana: int = AugmentCards.START_ARCANA
-## Unterklasse beim magischen Ältesten ("" = noch keine gewählt) und Stufen der Fähigkeiten.
-var subclass: String = ""
+## Klasse des Spielers (siehe PlayerClasses). Vorerst immer der Krieger.
+var player_class: String = PlayerClasses.START_CLASS
+## Fähigkeit → Stufe (beim magischen Ältesten verteilt, 1 Punkt pro Spielerstufe).
 var skill_levels: Dictionary = {}
+## Fähigkeit → gewählter Skillbaum (0 = Grundform, 1 = erster, 2 = zweiter).
+var skill_paths: Dictionary = {}
+## Gewählte passive Fähigkeiten (höchstens PlayerClasses.MAX_PASSIVES).
+var passives: Array[String] = []
+## Belegung der Skill-Leiste: Q, W, E, R, Linksklick, Rechtsklick ("" = leer).
+var skill_bar: Array[String] = []
 
 ## Angebot des Händlers (3 Gegenstände). Leer = beim nächsten Besuch neu würfeln.
 var shop_items: Array[ItemData] = []
@@ -41,6 +48,37 @@ var _bag: Array[ItemData] = []
 var _equipped: Dictionary = {}
 var _materials: Dictionary = {}
 var _gold: int = 0
+
+
+func _ready() -> void:
+	set_player_class(player_class)
+
+
+## Wechselt die Klasse: Fähigkeiten, Skillbäume und Passive fangen von vorne an.
+func set_player_class(class_id: String) -> void:
+	player_class = class_id
+	skill_levels.clear()
+	skill_paths.clear()
+	passives.clear()
+	skill_bar.assign(PlayerClasses.CLASSES[class_id].bar)
+	progress_changed.emit()
+
+
+func skill_path(skill_id: String) -> int:
+	return skill_paths.get(skill_id, 0)
+
+
+## Summe eines Werts (z. B. "armor") über gewählte Passive und gewählte Skillbäume.
+func skill_stat_total(stat: String) -> float:
+	var total := 0.0
+	for id in passives:
+		total += PlayerClasses.PASSIVES[id].get("stats", {}).get(stat, 0)
+	for id in skill_paths:
+		var path: int = skill_paths[id]
+		var data := PlayerClasses.skill(id)
+		if path > 0 and path <= data.get("paths", []).size():
+			total += data.paths[path - 1].get("stats", {}).get(stat, 0)
+	return total
 
 
 ## Öffnet einen neuen, zufällig erzeugten Dungeon mit Monstern der Stufe `monster_level`.
