@@ -208,6 +208,13 @@ collision_mask = 0
 [node name="Collision" type="CollisionShape3D" parent="NavigationRegion3D/Geometry/Well"]
 shape = SubResource("Shape_Well")
 
+[node name="EndlessAltar" parent="NavigationRegion3D/Geometry" instance=ExtResource("5_altar")]
+transform = Transform3D(0.92388, 0, 0.382683, 0, 1, 0, -0.382683, 0, 0.92388, -7, 0, -15.5)
+window_name = "endless"
+crystal_color = Color(0.95, 0.12, 0.08, 1)
+title_text = "Endlos-Altar
+(anklicken: Endlos-Modus)"
+
 [node name="Smith" type="StaticBody3D" parent="NavigationRegion3D/Geometry"]
 transform = Transform3D(0.825336, 0, 0.564642, 0, 1, 0, -0.564642, 0, 0.825336, -6.5, 0, -8)
 script = ExtResource("46_npc00")

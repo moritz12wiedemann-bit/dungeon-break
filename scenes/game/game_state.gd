@@ -6,9 +6,15 @@ extends Node
 
 const TOWN_SCENE := "res://scenes/levels/town.tscn"
 const DUNGEON_SCENE := "res://scenes/levels/dungeon.tscn"
+const ENDLESS_SCENE := "res://scenes/levels/endless.tscn"
+## Höchste wählbare Monsterstufe.
+const MAX_MONSTER_LEVEL := 100
 
-## Stufe der Monster im aktuellen Dungeon (= Spielerstufe beim Betreten).
+## Stufe der Monster im aktuellen Dungeon (am Altar gewählt, 1–100).
+## Im Endlos-Modus die Startstufe; sie steigt dort während des Laufs.
 var dungeon_level: int = 1
+## Zuletzt am Altar gewählte Stufe (0 = noch nie gewählt, dann wird die Spielerstufe vorgeschlagen).
+var chosen_level: int = 0
 ## Zufalls-Startwert des aktuellen Dungeons. Gleicher Wert = gleiche Karte.
 var dungeon_seed: int = 0
 
@@ -25,12 +31,22 @@ var _materials: Dictionary = {}
 var _gold: int = 0
 
 
-## Öffnet einen neuen, zufällig erzeugten Dungeon.
-func enter_new_dungeon(player: Node) -> void:
+## Öffnet einen neuen, zufällig erzeugten Dungeon mit Monstern der Stufe `monster_level`.
+func enter_new_dungeon(player: Node, monster_level: int) -> void:
+	_enter(player, monster_level, DUNGEON_SCENE)
+
+
+## Startet den Endlos-Modus (Arena) mit Monstern ab Stufe `monster_level`.
+func enter_endless(player: Node, monster_level: int) -> void:
+	_enter(player, monster_level, ENDLESS_SCENE)
+
+
+func _enter(player: Node, monster_level: int, scene: String) -> void:
 	save_player(player)
-	dungeon_level = _level
+	dungeon_level = clampi(monster_level, 1, MAX_MONSTER_LEVEL)
+	chosen_level = dungeon_level
 	dungeon_seed = randi()
-	get_tree().change_scene_to_file.call_deferred(DUNGEON_SCENE)
+	get_tree().change_scene_to_file.call_deferred(scene)
 
 
 ## Wird aufgerufen, wenn der Boss eines Dungeons besiegt ist: der Händler bekommt neue Ware.

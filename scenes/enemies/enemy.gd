@@ -22,6 +22,11 @@ enum State { IDLE, CHASE, RETURN, DEAD }
 ## Wie gute Beute der Gegner fallen lässt: 0 = normal, 1 = großer Gegner, 2 = Boss.
 ## Die Tabellen dazu stehen in scenes/items/item_generator.gd.
 @export_range(0, 2) var loot_tier: int = 0
+## Endlos-Modus: läuft immer auf den Spieler zu (egal wie weit weg, auch durch Wände sehend)
+## und gibt nie auf.
+@export var hunt_player: bool = false
+## Lässt beim Tod Beute fallen (im Endlos-Modus nicht, dort gibt es die Belohnung am Ende).
+@export var drops_loot: bool = true
 
 @export_group("Aussehen")
 ## Das 3D-Modell des Gegners (eine Szene aus scenes/characters/). Wird beim Start in "Visual" eingesetzt.
@@ -78,7 +83,7 @@ func _physics_process(delta: float) -> void:
 
 	match state:
 		State.IDLE:
-			if _can_notice_player():
+			if _can_notice_player() or (hunt_player and _player and not _player.is_dead()):
 				state = State.CHASE
 		State.CHASE:
 			_update_chase(delta)
@@ -116,7 +121,7 @@ func apply_level(level: int) -> void:
 
 
 func _update_chase(delta: float) -> void:
-	if _player == null or _player.is_dead() or _distance_to_player() > leash_range:
+	if _player == null or _player.is_dead() or (not hunt_player and _distance_to_player() > leash_range):
 		state = State.RETURN
 		nav_agent.target_position = _home
 		return
@@ -202,7 +207,8 @@ func _on_died() -> void:
 	health_bar.hide()
 	if _player and _player.has_method("gain_xp"):
 		_player.gain_xp(xp_reward)
-	_drop_loot()
+	if drops_loot:
+		_drop_loot()
 	died.emit()
 	# Umfallen, eine Weile liegen bleiben, im Boden versinken, dann verschwinden.
 	animator.play_death()

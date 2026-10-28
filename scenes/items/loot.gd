@@ -41,17 +41,17 @@ const SALVAGE := {
 static func drop_extras(tier: int, level: int, where: Vector3, tree: SceneTree) -> void:
 	var table: Dictionary = DROPS[tier]
 	if randf() < table.gold_chance:
-		GroundPickup.drop_gold(roll_gold(table.gold, level), _scatter(where), tree)
+		GroundPickup.drop_gold(roll_gold(table.gold, level), scatter(where), tree)
 	if randf() < table.orb_chance:
 		for i in table.orbs:
-			GroundPickup.drop_material(GameMaterials.ORBS.pick_random(), 1, _scatter(where), tree)
+			GroundPickup.drop_material(GameMaterials.ORBS.pick_random(), 1, scatter(where), tree)
 
 
 ## Lässt alles aus einer Kiste fallen: Gold, 1–2 Gegenstände, vielleicht einen Orb.
 static func drop_chest(level: int, where: Vector3, tree: SceneTree) -> void:
 	drop_extras(CHEST_TIER, level, where, tree)
 	for i in randi_range(1, 2):
-		GroundItem.drop(ItemGenerator.create_item(ItemGenerator.roll_rarity(1), level), _scatter(where), tree)
+		GroundItem.drop(ItemGenerator.create_item(ItemGenerator.roll_rarity(1), level), scatter(where), tree)
 
 
 static func roll_gold(factor: float, level: int) -> int:
@@ -77,6 +77,6 @@ static func salvage(item: ItemData) -> Dictionary:
 
 
 ## Zufällige Stelle 0.6–1.6 m neben `where`.
-static func _scatter(where: Vector3) -> Vector3:
+static func scatter(where: Vector3) -> Vector3:
 	var angle := randf() * TAU
 	return where + Vector3(cos(angle), 0, sin(angle)) * randf_range(0.6, 1.6)
