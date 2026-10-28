@@ -77,6 +77,7 @@ func _run() -> void:
 	tree.change_scene_to_file("res://scenes/levels/dungeon.tscn")
 	await _frames(90)
 	_shot("dungeon_spieler")
+	await _measure("dungeon")
 	var player: Node3D = tree.current_scene.get_node("Player")
 	_overview(player.global_position, 16.0)
 	await _frames(5)
@@ -115,6 +116,32 @@ func _overview(center: Vector3, distance: float) -> void:
 	camera.global_position = center + Vector3(0, distance, distance * 0.8)
 	camera.look_at(center)
 	camera.make_current()
+
+
+## Misst ein paar Sekunden lang, wie teuer ein Bild ist, und schreibt es in leistung.txt.
+## (Im Test-Build läuft alles ohne Grafikkarte, also zählen nur die Vergleichswerte.)
+func _measure(label: String) -> void:
+	var frames := 120
+	var sums := {"process": 0.0, "physics": 0.0, "draw_calls": 0.0, "objects": 0.0, "primitives": 0.0}
+	var start := Time.get_ticks_usec()
+	for i in frames:
+		await get_tree().process_frame
+		sums["process"] += Performance.get_monitor(Performance.TIME_PROCESS) * 1000.0
+		sums["physics"] += Performance.get_monitor(Performance.TIME_PHYSICS_PROCESS) * 1000.0
+		sums["draw_calls"] += Performance.get_monitor(Performance.RENDER_TOTAL_DRAW_CALLS_IN_FRAME)
+		sums["objects"] += Performance.get_monitor(Performance.RENDER_TOTAL_OBJECTS_IN_FRAME)
+		sums["primitives"] += Performance.get_monitor(Performance.RENDER_TOTAL_PRIMITIVES_IN_FRAME)
+	var total_ms := (Time.get_ticks_usec() - start) / 1000.0 / frames
+	var lines := ["[%s]" % label, "Bild gesamt (ms): %.2f" % total_ms]
+	for key in sums:
+		lines.append("%s: %.1f" % [key, sums[key] / frames])
+	lines.append("Knoten: %d" % Performance.get_monitor(Performance.OBJECT_NODE_COUNT))
+	var text := "\n".join(lines)
+	print(text)
+	var file := FileAccess.open(_dir.path_join("leistung.txt"), FileAccess.READ_WRITE if FileAccess.file_exists(_dir.path_join("leistung.txt")) else FileAccess.WRITE)
+	file.seek_end()
+	file.store_string(text + "\n\n")
+	file.close()
 
 
 func _frames(count: int) -> void:
