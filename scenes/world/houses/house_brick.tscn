@@ -1,0 +1,73 @@
+[gd_scene load_steps=10 format=3]
+
+[ext_resource type="PackedScene" path="res://assets/models/quaternius/village/Corner_Exterior_Brick.gltf" id="1_corner_exter"]
+[ext_resource type="PackedScene" path="res://assets/models/quaternius/village/Door_1_Round.gltf" id="2_door_1_round"]
+[ext_resource type="PackedScene" path="res://assets/models/quaternius/village/Prop_Chimney.gltf" id="3_prop_chimney"]
+[ext_resource type="PackedScene" path="res://assets/models/quaternius/village/Roof_Front_Brick4.gltf" id="4_roof_front_b"]
+[ext_resource type="PackedScene" path="res://assets/models/quaternius/village/Roof_RoundTiles_4x4.gltf" id="5_roof_roundti"]
+[ext_resource type="PackedScene" path="res://assets/models/quaternius/village/Wall_UnevenBrick_Door_Round.gltf" id="6_wall_unevenb"]
+[ext_resource type="PackedScene" path="res://assets/models/quaternius/village/Wall_UnevenBrick_Straight.gltf" id="7_wall_unevenb"]
+[ext_resource type="PackedScene" path="res://assets/models/quaternius/village/Wall_UnevenBrick_Window_Wide_Round.gltf" id="8_wall_unevenb"]
+[ext_resource type="PackedScene" path="res://assets/models/quaternius/village/Window_Wide_Round1.gltf" id="9_window_wide_"]
+
+[node name="HouseBrick" type="Node3D"]
+
+[node name="Wall_UnevenBrick_Straight" parent="." instance=ExtResource("7_wall_unevenb")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, -1, 0, 2)
+
+[node name="Wall_UnevenBrick_Door_Round" parent="." instance=ExtResource("6_wall_unevenb")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, 1, 0, 2)
+
+[node name="Door_1_Round" parent="." instance=ExtResource("2_door_1_round")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, 0.44, 0, 2)
+
+[node name="Wall_UnevenBrick_Window_Wide_Round" parent="." instance=ExtResource("8_wall_unevenb")]
+transform = Transform3D(-1, 0, 1.225e-16, 0, 1, 0, -1.225e-16, 0, -1, 1, 0, -2)
+
+[node name="Window_Wide_Round1" parent="." instance=ExtResource("9_window_wide_")]
+transform = Transform3D(-1, 0, 1.225e-16, 0, 1, 0, -1.225e-16, 0, -1, 1, 0, -2)
+
+[node name="Wall_UnevenBrick_Straight2" parent="." instance=ExtResource("7_wall_unevenb")]
+transform = Transform3D(-1, 0, 1.225e-16, 0, 1, 0, -1.225e-16, 0, -1, -1, 0, -2)
+
+[node name="Wall_UnevenBrick_Straight3" parent="." instance=ExtResource("7_wall_unevenb")]
+transform = Transform3D(6.123e-17, 0, 1, 0, 1, 0, -1, 0, 6.123e-17, 2, 0, 1)
+
+[node name="Wall_UnevenBrick_Window_Wide_Round2" parent="." instance=ExtResource("8_wall_unevenb")]
+transform = Transform3D(6.123e-17, 0, 1, 0, 1, 0, -1, 0, 6.123e-17, 2, 0, -1)
+
+[node name="Window_Wide_Round12" parent="." instance=ExtResource("9_window_wide_")]
+transform = Transform3D(6.123e-17, 0, 1, 0, 1, 0, -1, 0, 6.123e-17, 2, 0, -1)
+
+[node name="Wall_UnevenBrick_Straight4" parent="." instance=ExtResource("7_wall_unevenb")]
+transform = Transform3D(6.123e-17, 0, -1, 0, 1, 0, 1, 0, 6.123e-17, -2, 0, -1)
+
+[node name="Wall_UnevenBrick_Window_Wide_Round3" parent="." instance=ExtResource("8_wall_unevenb")]
+transform = Transform3D(6.123e-17, 0, -1, 0, 1, 0, 1, 0, 6.123e-17, -2, 0, 1)
+
+[node name="Window_Wide_Round13" parent="." instance=ExtResource("9_window_wide_")]
+transform = Transform3D(6.123e-17, 0, -1, 0, 1, 0, 1, 0, 6.123e-17, -2, 0, 1)
+
+[node name="Corner_Exterior_Brick" parent="." instance=ExtResource("1_corner_exter")]
+transform = Transform3D(-1, 0, 1.225e-16, 0, 1, 0, -1.225e-16, 0, -1, -2, 0, -2)
+
+[node name="Corner_Exterior_Brick2" parent="." instance=ExtResource("1_corner_exter")]
+transform = Transform3D(6.123e-17, 0, -1, 0, 1, 0, 1, 0, 6.123e-17, -2, 0, 2)
+
+[node name="Corner_Exterior_Brick3" parent="." instance=ExtResource("1_corner_exter")]
+transform = Transform3D(6.123e-17, 0, 1, 0, 1, 0, -1, 0, 6.123e-17, 2, 0, -2)
+
+[node name="Corner_Exterior_Brick4" parent="." instance=ExtResource("1_corner_exter")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, 2, 0, 2)
+
+[node name="Roof_RoundTiles_4x4" parent="." instance=ExtResource("5_roof_roundti")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, 0, 3.12, 0)
+
+[node name="Roof_Front_Brick4" parent="." instance=ExtResource("4_roof_front_b")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, 0, 3.12, 2)
+
+[node name="Roof_Front_Brick42" parent="." instance=ExtResource("4_roof_front_b")]
+transform = Transform3D(-1, 0, 1.225e-16, 0, 1, 0, -1.225e-16, 0, -1, 0, 3.12, -2)
+
+[node name="Prop_Chimney" parent="." instance=ExtResource("3_prop_chimney")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, 1, 2.62, -1)

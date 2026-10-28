@@ -3,7 +3,7 @@ extends Node
 ## lädt nacheinander Figuren-Galerie, Stadt und Dungeon und speichert Bildschirmfotos.
 ## Ordner kommt aus der Umgebungsvariable SHOT_DIR.
 
-const PRESETS := ["hero", "zombie", "undead_warrior", "boss", "smith", "merchant", "mystic", "elder"]
+const PRESETS := ["hero", "puglin", "imp", "imp_boss", "smith", "merchant", "mystic", "elder"]
 
 var _dir := ""
 
