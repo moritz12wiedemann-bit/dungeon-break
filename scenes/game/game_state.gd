@@ -81,6 +81,43 @@ func free_skill_points(level: int) -> int:
 	return level - learned_skills.size() - skill_upgrades.size()
 
 
+## Punkte, die in Fähigkeiten (und ihre Erweiterungen) innerhalb der Ringe unter `ring` stecken.
+## `ignore`: diese Fähigkeit nicht mitzählen; `ignore_upgrade_only`: nur ihre Erweiterung nicht.
+func points_below_ring(ring: int, ignore: String = "", ignore_upgrade_only: bool = false) -> int:
+	var total := 0
+	for id in learned_skills:
+		if PlayerClasses.skill(id).get("ring", 0) >= ring:
+			continue
+		if id != ignore or ignore_upgrade_only:
+			total += 1
+		if skill_upgrades.has(id) and id != ignore:
+			total += 1
+	return total
+
+
+## Wie viele Punkte man in den inneren Ringen braucht, um Fähigkeiten im Ring `ring` zu lernen.
+func ring_requirement(ring: int) -> int:
+	return PlayerClasses.RINGS[ring].get("requires", 0)
+
+
+func ring_unlocked(ring: int) -> bool:
+	return points_below_ring(ring) >= ring_requirement(ring)
+
+
+## Würde das Verlernen (bzw. nur das Ablegen der Erweiterung) Fähigkeiten weiter außen
+## ungültig machen? Dann geht es nicht.
+func removal_blocked(skill_id: String, upgrade_only: bool) -> bool:
+	for id in learned_skills:
+		if id == skill_id:
+			continue
+		var ring: int = PlayerClasses.skill(id).get("ring", 0)
+		if PlayerClasses.skill(skill_id).get("ring", 0) >= ring:
+			continue
+		if points_below_ring(ring, skill_id, upgrade_only) < ring_requirement(ring):
+			return true
+	return false
+
+
 ## Lernt eine Fähigkeit und legt sie auf den ersten freien Platz der Leiste.
 func learn_skill(skill_id: String) -> void:
 	if skill_id in learned_skills:

@@ -1,9 +1,9 @@
 extends RefCounted
 ## Krieger: Stich. Kurzer Stich nach vorne, trifft nur einen Gegner, aber mit viel Schaden.
 ## Erweiterung 1 "Sturmstich": geht im Laufen (siehe "moving_upgrade"), stirbt der Gegner,
-## kommt die Hälfte des Manas zurück.
+## kommt die Hälfte des Zorns zurück.
 ## Erweiterung 2 "Aufgeladener Stich": Taste halten (bis 2 s), voll aufgeladen dreifacher Schaden
-## und dreimal so lang und breit.
+## und dreimal so lang und breit; trifft dann alle Gegner in seiner Bahn.
 
 const REACH := 2.6
 const HALF_ANGLE := deg_to_rad(35.0)
@@ -38,10 +38,18 @@ static func cast(player, aim: Vector3, target: Node3D, upgrade: int, charge: flo
 	SkillEffects.thrust(player, direction, reach, 0.25 * factor,
 		Color(1.0, 0.75, 0.3) if charge_ratio > 0.0 else Color(0.85, 0.9, 1.0))
 	player.animator.play_action("Sword_Attack", 0.3)
+	if upgrade == 2:
+		# Aufgeladener Stich: alle Gegner in der Bahn.
+		var hits := SkillEffects.enemies_in_line(player, direction, reach, 0.25 * factor)
+		if victim and not victim in hits:
+			hits.append(victim)
+		for enemy in hits:
+			enemy.take_damage(player.roll_damage(DAMAGE * factor))
+		return true
 	if victim == null:
 		return true
 	victim.take_damage(player.roll_damage(DAMAGE * factor))
 	if upgrade == 1 and victim.is_dead():
 		player.restore_mana.call_deferred(data.mana / 2.0)
-		DamageNumber.spawn_text(player, "+%d Mana" % int(data.mana / 2.0), Color(0.4, 0.6, 1.0))
+		DamageNumber.spawn_text(player, "+%d %s" % [int(data.mana / 2.0), PlayerClasses.resource_name(GameState.player_class)], Color(0.85, 0.3, 0.3))
 	return true

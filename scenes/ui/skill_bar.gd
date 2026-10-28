@@ -3,7 +3,7 @@ extends HBoxContainer
 ## Skill-Leiste unten in der Mitte, direkt über dem Erfahrungsbalken:
 ## 6 Plätze nebeneinander (Q, W, E, R, Linksklick, Rechtsklick).
 ## Jeder Platz zeigt das Bild der Fähigkeit, die Taste und die Abklingzeit
-## (dunkle Fläche, die von oben nach unten schrumpft). Fehlt Mana, wird das Bild blau getönt.
+## (dunkle Fläche, die von oben nach unten schrumpft). Fehlt Zorn (Mana), wird das Bild rot getönt.
 ## Beim Drüberfahren mit der Maus erscheint die Beschreibung.
 ## Klick auf einen Platz öffnet darüber eine Auswahl: welche Fähigkeit soll hier liegen?
 ## (Standardangriff und alle gelernten Fähigkeiten; liegt sie schon woanders, tauschen die Plätze.)
@@ -50,7 +50,7 @@ func refresh() -> void:
 		if data.is_empty():
 			_slots[slot].tooltip_text = "%s: noch keine Fähigkeit\n(Klicken, um eine hinzulegen)" % key
 		else:
-			var text := PlayerClasses.describe_skill(id, GameState.skill_upgrade(id))
+			var text := PlayerClasses.describe_skill(id, GameState.skill_upgrade(id), GameState.player_class)
 			_slots[slot].tooltip_text = "%s\nTaste: %s\n(Klicken zum Ändern)" % [text, key]
 
 
@@ -62,7 +62,7 @@ func _process(_delta: float) -> void:
 		_shades[slot].anchor_top = 1.0 - ratio
 		var data := PlayerClasses.skill(GameState.skill_bar[slot])
 		var short_on_mana: bool = not data.is_empty() and _player.mana < data.mana
-		_icons[slot].modulate = Color(0.45, 0.55, 1.0) if short_on_mana else Color.WHITE
+		_icons[slot].modulate = Color(1.0, 0.4, 0.4) if short_on_mana else Color.WHITE
 
 
 func _add_slot(key: String) -> void:
@@ -145,7 +145,7 @@ func toggle_picker(slot: int) -> void:
 		button.expand_icon = false
 		button.add_theme_constant_override("icon_max_width", 28)
 		button.alignment = HORIZONTAL_ALIGNMENT_LEFT
-		button.tooltip_text = PlayerClasses.describe_skill(id, GameState.skill_upgrade(id))
+		button.tooltip_text = PlayerClasses.describe_skill(id, GameState.skill_upgrade(id), GameState.player_class)
 		if GameState.skill_bar[slot] == id:
 			button.disabled = true
 		box.add_child(button)

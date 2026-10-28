@@ -60,7 +60,8 @@ func _ready() -> void:
 		_equipment_slots[slot] = button
 	for stat_name in STAT_NAMES:
 		var name_label := Label.new()
-		name_label.text = stat_name
+		# "Mana" heißt beim Krieger Zorn.
+		name_label.text = PlayerClasses.resource_name(GameState.player_class) if stat_name == "Mana" else stat_name
 		name_label.add_theme_font_size_override("font_size", 13)
 		name_label.add_theme_color_override("font_color", Color(0.6, 0.57, 0.5))
 		stats_grid.add_child(name_label)

@@ -6,6 +6,8 @@ extends Control
 ## Totenkopf, sobald man seinen Platz aufgedeckt hat.
 ## Die Karte ist so gedreht wie die Kamera (oben auf der Karte = oben im Bild).
 ## Wird von hud.gd erzeugt und mit setup() gestartet.
+## Tab schaltet auf eine große, durchsichtige Karte in der Bildmitte um (toggle_big);
+## man kann dabei ganz normal weiterspielen, Klicks gehen durch die Karte hindurch.
 
 ## Größe der Karte in Pixeln.
 const MAP_SIZE := 200.0
@@ -21,6 +23,13 @@ const FLOOR := Color(0.75, 0.72, 0.65, 0.5)
 const WALL := Color(0.95, 0.88, 0.7, 0.85)
 const PLAYER := Color(0.4, 0.85, 1.0, 0.95)
 const BOSS := Color(0.95, 0.2, 0.15, 0.95)
+## Große Karte (Tab): Größe, Zoom und noch durchsichtigerer Hintergrund.
+const BIG_SIZE := Vector2(760, 520)
+const BIG_PIXELS_PER_CELL := 6.0
+const BIG_BACKGROUND := Color(0.0, 0.0, 0.0, 0.15)
+
+## true = große Karte in der Mitte.
+var big := false
 
 var _generator: DungeonGenerator
 var _cell_size: float = 2.0
@@ -36,12 +45,30 @@ func _ready() -> void:
 	mouse_filter = Control.MOUSE_FILTER_IGNORE
 	clip_contents = true
 	texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
-	set_anchors_preset(Control.PRESET_TOP_RIGHT)
-	offset_left = -MAP_SIZE - 16.0
-	offset_right = -16.0
-	offset_top = 12.0
-	offset_bottom = 12.0 + MAP_SIZE
+	_apply_layout()
 	hide()
+
+
+## Wechselt zwischen kleiner Karte oben rechts und großer Karte in der Mitte.
+func toggle_big() -> void:
+	big = not big
+	_apply_layout()
+	queue_redraw()
+
+
+func _apply_layout() -> void:
+	if big:
+		set_anchors_preset(Control.PRESET_CENTER)
+		offset_left = -BIG_SIZE.x / 2.0
+		offset_right = BIG_SIZE.x / 2.0
+		offset_top = -BIG_SIZE.y / 2.0
+		offset_bottom = BIG_SIZE.y / 2.0
+	else:
+		set_anchors_preset(Control.PRESET_TOP_RIGHT)
+		offset_left = -MAP_SIZE - 16.0
+		offset_right = -16.0
+		offset_top = 12.0
+		offset_bottom = 12.0 + MAP_SIZE
 
 
 ## Startet die Karte für einen Dungeon. `boss` darf null sein (Endlos-Modus).
@@ -105,10 +132,10 @@ func _draw() -> void:
 	if _player == null:
 		return
 	var center := size / 2.0
-	draw_rect(Rect2(Vector2.ZERO, size), BACKGROUND)
+	draw_rect(Rect2(Vector2.ZERO, size), BIG_BACKGROUND if big else BACKGROUND)
 	# Karte gedreht und so verschoben, dass der Spieler in der Mitte steht.
 	var player_pos := Vector2(_player.global_position.x, _player.global_position.z) / _cell_size
-	draw_set_transform(center, MAP_ROTATION, Vector2.ONE * PIXELS_PER_CELL)
+	draw_set_transform(center, MAP_ROTATION, Vector2.ONE * _zoom())
 	draw_texture(_texture, -player_pos)
 	draw_set_transform(Vector2.ZERO)
 
@@ -124,12 +151,16 @@ func _draw() -> void:
 		center + facing * 7.0, center - facing * 4.0 + side * 4.5, center - facing * 4.0 - side * 4.5,
 	]), PLAYER)
 	# Dünner Rahmen, damit man die Karte auch über hellem Boden sieht.
-	draw_rect(Rect2(Vector2.ZERO, size), BORDER, false, 2.0)
+	draw_rect(Rect2(Vector2.ZERO, size), Color(BORDER, 0.35) if big else BORDER, false, 2.0)
 
 
 ## Rechnet einen Abstand in Kästchen in Pixel auf der (gedrehten) Karte um.
 func _to_map(cells: Vector2) -> Vector2:
-	return cells.rotated(MAP_ROTATION) * PIXELS_PER_CELL
+	return cells.rotated(MAP_ROTATION) * _zoom()
+
+
+func _zoom() -> float:
+	return BIG_PIXELS_PER_CELL if big else PIXELS_PER_CELL
 
 
 ## Roter Totenkopf als Boss-Zeichen (gezeichnet, weil die Web-Schrift keine Symbole hat).

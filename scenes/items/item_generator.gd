@@ -99,6 +99,9 @@ static func add_random_stat(item: ItemData) -> String:
 		return "Set-Gegenstände kann man nur neu auswürfeln."
 	if item.stats.size() >= ItemData.MAX_STATS:
 		return "Der Gegenstand hat schon die meisten Werte (Legendär)."
+	# Höchstens bis Selten (Gelb), nie zu Legendär.
+	if item.stats.size() >= ItemData.MAX_STATS - 1:
+		return "Mit diesem Orb geht es höchstens bis Selten (Gelb)."
 	_add_stat(item, _free_affixes(item).pick_random())
 	_update_rarity(item)
 	return ""

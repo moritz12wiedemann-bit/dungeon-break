@@ -8,7 +8,7 @@ radius = 0.75
 height = 2.6
 
 [node name="EnemyBrute" unique_id=1478209931 instance=ExtResource("1_base1")]
-move_speed = 3.2
+move_speed = 1.9
 aggro_range = 10.0
 leash_range = 22.0
 xp_reward = 80

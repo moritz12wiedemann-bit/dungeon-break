@@ -14,7 +14,7 @@ signal upgrade_clicked(skill_id: String, upgrade: int, right: bool)
 
 const TREE_SIZE := 520.0
 ## Außenradius jedes Rings (Pixel), passend zu PlayerClasses.RINGS.
-const RING_RADII := [124.0, 164.0, 199.0, 230.0, 256.0]
+const RING_RADII := [108.0, 170.0, 205.0, 234.0, 256.0]
 ## Bereiche: Mitte und Breite (Grad; 0 = rechts, 90 = unten).
 const SECTORS := {
 	"base": {"center": 90.0, "span": 120.0},
@@ -22,8 +22,8 @@ const SECTORS := {
 	"left": {"center": 210.0, "span": 120.0},
 }
 const LINE_COLOR := Color(0.85, 0.18, 0.15)
-const SKILL_RADIUS := 20.0
-const UPGRADE_RADIUS := 13.0
+const SKILL_RADIUS := 18.0
+const UPGRADE_RADIUS := 12.0
 const CENTER_RADIUS := 27.0
 
 var _class_id := ""
@@ -73,28 +73,35 @@ func refresh(free_points: int) -> void:
 		var data := PlayerClasses.skill(id)
 		var learned: bool = id in GameState.learned_skills
 		var node: SkillTreeNode = _nodes[id].node
+		var ring: int = data.get("ring", 0)
+		var unlocked := GameState.ring_unlocked(ring)
+		var hint := "Gelernt. Rechtsklick: verlernen (Punkt zurück)."
 		if learned:
 			node.set_state(SkillTreeNode.State.LEARNED)
+		elif not unlocked:
+			node.set_state(SkillTreeNode.State.LOCKED)
+			hint = "Gesperrt: erst ab %d Punkten in den inneren Ringen (%d ausgegeben)." % [
+				GameState.ring_requirement(ring), GameState.points_below_ring(ring)]
 		else:
 			node.set_state(SkillTreeNode.State.AVAILABLE if free_points > 0 else SkillTreeNode.State.LOCKED)
-		node.tooltip_text = "%s\n\n%s" % [PlayerClasses.describe_skill(id),
-			"Gelernt. Rechtsklick: verlernen (Punkt zurück)." if learned else "Linksklick: lernen (1 Punkt)."]
+			hint = "Linksklick: lernen (1 Punkt)." if free_points > 0 else "Kein Punkt frei."
+		node.tooltip_text = "%s\n\n%s" % [PlayerClasses.describe_skill(id, 0, _class_id), hint]
 		var chosen := GameState.skill_upgrade(id)
 		for i in _nodes[id].upgrades.size():
 			var upgrade_node: SkillTreeNode = _nodes[id].upgrades[i]
 			var upgrade: Dictionary = data.upgrades[i]
-			var hint := ""
+			var upgrade_hint := ""
 			if chosen == i + 1:
 				upgrade_node.set_state(SkillTreeNode.State.LEARNED)
-				hint = "Gewählt. Rechtsklick: ablegen (Punkt zurück)."
+				upgrade_hint = "Gewählt. Rechtsklick: ablegen (Punkt zurück)."
 			elif learned and (chosen > 0 or free_points > 0):
 				upgrade_node.set_state(SkillTreeNode.State.AVAILABLE)
-				hint = "Linksklick: stattdessen wählen (kostenlos)." if chosen > 0 else "Linksklick: wählen (1 Punkt)."
+				upgrade_hint = "Linksklick: stattdessen wählen (kostenlos)." if chosen > 0 else "Linksklick: wählen (1 Punkt)."
 			else:
 				upgrade_node.set_state(SkillTreeNode.State.LOCKED)
-				hint = "Erst %s lernen." % data.name if not learned else "Kein Punkt frei."
+				upgrade_hint = "Erst %s lernen." % data.name if not learned else "Kein Punkt frei."
 			upgrade_node.tooltip_text = "%s (Erweiterung von %s)\n%s\nNur eine der beiden Erweiterungen gilt.\n\n%s" % [
-				upgrade.name, data.name, upgrade.text, hint]
+				upgrade.name, data.name, upgrade.text, upgrade_hint]
 	queue_redraw()
 
 
@@ -104,10 +111,10 @@ func _add_skill(id: String, index: int, count: int) -> void:
 	var sector: Dictionary = SECTORS[data.sector]
 	var inner: float = 0.0 if ring == 0 else RING_RADII[ring - 1]
 	var outer: float = RING_RADII[ring]
-	var skill_distance := 70.0 if ring == 0 else (inner + outer) / 2.0 - 6.0
-	var upgrade_distance := 106.0 if ring == 0 else outer - 11.0
+	var skill_distance := 62.0 if ring == 0 else inner + 22.0
+	var upgrade_distance := 92.0 if ring == 0 else outer - 14.0
 	# Abstand zwischen den Fähigkeiten im selben Ring: so viel, dass die Erweiterungen nicht überlappen.
-	var step := minf(rad_to_deg(54.0 / skill_distance), sector.span * 0.8 / count)
+	var step := minf(rad_to_deg((50.0 if ring == 0 else 64.0) / skill_distance), sector.span * 0.8 / count)
 	# Erste Fähigkeit links, dann nach rechts (im unteren Bereich heißt das: größerer Winkel zuerst).
 	var angle := deg_to_rad(sector.center - (index - (count - 1) / 2.0) * step)
 	var ring_color: Color = PlayerClasses.RINGS[ring].color
@@ -127,7 +134,7 @@ func _add_skill(id: String, index: int, count: int) -> void:
 		upgrade_node.clicked.connect(func(right: bool): upgrade_clicked.emit(id, i + 1, right))
 		add_child(upgrade_node)
 		upgrade_nodes.append(upgrade_node)
-	_nodes[id] = {"node": node, "upgrades": upgrade_nodes}
+	_nodes[id] = {"node": node, "upgrades": upgrade_nodes, "ring": ring}
 
 
 func _center() -> Vector2:
@@ -159,7 +166,10 @@ func _draw() -> void:
 		var node: SkillTreeNode = _nodes[id].node
 		var node_center := node.position + node.size / 2.0
 		var learned := node.state == SkillTreeNode.State.LEARNED
-		draw_line(center, node_center, Color(node.ring_color, 0.9) if learned else Color(0.5, 0.48, 0.44, 0.6), 2.5 if learned else 1.5, true)
+		# Fähigkeiten in äußeren Ringen hängen am Rand des Rings davor.
+		var ring: int = _nodes[id].ring
+		var start: Vector2 = center if ring == 0 else center + (node_center - center).normalized() * RING_RADII[ring - 1]
+		draw_line(start, node_center, Color(node.ring_color, 0.9) if learned else Color(0.5, 0.48, 0.44, 0.6), 2.5 if learned else 1.5, true)
 		for upgrade_node in _nodes[id].upgrades:
 			var upgrade_center: Vector2 = upgrade_node.position + upgrade_node.size / 2.0
 			var chosen: bool = upgrade_node.state == SkillTreeNode.State.LEARNED
@@ -168,7 +178,7 @@ func _draw() -> void:
 	# Namen der Ringe oben auf der senkrechten Linie.
 	for ring in RING_RADII.size():
 		var inner: float = 30.0 if ring == 0 else RING_RADII[ring - 1]
-		var middle: float = 100.0 if ring == 0 else (inner + RING_RADII[ring]) / 2.0
+		var middle: float = 86.0 if ring == 0 else (inner + RING_RADII[ring]) / 2.0
 		_draw_tag(font, PlayerClasses.RINGS[ring].name, center + Vector2(0, -middle), PlayerClasses.RINGS[ring].color, 11)
 
 	# Namen der Bereiche.

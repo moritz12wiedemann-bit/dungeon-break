@@ -15,13 +15,18 @@ extends RefCounted
 ## `static func cast(player, aim: Vector3, target: Node3D, upgrade: int, charge: float) -> bool`
 ## (aim = Bodenpunkt unter der Maus, target = Gegner unter der Maus oder null,
 ## upgrade = 0 keine / 1 erste / 2 zweite Erweiterung, charge = aufgeladene Sekunden).
-## true = hat geklappt (dann kostet es Mana und die Abklingzeit startet).
+## true = hat geklappt (dann kostet es Mana bzw. Zorn und die Abklingzeit startet).
+## Im Code heißt die Ressource immer "mana"; wie sie im Spiel heißt (z. B. Zorn beim Krieger)
+## und welche Farbe ihre Leiste hat, steht bei der Klasse unter "resource".
 ##
 ## Weitere Schlüssel einer Fähigkeit:
 ## - "cast_time": so lange (Sekunden) bleibt die Figur beim Zaubern stehen.
 ## - "moving_upgrade": mit dieser Erweiterung bleibt sie nicht stehen.
 ## - "charge_upgrade" + "max_charge": mit dieser Erweiterung hält man die Taste gedrückt
 ##   zum Aufladen (höchstens max_charge Sekunden), losgelassen wird gezaubert.
+## - "channel": gedrückt halten wirkt immer wieder, die Figur bleibt dabei stehen.
+## - "uses_attack_speed": Abklingzeit = Zeit zwischen zwei normalen Schlägen (Angriffstempo).
+## - "spend_all_upgrade": mit dieser Erweiterung keine Abklingzeit, verbraucht aber den ganzen Zorn.
 ## Passive und Erweiterungen können "stats" haben (wie Augment-Karten, z. B. {"armor": 20}).
 
 ## Die Plätze der Skill-Leiste, in dieser Reihenfolge.
@@ -36,9 +41,10 @@ const AUTO_SLOTS := [Slot.Q, Slot.W, Slot.E, Slot.R, Slot.RIGHT]
 const MAX_PASSIVES := 3
 
 ## Ringe des Skillbaums von innen nach außen.
+## "requires": so viele Punkte muss man vorher in den inneren Ringen ausgegeben haben.
 const RINGS := [
 	{"name": "Basis-Skills", "color": Color(0.35, 0.55, 1.0)},
-	{"name": "Core-Skills", "color": Color(1.0, 0.78, 0.25)},
+	{"name": "Core-Skills", "color": Color(1.0, 0.78, 0.25), "requires": 2},
 	{"name": "Mobility", "color": Color(0.35, 0.85, 0.4)},
 	{"name": "Buffs", "color": Color(0.95, 0.55, 0.3)},
 	{"name": "Ultimate-Skills", "color": Color(0.8, 0.35, 0.95)},
@@ -51,11 +57,13 @@ const CLASSES := {
 		"name": "Krieger",
 		"text": "Nahkampf. Ausgewogen zwischen Schaden und Standfestigkeit.",
 		"icon": preload("res://assets/icons/class_krieger.svg"),
+		# Statt Mana hat der Krieger Zorn (dunkelrote Leiste).
+		"resource": {"name": "Zorn", "color": Color(0.42, 0.03, 0.1)},
 		# Standardangriff (Linksklick), den jede Klasse von Anfang an hat.
 		"basic_attack": "krieger_schlag",
 		# Die beiden Unterklassen (Namen und Fähigkeiten kommen später).
 		"subclasses": {"left": "Unterklasse 1", "right": "Unterklasse 2"},
-		"skills": ["krieger_slash", "krieger_stich"],
+		"skills": ["krieger_slash", "krieger_stich", "krieger_tausend", "krieger_himmelszorn"],
 		"passives": [],
 		# Startbelegung: Q, W, E, R, Linksklick, Rechtsklick ("" = leer).
 		"bar": ["", "", "", "", "krieger_schlag", ""],
@@ -81,7 +89,7 @@ const SKILLS := {
 		"ring": 0,
 		"sector": "base",
 		"mana": 25,
-		"cooldown": 3.0,
+		"cooldown": 8.0,
 		"cast_time": 0.35,
 		"upgrades": [
 			{
@@ -104,7 +112,7 @@ const SKILLS := {
 		"ring": 0,
 		"sector": "base",
 		"mana": 20,
-		"cooldown": 3.0,
+		"cooldown": 8.0,
 		"cast_time": 0.3,
 		"moving_upgrade": 1,
 		"charge_upgrade": 2,
@@ -112,13 +120,61 @@ const SKILLS := {
 		"upgrades": [
 			{
 				"name": "Sturmstich",
-				"text": "Der Stich geht auch im Laufen. Stirbt der Gegner, bekommst du die Hälfte des Manas zurück.",
+				"text": "Der Stich geht auch im Laufen. Stirbt der Gegner, bekommst du die Hälfte des Zorns zurück.",
 				"icon": preload("res://assets/icons/upgrade_stab_run.svg"),
 			},
 			{
 				"name": "Aufgeladener Stich",
-				"text": "Taste gedrückt halten zum Aufladen (bis zu 2 Sekunden). Voll aufgeladen ist der Stich dreimal so lang und breit und macht dreifachen Schaden.",
+				"text": "Taste gedrückt halten zum Aufladen (bis zu 2 Sekunden). Voll aufgeladen ist der Stich dreimal so lang und breit und macht dreifachen Schaden. Trifft alle Gegner in seiner Bahn.",
 				"icon": preload("res://assets/icons/upgrade_stab_charge.svg"),
+			},
+		],
+	},
+	"krieger_tausend": {
+		"name": "1000 Schläge",
+		"text": "Gedrückt halten: Die Figur bleibt stehen und schlägt immer wieder in Richtung Mauszeiger. Der erste Schlag macht 50 % Schaden, jeder Schlag gibt einen Stack 1000 Schläge (+10 % Schaden, bis 30 Stacks). Ohne zu schlagen gehen alle 0,5 Sekunden 2 Stacks verloren.",
+		"icon": preload("res://assets/icons/skill_thousand.svg"),
+		"script": preload("res://scenes/skills/thousand_blows.gd"),
+		"ring": 1,
+		"sector": "base",
+		"mana": 5,
+		"cooldown": 0.0,
+		"channel": true,
+		"uses_attack_speed": true,
+		"upgrades": [
+			{
+				"name": "Wuchtschläge",
+				"text": "Gegner im direkten Umkreis des Getroffenen erhalten ebenfalls 30 % des Schlagschadens.",
+				"icon": preload("res://assets/icons/upgrade_thousand_splash.svg"),
+			},
+			{
+				"name": "Standhafte Schläge",
+				"text": "Pro Stack 1000 Schläge zusätzlich +0,5 % Angriffstempo und +1 Rüstung.",
+				"icon": preload("res://assets/icons/upgrade_thousand_steady.svg"),
+			},
+		],
+	},
+	"krieger_himmelszorn": {
+		"name": "Zorn des Himmels",
+		"text": "Beschwört eine runde Fläche am Mauszeiger. Nach 0,5 Sekunden macht sie 3 Sekunden lang ständig Schaden an allen Gegnern darin (insgesamt 400 %).",
+		"icon": preload("res://assets/icons/skill_heaven.svg"),
+		"script": preload("res://scenes/skills/heaven_wrath.gd"),
+		"ring": 1,
+		"sector": "base",
+		"mana": 60,
+		"cooldown": 10.0,
+		"cast_time": 0.3,
+		"spend_all_upgrade": 2,
+		"upgrades": [
+			{
+				"name": "Himmelssog",
+				"text": "Gegner in der Fläche werden zur Mitte gezogen. Herauslaufen geht nur mühsam und langsam.",
+				"icon": preload("res://assets/icons/upgrade_heaven_pull.svg"),
+			},
+			{
+				"name": "Entfesselter Zorn",
+				"text": "Keine Abklingzeit mehr, aber jeder Einsatz verbraucht den ganzen Zorn (mindestens 60). Pro verbrauchtem Zorn +1 % Schaden für diesen Einsatz.",
+				"icon": preload("res://assets/icons/upgrade_heaven_unleash.svg"),
 			},
 		],
 	},
@@ -126,10 +182,30 @@ const SKILLS := {
 
 const PASSIVES := {}
 
+## Buffs (kleine Bilder über der Skill-Leiste, mit Anzahl der Stacks).
+const BUFFS := {
+	"tausend": {
+		"name": "1000 Schläge",
+		"text": "+10 % Schaden für 1000 Schläge pro Stack.",
+		"icon": preload("res://assets/icons/skill_thousand.svg"),
+		"max_stacks": 30,
+	},
+}
+
 
 ## Name der Klasse, z. B. "Krieger".
 static func class_title(class_id: String) -> String:
 	return CLASSES[class_id].name if CLASSES.has(class_id) else class_id
+
+
+## Wie die Ressource der Klasse heißt (z. B. "Zorn"), Standard "Mana".
+static func resource_name(class_id: String) -> String:
+	return CLASSES.get(class_id, {}).get("resource", {}).get("name", "Mana")
+
+
+## Farbe der Ressourcen-Leiste der Klasse.
+static func resource_color(class_id: String) -> Color:
+	return CLASSES.get(class_id, {}).get("resource", {}).get("color", Color(0.15, 0.35, 0.9))
 
 
 ## Eine Fähigkeit ("" oder unbekannt = leeres Dictionary).
@@ -138,7 +214,7 @@ static func skill(skill_id: String) -> Dictionary:
 
 
 ## Beschreibung für den Tooltip, mit gewählter Erweiterung (0 = keine).
-static func describe_skill(skill_id: String, upgrade: int = 0) -> String:
+static func describe_skill(skill_id: String, upgrade: int = 0, class_id: String = START_CLASS) -> String:
 	var data := skill(skill_id)
 	if data.is_empty():
 		return ""
@@ -147,7 +223,7 @@ static func describe_skill(skill_id: String, upgrade: int = 0) -> String:
 		lines[0] += "  (%s)" % RINGS[data.ring].name
 	lines.append(data.text)
 	if data.mana > 0:
-		lines.append("Mana: %d" % data.mana)
+		lines.append("%s: %d%s" % [resource_name(class_id), data.mana, " pro Schlag" if data.get("channel", false) else ""])
 	if data.cooldown > 0.0:
 		lines.append("Abklingzeit: %s s" % str(data.cooldown))
 	if upgrade > 0 and upgrade <= data.upgrades.size():

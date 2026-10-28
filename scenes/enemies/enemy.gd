@@ -10,7 +10,7 @@ signal died
 enum State { IDLE, CHASE, RETURN, DEAD }
 
 ## Laufgeschwindigkeit in Metern pro Sekunde (etwas langsamer als der Spieler).
-@export var move_speed: float = 4.0
+@export var move_speed: float = 2.4
 ## Ab dieser Entfernung (Meter) bemerkt der Gegner den Spieler.
 @export var aggro_range: float = 8.0
 ## Ist der Spieler weiter weg als das, gibt der Gegner die Verfolgung auf.
@@ -68,6 +68,11 @@ var _slow_left: float = 0.0
 ## Schadensanfälligkeit (0.3 = +30 % Schaden) und wie lange noch (Sekunden).
 var _vulnerable: float = 0.0
 var _vulnerable_left: float = 0.0
+## Sog (z. B. Himmelssog): Mitte, Stärke (Meter pro Sekunde) und wie lange noch.
+## Wird jedes Bild neu gesetzt, solange der Gegner in der Fläche steht.
+var _pull_center := Vector3.ZERO
+var _pull_strength: float = 0.0
+var _pull_left: float = 0.0
 
 
 func _ready() -> void:
@@ -125,6 +130,14 @@ func apply_slow(ratio: float, seconds: float) -> void:
 	_slow = maxf(_slow, ratio) if _slow_left > 0.0 else ratio
 	_slow_left = maxf(_slow_left, seconds)
 	_update_tint()
+
+
+## Zieht den Gegner kurz zu `center` hin (muss jedes Bild neu aufgerufen werden).
+## Läuft er von der Mitte weg, kommt er dabei nur mühsam voran.
+func apply_pull(center: Vector3, strength: float) -> void:
+	_pull_center = center
+	_pull_strength = strength
+	_pull_left = 0.1
 
 
 ## Lässt den Gegner für `seconds` Sekunden `ratio` mehr Schaden erleiden (0.3 = +30 %).
@@ -199,6 +212,17 @@ func _move_along_path(delta: float) -> void:
 			horizontal = direction * move_speed * (1.0 - _slow if _slow_left > 0.0 else 1.0)
 			_face_direction(direction, delta)
 	horizontal += _crowd_push()
+	if _pull_left > 0.0:
+		_pull_left -= delta
+		var to_center := _pull_center - global_position
+		to_center.y = 0.0
+		if to_center.length() > 0.2:
+			var inward := to_center.normalized()
+			# Weg von der Mitte: dieser Anteil der eigenen Bewegung wird stark gebremst.
+			var outward := -horizontal.dot(inward)
+			if outward > 0.0:
+				horizontal += inward * outward * 0.75
+			horizontal += inward * _pull_strength
 
 	velocity.x = horizontal.x
 	velocity.z = horizontal.z

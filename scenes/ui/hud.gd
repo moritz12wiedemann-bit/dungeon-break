@@ -37,6 +37,8 @@ var death_handler: Callable
 var minimap := Minimap.new()
 ## Fähigkeiten über dem Erfahrungsbalken (Q, W, E, R, Linksklick, Rechtsklick).
 var skill_bar := SkillBar.new()
+## Aktive Buffs (z. B. Stacks von 1000 Schläge) über der Skill-Leiste.
+var buff_bar := BuffBar.new()
 
 
 func _ready() -> void:
@@ -54,6 +56,8 @@ func _ready() -> void:
 	move_child(minimap, 0)
 	add_child(skill_bar)
 	move_child(skill_bar, 1)
+	add_child(buff_bar)
+	move_child(buff_bar, 2)
 	_add_level_up_button()
 	for window in _windows.values():
 		add_child(window)
@@ -84,6 +88,17 @@ func _process(_delta: float) -> void:
 func _unhandled_input(event: InputEvent) -> void:
 	if event.is_action_pressed("ui_cancel") and close_top_window():
 		get_viewport().set_input_as_handled()
+	elif event.is_action_pressed("big_map"):
+		minimap.toggle_big()
+		get_viewport().set_input_as_handled()
+
+
+## Mana-Leiste in Farbe und Namen der Klassen-Ressource (beim Krieger: dunkelroter Zorn).
+func _apply_class_resource() -> void:
+	var fill: StyleBoxFlat = mana_bar.get_theme_stylebox("fill").duplicate()
+	fill.bg_color = PlayerClasses.resource_color(GameState.player_class)
+	mana_bar.add_theme_stylebox_override("fill", fill)
+	mana_bar.tooltip_text = "%s (für Fähigkeiten)" % PlayerClasses.resource_name(GameState.player_class)
 
 
 ## Nur zum Testen: Knopf über "Inventar", der sofort eine Stufe aufsteigen lässt.
@@ -131,6 +146,8 @@ func track_player(player: Node) -> void:
 	player.revived.connect(message_panel.hide)
 	inventory_panel.track_player(player)
 	skill_bar.track_player(player)
+	buff_bar.track_player(player)
+	_apply_class_resource()
 	_on_player_health_changed(player.health.current, player.health.max_health)
 	var xp: Experience = player.experience
 	_on_player_xp_changed(xp.level, xp.xp, xp.xp_for_next_level())

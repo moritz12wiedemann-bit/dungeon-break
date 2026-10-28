@@ -26,6 +26,41 @@ static func enemies_in_arc(origin: Node3D, direction: Vector3, radius: float, ha
 	return hits
 
 
+## Alle lebenden Gegner in einem geraden Streifen vor `origin`: `length` Meter lang,
+## `half_width` Meter zu jeder Seite (plus Gegner-Radius).
+static func enemies_in_line(origin: Node3D, direction: Vector3, length: float, half_width: float) -> Array[Node3D]:
+	var hits: Array[Node3D] = []
+	direction.y = 0.0
+	direction = direction.normalized()
+	var side := direction.cross(Vector3.UP)
+	for enemy in origin.get_tree().get_nodes_in_group("enemies"):
+		if not enemy is Node3D or enemy.is_dead():
+			continue
+		var offset: Vector3 = enemy.global_position - origin.global_position
+		offset.y = 0.0
+		var size: float = enemy.get("crowd_radius") if enemy.get("crowd_radius") != null else 0.3
+		var along := offset.dot(direction)
+		if along < -size or along > length + size:
+			continue
+		if absf(offset.dot(side)) > half_width + size + 0.2:
+			continue
+		hits.append(enemy)
+	return hits
+
+
+## Alle lebenden Gegner höchstens `radius` Meter um den Punkt `center` (ohne `except`).
+static func enemies_around(tree: SceneTree, center: Vector3, radius: float, except: Node3D = null) -> Array[Node3D]:
+	var hits: Array[Node3D] = []
+	for enemy in tree.get_nodes_in_group("enemies"):
+		if not enemy is Node3D or enemy == except or enemy.is_dead():
+			continue
+		var offset: Vector3 = enemy.global_position - center
+		offset.y = 0.0
+		if offset.length() <= radius:
+			hits.append(enemy)
+	return hits
+
+
 ## Der nächste lebende Gegner höchstens `reach` Meter weit und höchstens `half_angle` neben `direction`.
 static func nearest_enemy_in_cone(origin: Node3D, direction: Vector3, reach: float, half_angle: float) -> Node3D:
 	var best: Node3D = null

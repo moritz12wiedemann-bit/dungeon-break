@@ -13,7 +13,7 @@ signal died
 signal revived
 
 ## Laufgeschwindigkeit in Metern pro Sekunde.
-@export var move_speed: float = 6.0
+@export var move_speed: float = 3.0
 ## Wie schnell sich die Figur in Laufrichtung dreht.
 @export var turn_speed: float = 12.0
 ## Auf welchen Physik-Ebenen ein Mausklick etwas treffen darf (1 = Welt, 3 = Gegner, 4 = Objekte wie Gegenstände, Altar, Portal).
@@ -30,8 +30,8 @@ signal revived
 @export var damage_max: int = 14
 ## Wie nah die Figur am Gegner stehen muss, um zu treffen (Meter, von Mitte zu Mitte).
 @export var attack_range: float = 1.6
-## Sekunden zwischen zwei Schlägen.
-@export var attack_cooldown: float = 0.6
+## Sekunden zwischen zwei Schlägen (die Schlag-Animation wird passend langsamer).
+@export var attack_cooldown: float = 1.2
 
 @export_group("Stufenaufstieg")
 ## So viele maximale Lebenspunkte kommen pro Stufe dazu.
@@ -46,10 +46,11 @@ signal revived
 @export var potion_cooldown: float = 20.0
 
 @export_group("Mana")
-## Maximales Mana (Fähigkeiten kosten Mana).
+## Maximales Mana bzw. Zorn beim Krieger (Fähigkeiten kosten das).
+## Im Code heißt es immer "mana", im Spiel so wie bei der Klasse angegeben (PlayerClasses).
 @export var max_mana: int = 100
-## So viel Mana kommt pro Sekunde zurück.
-@export var mana_regen: float = 4.0
+## So viel kommt pro Sekunde zurück.
+@export var mana_regen: float = 1.0
 
 @export_group("Wiederbeleben")
 ## Mit welchem Anteil der maximalen Lebenspunkte man wiederbelebt wird.
@@ -91,6 +92,13 @@ var _cast_lock_left: float = 0.0
 var charging_slot: int = -1
 var charge_time: float = 0.0
 var _charge_effect: Node3D = null
+## Buffs (siehe PlayerClasses.BUFFS): Name → {"stacks": Anzahl, "hold": Sekunden, bis Stacks
+## verfallen, "tick": Zeit bis zum nächsten Verfall}.
+var buffs: Dictionary = {}
+## Alle so viele Sekunden verfallen Stacks, wenn man den Buff nicht mehr auffrischt ...
+const BUFF_DECAY_EVERY := 0.5
+## ... und zwar so viele.
+const BUFF_DECAY_AMOUNT := 2
 
 
 func _ready() -> void:
@@ -128,6 +136,7 @@ func _process(delta: float) -> void:
 		mana = minf(mana + mana_regen * delta, max_mana)
 	for id in skill_cooldowns:
 		skill_cooldowns[id] = maxf(skill_cooldowns[id] - delta, 0.0)
+	_update_buffs(delta)
 
 
 func _physics_process(delta: float) -> void:
@@ -155,6 +164,12 @@ func _physics_process(delta: float) -> void:
 		if slot == PlayerClasses.Slot.LEFT or not held or charging_slot >= 0:
 			continue
 		if slot == PlayerClasses.Slot.RIGHT and get_viewport().gui_get_hovered_control() != null:
+			continue
+		if PlayerClasses.skill(GameState.skill_bar[slot]).get("channel", false):
+			# Gedrückt halten: stehen bleiben, solange die Taste unten ist.
+			_cast_lock_left = maxf(_cast_lock_left, 0.1)
+			_attack_target = null
+			use_skill(slot, Input.is_action_just_pressed(action), {}, true)
 			continue
 		use_skill(slot, Input.is_action_just_pressed(action))
 
@@ -246,8 +261,8 @@ func drink_potion() -> bool:
 ## Mauszeiger (oder auf `aim`, falls angegeben: {"point": Vector3, "target": Node3D}).
 ## `show_errors`: kurz anzeigen, warum es nicht geht. Gibt true zurück, wenn es geklappt hat
 ## (bei aufladbaren Fähigkeiten: wenn das Aufladen begonnen hat).
-func use_skill(slot: int, show_errors: bool = true, aim: Dictionary = {}) -> bool:
-	if health.is_dead() or _cast_lock_left > 0.0 or charging_slot >= 0:
+func use_skill(slot: int, show_errors: bool = true, aim: Dictionary = {}, channeling: bool = false) -> bool:
+	if health.is_dead() or (_cast_lock_left > 0.0 and not channeling) or charging_slot >= 0:
 		return false
 	var id: String = GameState.skill_bar[slot]
 	var data := PlayerClasses.skill(id)
@@ -269,7 +284,7 @@ func use_skill(slot: int, show_errors: bool = true, aim: Dictionary = {}) -> boo
 		return false
 	if mana < data.mana:
 		if show_errors:
-			DamageNumber.spawn_text(self, "Nicht genug Mana", Color(0.4, 0.6, 1.0))
+			DamageNumber.spawn_text(self, "Nicht genug %s" % PlayerClasses.resource_name(GameState.player_class), Color(0.85, 0.3, 0.3))
 		return false
 	var upgrade := GameState.skill_upgrade(id)
 	if upgrade > 0 and data.get("charge_upgrade", 0) == upgrade and slot != PlayerClasses.Slot.LEFT:
@@ -281,7 +296,7 @@ func use_skill(slot: int, show_errors: bool = true, aim: Dictionary = {}) -> boo
 	return _cast(id, aim, 0.0)
 
 
-## Führt die Fähigkeit `id` aus: Mana, Abklingzeit, kurz stehen bleiben.
+## Führt die Fähigkeit `id` aus: Mana/Zorn, Abklingzeit, kurz stehen bleiben.
 func _cast(id: String, aim: Dictionary, charge: float) -> bool:
 	var data := PlayerClasses.skill(id)
 	if not data.has("script"):
@@ -290,9 +305,17 @@ func _cast(id: String, aim: Dictionary, charge: float) -> bool:
 	face_towards(aim.point)
 	if not data.script.call("cast", self, aim.point, aim.target, upgrade, charge):
 		return false
-	mana -= data.mana
-	skill_cooldowns[id] = data.cooldown
-	if data.get("moving_upgrade", 0) != upgrade or upgrade == 0:
+	if upgrade > 0 and data.get("spend_all_upgrade", 0) == upgrade:
+		# Verbraucht alles, dafür keine Abklingzeit (das Skript hat den Zorn schon eingerechnet).
+		mana = 0.0
+		skill_cooldowns[id] = 0.0
+	else:
+		mana -= data.mana
+		skill_cooldowns[id] = attack_cooldown if data.get("uses_attack_speed", false) else data.cooldown
+	if data.get("channel", false):
+		_attack_target = null
+		nav_agent.target_position = global_position
+	elif data.get("moving_upgrade", 0) != upgrade or upgrade == 0:
 		_cast_lock_left = data.get("cast_time", 0.0)
 		_attack_target = null
 		nav_agent.target_position = global_position
@@ -332,7 +355,7 @@ func roll_damage(multiplier: float = 1.0) -> int:
 	return int(round((randi_range(damage_min, damage_max) + bonus_damage) * multiplier))
 
 
-## Gibt Mana zurück (höchstens bis max_mana).
+## Gibt Mana bzw. Zorn zurück (höchstens bis max_mana).
 func restore_mana(amount: float) -> void:
 	mana = minf(mana + amount, max_mana)
 
@@ -352,9 +375,58 @@ func skill_cooldown_ratio(slot: int) -> float:
 		return 0.0
 	if data.get("basic_attack", false):
 		return clampf(_cooldown_left / attack_cooldown, 0.0, 1.0) if attack_cooldown > 0.0 else 0.0
-	if data.cooldown <= 0.0:
+	var full: float = attack_cooldown if data.get("uses_attack_speed", false) else data.cooldown
+	if full <= 0.0:
 		return 0.0
-	return clampf(skill_cooldowns.get(GameState.skill_bar[slot], 0.0) / data.cooldown, 0.0, 1.0)
+	return clampf(skill_cooldowns.get(GameState.skill_bar[slot], 0.0) / full, 0.0, 1.0)
+
+
+## Wie viele Stacks der Buff `id` gerade hat (0 = keine).
+func buff_stacks(id: String) -> int:
+	return buffs.get(id, {}).get("stacks", 0)
+
+
+## Gibt dem Buff `id` `amount` Stacks dazu (höchstens max_stacks). `hold`: so lange (Sekunden)
+## verfällt nichts; danach gehen alle BUFF_DECAY_EVERY Sekunden BUFF_DECAY_AMOUNT Stacks verloren.
+func add_buff_stacks(id: String, amount: int, hold: float) -> void:
+	var max_stacks: int = PlayerClasses.BUFFS[id].max_stacks
+	var buff: Dictionary = buffs.get(id, {"stacks": 0})
+	buff.stacks = mini(buff.stacks + amount, max_stacks)
+	buff.hold = hold
+	buff.tick = BUFF_DECAY_EVERY
+	buffs[id] = buff
+	recalculate_stats()
+
+
+func _update_buffs(delta: float) -> void:
+	var changed := false
+	for id in buffs.keys():
+		var buff: Dictionary = buffs[id]
+		if buff.hold > 0.0:
+			buff.hold -= delta
+			continue
+		buff.tick -= delta
+		if buff.tick <= 0.0:
+			buff.tick += BUFF_DECAY_EVERY
+			buff.stacks -= BUFF_DECAY_AMOUNT
+			changed = true
+			if buff.stacks <= 0:
+				buffs.erase(id)
+	if changed:
+		recalculate_stats()
+
+
+## Werte aus Buffs (z. B. "Standhafte Schläge": pro Stack 1000 Schläge Angriffstempo und Rüstung).
+func _buff_stat(stat: String) -> float:
+	if GameState.skill_upgrade("krieger_tausend") != 2:
+		return 0.0
+	var stacks := buff_stacks("tausend")
+	match stat:
+		"attack_speed":
+			return stacks * 0.5
+		"armor":
+			return stacks * 1.0
+	return 0.0
 
 
 ## Teleportiert in die Stadt (Taste T). Geht nicht, wenn man tot oder schon in der Stadt ist.
@@ -530,15 +602,16 @@ func recalculate_stats() -> void:
 	bonus_damage = level_bonus * damage_per_level + int(_stat_total("damage"))
 
 
-## Ein Wert aus Ausrüstung, ausgerüsteten Augment-Karten, Passiven und Skillbäumen zusammen.
+## Ein Wert aus Ausrüstung, ausgerüsteten Augment-Karten, Passiven, Skillbäumen und Buffs zusammen.
 func _stat_total(stat: String) -> float:
-	return inventory.get_stat_total(stat) + GameState.card_stat_total(stat) + GameState.skill_stat_total(stat)
+	return inventory.get_stat_total(stat) + GameState.card_stat_total(stat) + GameState.skill_stat_total(stat) + _buff_stat(stat)
 
 
 func _attack(target: Node3D) -> void:
 	_cooldown_left = attack_cooldown
 	target.take_damage(roll_damage())
-	animator.play_attack(attack_cooldown)
+	# Die Animation dauert so lange wie die Pause bis zum nächsten Schlag.
+	animator.play_attack(attack_cooldown, true)
 
 
 func _on_damaged(amount: int) -> void:
@@ -553,6 +626,7 @@ func _on_leveled_up(new_level: int) -> void:
 
 func _on_died() -> void:
 	_attack_target = null
+	buffs.clear()
 	if charging_slot >= 0:
 		charging_slot = -1
 		if is_instance_valid(_charge_effect):

@@ -49,21 +49,23 @@ func _physics_process(delta: float) -> void:
 
 ## Spielt einen zufälligen Schlag ab. Dauert höchstens `max_duration` Sekunden
 ## (die Animation wird schneller abgespielt, wenn sie sonst zu lang wäre).
-func play_attack(max_duration: float) -> void:
+## `fit`: genau `max_duration` dauern, also bei langer Pause auch langsamer abspielen.
+func play_attack(max_duration: float, fit: bool = false) -> void:
 	if attack_animations.is_empty():
 		return
 	var anim_name: String = attack_animations[randi() % attack_animations.size()]
-	play_action(anim_name, max_duration)
+	play_action(anim_name, max_duration, fit)
 
 
 ## Spielt eine Animation einmal ab und kehrt danach zu Stehen/Laufen zurück.
-func play_action(anim_name: String, max_duration: float = 0.0) -> void:
+## `fit`: genau `max_duration` dauern (auch langsamer, aber höchstens halb so schnell).
+func play_action(anim_name: String, max_duration: float = 0.0, fit: bool = false) -> void:
 	if not _find_player() or _dead or not _player.has_animation(anim_name):
 		return
 	var length := _player.get_animation(anim_name).length
 	var speed := 1.0
-	if max_duration > 0.0 and length > max_duration:
-		speed = length / max_duration
+	if max_duration > 0.0 and (length > max_duration or fit):
+		speed = maxf(length / max_duration, 0.5)
 	_player.speed_scale = 1.0
 	_player.play(anim_name, blend_time, speed)
 	# Läuft dieselbe Animation schon, von vorn beginnen.

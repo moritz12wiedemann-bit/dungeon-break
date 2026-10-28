@@ -100,12 +100,17 @@ func _free_points() -> int:
 func _on_skill_clicked(id: String, right: bool) -> void:
 	var skill_name: String = PlayerClasses.skill(id).name
 	var learned := id in GameState.learned_skills
+	var ring: int = PlayerClasses.skill(id).get("ring", 0)
 	if right:
-		if learned:
+		if learned and GameState.removal_blocked(id, false):
+			show_status("Verlerne zuerst die Fähigkeiten weiter außen.", true)
+		elif learned:
 			GameState.unlearn_skill(id)
 			show_status("%s verlernt." % skill_name)
 	elif learned:
 		show_status("%s ist schon gelernt." % skill_name)
+	elif not GameState.ring_unlocked(ring):
+		show_status("%s: erst ab %d Punkten in den inneren Ringen." % [PlayerClasses.RINGS[ring].name, GameState.ring_requirement(ring)], true)
 	elif _free_points() <= 0:
 		show_status("Kein Fähigkeitspunkt frei (1 pro Stufe).", true)
 	else:
@@ -120,7 +125,9 @@ func _on_upgrade_clicked(id: String, upgrade: int, right: bool) -> void:
 	var upgrade_name: String = data.upgrades[upgrade - 1].name
 	var chosen := GameState.skill_upgrade(id)
 	if right:
-		if chosen == upgrade:
+		if chosen == upgrade and GameState.removal_blocked(id, true):
+			show_status("Verlerne zuerst die Fähigkeiten weiter außen.", true)
+		elif chosen == upgrade:
 			GameState.set_skill_upgrade(id, 0)
 			show_status("%s abgelegt." % upgrade_name)
 	elif not id in GameState.learned_skills:
@@ -150,6 +157,7 @@ func _toggle_passive(id: String) -> void:
 
 
 func _reset() -> void:
+	player.buffs.clear()
 	GameState.reset_skills()
 	show_status("Alle Fähigkeitspunkte sind wieder frei.")
 	refresh()

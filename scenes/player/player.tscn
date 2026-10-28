@@ -44,4 +44,4 @@ script = ExtResource("4_inv7k")
 [node name="Animator" type="Node" parent="."]
 script = ExtResource("6_anim0")
 move_animation_speed = 5.4
-attack_animations = PackedStringArray("Sword_Regular_A", "Sword_Regular_B", "Sword_Attack")
+attack_animations = PackedStringArray("Sword_Regular_A", "Sword_Attack")
