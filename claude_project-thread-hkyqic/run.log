@@ -26,5 +26,13 @@ SHOT stadt_nah
 SHOT inventar_schmuck
 SHOT tooltip_vergleich
 SHOT dungeon_spieler
+[dungeon]
+Bild gesamt (ms): 207.56
+process: 208.9
+physics: 0.9
+draw_calls: 260.0
+objects: 417.0
+primitives: 216991.0
+Knoten: 5695
 SHOT dungeon_nah
 CAPTURE DONE
