@@ -32,6 +32,9 @@ var player_class: String = PlayerClasses.START_CLASS
 var learned_skills: Array[String] = []
 ## Fähigkeit → gewählte Erweiterung (1 = erste, 2 = zweite; fehlt = keine). Kostet auch 1 Punkt.
 var skill_upgrades: Dictionary = {}
+## Gewählte Unterklasse: "" = noch keine, sonst "left" oder "right" (Seite im Skillbaum).
+## Nur die Fähigkeiten dieser Seite kann man lernen (kommt mit den Unterklassen).
+var subclass_side: String = ""
 ## Gewählte passive Fähigkeiten (höchstens PlayerClasses.MAX_PASSIVES).
 var passives: Array[String] = []
 ## Belegung der Skill-Leiste: Q, W, E, R, Linksklick, Rechtsklick ("" = leer).

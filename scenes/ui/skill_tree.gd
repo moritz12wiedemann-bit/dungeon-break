@@ -25,6 +25,11 @@ const SECTORS := {
 	"left": {"center": 210.0, "span": 120.0},
 }
 const LINE_COLOR := Color(0.85, 0.18, 0.15)
+## Farbe des Bereichs, den jeder der Klasse hat, und der beiden Unterklassen.
+const BASE_COLOR := Color(0.95, 0.78, 0.4)
+const SUBCLASS_COLORS := {"left": Color(0.4, 0.62, 1.0), "right": Color(0.95, 0.36, 0.3)}
+## Wo das Wappen der Unterklasse sitzt (Abstand von der Mitte, Baum-Einheiten).
+const CREST_DISTANCE := 150.0
 const SKILL_RADIUS := 18.0
 const UPGRADE_RADIUS := 12.0
 const CENTER_RADIUS := 27.0
@@ -223,14 +228,41 @@ func _draw() -> void:
 		var color: Color = PlayerClasses.RINGS[ring].color
 		draw_arc(center, RING_RADII[ring] * z, 0.0, TAU, 160, Color(color, 0.85), maxf(2.0 * z, 1.0), true)
 
-	# Unterklassen-Bereiche abdunkeln, solange sie noch keine Fähigkeiten haben.
+	# Bereiche: unten (gehört jedem der Klasse) warm und offen, links und rechts die
+	# Unterklassen in eigenen Farben. Gewählt werden kann nur eine Seite: bis dahin sind
+	# beide verschlossen, danach ist die andere ausgegraut und schraffiert.
 	var subclasses: Dictionary = PlayerClasses.CLASSES[_class_id].subclasses if _class_id != "" else {}
+	var chosen_side: String = GameState.subclass_side
+	_draw_sector_fill(SECTORS["base"], Color(BASE_COLOR, 0.05))
+	_draw_rim(SECTORS["base"], BASE_COLOR, 0.95)
 	for side in ["left", "right"]:
-		_draw_sector_shade(SECTORS[side])
+		var color: Color = SUBCLASS_COLORS[side]
+		_draw_sector_fill(SECTORS[side], Color(color, 0.06))
+		if chosen_side == side:
+			_draw_rim(SECTORS[side], color, 0.95)
+		else:
+			_draw_sector_fill(SECTORS[side], Color(0, 0, 0, 0.6 if chosen_side != "" else 0.35))
+			if chosen_side != "":
+				_draw_hatch(SECTORS[side])
+			_draw_rim(SECTORS[side], color, 0.45)
 
-	# Rote Trennlinien zwischen den Bereichen.
-	for angle in [30.0, 150.0, 270.0]:
-		draw_line(center, center + Vector2.from_angle(deg_to_rad(angle)) * (RING_RADII[-1] + 6.0) * z, LINE_COLOR, maxf(2.0 * z, 1.0), true)
+	# Trennlinien: zwischen unten und den Unterklassen dünn, zwischen den beiden
+	# Unterklassen eine kräftige rote Linie (entweder links oder rechts).
+	for angle in [30.0, 150.0]:
+		draw_line(center, center + Vector2.from_angle(deg_to_rad(angle)) * (RING_RADII[-1] + 10.0) * z, Color(BASE_COLOR, 0.45), maxf(1.5 * z, 1.0), true)
+	var split_end := center + Vector2(0, -(RING_RADII[-1] + 14.0)) * z
+	draw_line(center, split_end, Color(LINE_COLOR, 0.25), maxf(7.0 * z, 3.0), true)
+	draw_line(center, split_end, LINE_COLOR, maxf(2.5 * z, 1.5), true)
+
+	# Weggabelung: von der Mitte aus teilt sich der Weg zu den beiden Wappen.
+	var junction := center + Vector2(0, -38.0) * z
+	for side in ["left", "right"]:
+		var crest := center + Vector2.from_angle(deg_to_rad(SECTORS[side].center)) * CREST_DISTANCE * z
+		var control := center + Vector2(55.0 if side == "right" else -55.0, -115.0) * z
+		var active: bool = chosen_side == side
+		_draw_curve(junction, control, crest, Color(SUBCLASS_COLORS[side], 0.95 if active else 0.55), maxf((3.0 if active else 2.0) * z, 1.0), not active)
+	draw_line(center, junction, Color(BASE_COLOR, 0.8), maxf(2.0 * z, 1.0), true)
+	_draw_diamond(junction, 6.0 * z, BASE_COLOR)
 
 	# Verbindungslinien: Mitte → Fähigkeit → Erweiterungen.
 	for id in _nodes:
@@ -252,24 +284,80 @@ func _draw() -> void:
 		var middle: float = 86.0 if ring == 0 else (inner + RING_RADII[ring]) / 2.0
 		_draw_tag(font, PlayerClasses.RINGS[ring].name, center + Vector2(0, -middle) * z, PlayerClasses.RINGS[ring].color, 11)
 
-	# Namen der Bereiche.
+	# Namen und Wappen der Bereiche.
 	if _class_id != "":
-		_draw_tag(font, PlayerClasses.CLASSES[_class_id].name, center + Vector2(0, RING_RADII[-1] - 18.0) * z, Color(0.95, 0.8, 0.5), 15)
+		_draw_tag(font, PlayerClasses.CLASSES[_class_id].name, center + Vector2(0, RING_RADII[-1] - 18.0) * z, BASE_COLOR, 15)
 		for side in ["left", "right"]:
-			var sector: Dictionary = SECTORS[side]
-			var point := center + Vector2.from_angle(deg_to_rad(sector.center)) * 165.0 * z
-			_draw_tag(font, subclasses.get(side, ""), point + Vector2(0, -9) * z, Color(0.8, 0.76, 0.68), 14)
-			_draw_tag(font, "kommt später", point + Vector2(0, 10) * z, Color(0.55, 0.52, 0.48), 11)
+			var crest := center + Vector2.from_angle(deg_to_rad(SECTORS[side].center)) * CREST_DISTANCE * z
+			_draw_crest(crest, 24.0 * z, SUBCLASS_COLORS[side], chosen_side == side)
+			_draw_tag(font, subclasses.get(side, ""), crest + Vector2(0, 38.0) * z, SUBCLASS_COLORS[side].lerp(Color.WHITE, 0.3), 13)
 
 
-func _draw_sector_shade(sector: Dictionary) -> void:
+## Fläche eines Bereichs (Tortenstück bis zum äußersten Ring).
+func _draw_sector_fill(sector: Dictionary, color: Color) -> void:
 	var center := _center()
 	var points := PackedVector2Array([center])
 	var start: float = sector.center - sector.span / 2.0
 	for i in 33:
 		var angle := deg_to_rad(start + sector.span * i / 32.0)
 		points.append(center + Vector2.from_angle(angle) * RING_RADII[-1] * _z())
-	draw_colored_polygon(points, Color(0, 0, 0, 0.35))
+	draw_colored_polygon(points, color)
+
+
+## Farbiges Band außen um einen Bereich, mit kleinen Lücken zu den Nachbarn.
+func _draw_rim(sector: Dictionary, color: Color, alpha: float) -> void:
+	var z := _z()
+	var start := deg_to_rad(sector.center - sector.span / 2.0 + 2.5)
+	var end := deg_to_rad(sector.center + sector.span / 2.0 - 2.5)
+	draw_arc(_center(), (RING_RADII[-1] + 7.0) * z, start, end, 48, Color(color, alpha * 0.3), maxf(10.0 * z, 4.0), true)
+	draw_arc(_center(), (RING_RADII[-1] + 7.0) * z, start, end, 48, Color(color, alpha), maxf(4.0 * z, 2.0), true)
+
+
+## Schräge Schraffur über einem nicht gewählten Unterklassen-Bereich.
+func _draw_hatch(sector: Dictionary) -> void:
+	var center := _center()
+	var z := _z()
+	var start: float = sector.center - sector.span / 2.0
+	for i in range(2, 24, 2):
+		var angle := deg_to_rad(start + sector.span * i / 24.0)
+		var a := center + Vector2.from_angle(angle) * 40.0 * z
+		var b := center + Vector2.from_angle(angle + 0.25) * RING_RADII[-1] * z
+		draw_line(a, b, Color(0, 0, 0, 0.35), maxf(3.0 * z, 1.5), true)
+
+
+## Gebogene Linie (quadratische Bézierkurve), auf Wunsch gestrichelt.
+func _draw_curve(from: Vector2, control: Vector2, to: Vector2, color: Color, width: float, dashed: bool) -> void:
+	var steps := 32
+	var previous := from
+	for i in range(1, steps + 1):
+		var t := float(i) / steps
+		var point := from.lerp(control, t).lerp(control.lerp(to, t), t)
+		if not dashed or i % 2 == 0:
+			draw_line(previous, point, color, width, true)
+		previous = point
+
+
+func _draw_diamond(at: Vector2, half: float, color: Color) -> void:
+	draw_colored_polygon(PackedVector2Array([at + Vector2(0, -half), at + Vector2(half, 0), at + Vector2(0, half), at + Vector2(-half, 0)]), color)
+
+
+## Wappen der Unterklasse: Schild in ihrer Farbe, mit Schloss, solange sie nicht gewählt ist.
+func _draw_crest(at: Vector2, half: float, color: Color, unlocked: bool) -> void:
+	var shield := PackedVector2Array([
+		at + Vector2(-half, -half), at + Vector2(half, -half), at + Vector2(half, half * 0.2),
+		at + Vector2(0, half * 1.25), at + Vector2(-half, half * 0.2)])
+	draw_colored_polygon(shield, Color(0.07, 0.06, 0.06, 0.95).lerp(color, 0.35 if unlocked else 0.12))
+	var outline := shield.duplicate()
+	outline.append(shield[0])
+	draw_polyline(outline, color if unlocked else Color(color, 0.7), maxf(half / 8.0, 1.5), true)
+	if unlocked:
+		return
+	# Schloss
+	var lock_color := Color(0.85, 0.82, 0.75, 0.9)
+	var body := Rect2(at + Vector2(-half * 0.42, -half * 0.05), Vector2(half * 0.84, half * 0.62))
+	draw_arc(at + Vector2(0, -half * 0.08), half * 0.28, PI, TAU, 16, lock_color, maxf(half / 9.0, 1.5), true)
+	draw_rect(body, lock_color)
+	draw_circle(body.get_center() + Vector2(0, -half * 0.05), half * 0.08, Color(0.1, 0.08, 0.08))
 
 
 ## Text mit dunklem Kästchen dahinter, mittig auf `point`.
