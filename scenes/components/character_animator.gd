@@ -76,6 +76,11 @@ func play_action(anim_name: String, max_duration: float = 0.0, fit: bool = false
 	last_action_duration = _action_left
 
 
+## Läuft gerade eine einmalige Animation (Schlag, Geste ...)?
+func is_acting() -> bool:
+	return _action_left > 0.0
+
+
 ## Kurze Geste (Trank trinken, aufheben ...), nur wenn die Figur gerade steht und nichts anderes tut.
 func play_gesture(anim_name: String) -> void:
 	if _action_left > 0.0 or Vector2(_body.velocity.x, _body.velocity.z).length() > 0.3:

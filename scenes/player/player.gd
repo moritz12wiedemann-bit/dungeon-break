@@ -174,11 +174,21 @@ func _physics_process(delta: float) -> void:
 			else:
 				_release_charge()
 			continue
-		if slot == PlayerClasses.Slot.LEFT or not held or charging_slot >= 0:
+		if slot == PlayerClasses.Slot.LEFT or charging_slot >= 0:
+			continue
+		if not held:
+			# Losgelassen: eine gehaltene Fähigkeit (z. B. Schildwall) endet.
+			var hold_buff: String = PlayerClasses.skill(GameState.skill_bar[slot]).get("hold_buff", "")
+			if hold_buff != "" and buffs.has(hold_buff):
+				end_buff(hold_buff)
 			continue
 		if slot == PlayerClasses.Slot.RIGHT and get_viewport().gui_get_hovered_control() != null:
 			continue
-		if PlayerClasses.skill(GameState.skill_bar[slot]).get("channel", false):
+		var slot_data := PlayerClasses.skill(GameState.skill_bar[slot])
+		if slot_data.get("hold", false):
+			_update_hold(slot, slot_data, held, Input.is_action_just_pressed(action))
+			continue
+		if slot_data.get("channel", false):
 			# Gedrückt halten: stehen bleiben, solange die Taste unten ist.
 			_cast_lock_left = maxf(_cast_lock_left, 0.1)
 			_attack_target = null
@@ -221,7 +231,7 @@ func _physics_process(delta: float) -> void:
 		# Nah genug: stehen bleiben, zum Gegner drehen, zuschlagen.
 		nav_agent.target_position = global_position
 		_face_direction(_attack_target.global_position - global_position, delta)
-		if _cooldown_left <= 0.0 and not _use_left_skill_on(_attack_target):
+		if _cooldown_left <= 0.0 and not is_mounted() and not _use_left_skill_on(_attack_target):
 			_attack(_attack_target)
 	else:
 		if _attack_target:
@@ -247,10 +257,20 @@ func _physics_process(delta: float) -> void:
 	move_and_slide()
 
 
-## Wird von Gegnern aufgerufen, wenn sie uns treffen.
-func take_damage(amount: int) -> void:
+## Wird von Gegnern aufgerufen, wenn sie uns treffen (`attacker`: wer, für Dornenschaden).
+func take_damage(amount: int, attacker: Node = null) -> void:
 	if _protection_left > 0.0:
 		return
+	if buffs.has("schildwall"):
+		match GameState.skill_upgrade("templer_schildwall"):
+			1:
+				# Dornenschild: der Angreifer bekommt die Hälfte selbst ab.
+				if is_instance_valid(attacker) and attacker.has_method("take_damage") and not attacker.is_dead():
+					attacker.take_damage(maxi(int(round(amount * ShieldWall.THORNS)), 1))
+			2:
+				# Unerschütterlich: unverwundbar.
+				DamageNumber.spawn_text(self, "Geblockt", Color(0.6, 0.8, 1.0))
+				return
 	# "damage_reduction": Prozent weniger erlittener Schaden (z. B. Ein-Mann-Armee).
 	var reduced := int(round(amount * 100.0 / (100.0 + armor) * (1.0 - minf(_stat_total("damage_reduction"), 90.0) / 100.0)))
 	health.take_damage(maxi(reduced, 1))
@@ -289,6 +309,10 @@ func use_skill(slot: int, show_errors: bool = true, aim: Dictionary = {}, channe
 	if data.is_empty():
 		if show_errors:
 			DamageNumber.spawn_text(self, "Keine Fähigkeit auf %s" % PlayerClasses.SLOT_KEYS[slot], Color(0.7, 0.7, 0.7))
+		return false
+	if is_mounted() and not data.get("mounted_ok", false):
+		if show_errors:
+			DamageNumber.spawn_text(self, "Nicht vom Pferd aus", Color(0.7, 0.7, 0.7))
 		return false
 	if aim.is_empty():
 		aim = _mouse_aim()
@@ -365,7 +389,7 @@ func _release_charge() -> void:
 ## Angriff benutzt. Geht sie gerade nicht (Abklingzeit, Mana), schlägt die Figur normal zu.
 func _use_left_skill_on(target: Node3D) -> bool:
 	var data := PlayerClasses.skill(GameState.skill_bar[PlayerClasses.Slot.LEFT])
-	if data.is_empty() or data.get("basic_attack", false):
+	if data.is_empty() or data.get("basic_attack", false) or data.get("hold", false):
 		return false
 	return use_skill(PlayerClasses.Slot.LEFT, false, {"point": target.global_position, "target": target})
 
@@ -373,6 +397,9 @@ func _use_left_skill_on(target: Node3D) -> bool:
 ## Schaden eines normalen Schlags (mit Stufe und Ausrüstung) mal `multiplier`.
 ## "all_damage": Prozent mehr Schaden für Angriffe und Fähigkeiten (z. B. Ein-Mann-Armee).
 func roll_damage(multiplier: float = 1.0) -> int:
+	# Wer angreift, behält seine Bollwerk-Stacks.
+	if buffs.has("bollwerk"):
+		buffs.bollwerk.hold = PlayerClasses.BUFFS.bollwerk.hold
 	return int(round((randi_range(damage_min, damage_max) + bonus_damage) * multiplier * (1.0 + _stat_total("all_damage") / 100.0)))
 
 
@@ -459,9 +486,17 @@ func _update_buffs(delta: float) -> void:
 			if buff.time <= 0.0 and buffs.has(id):
 				buffs.erase(id)
 				changed = true
+				# Manche Buffs machen am Ende noch etwas (z. B. Ritterlicher Abstieg nach dem Reiten).
+				var script: Script = PlayerClasses.BUFFS[id].get("script")
+				if script and script.has_method("on_end"):
+					script.call("on_end", self)
 			continue
 		if buff.hold > 0.0:
 			buff.hold -= delta
+			continue
+		if PlayerClasses.BUFFS[id].get("decay_all", false):
+			buffs.erase(id)
+			changed = true
 			continue
 		buff.tick -= delta
 		if buff.tick <= 0.0:
@@ -480,6 +515,7 @@ func _buff_stat(stat: String) -> float:
 	var total := 0.0
 	for id in buffs:
 		total += buffs[id].get("stats", {}).get(stat, 0.0)
+		total += PlayerClasses.BUFFS[id].get("stats_per_stack", {}).get(stat, 0.0) * buffs[id].stacks
 	if GameState.skill_upgrade("krieger_tausend") == 2:
 		var stacks := buff_stacks("tausend")
 		match stat:
@@ -675,21 +711,51 @@ func _stat_total(stat: String) -> float:
 	return inventory.get_stat_total(stat) + GameState.card_stat_total(stat) + GameState.skill_stat_total(stat) + _buff_stat(stat)
 
 
-## Pause zwischen zwei normalen Angriffen ("basic_attack_speed", z. B. Ehrenruf, kommt obendrauf).
+## Pause zwischen zwei normalen Angriffen ("basic_attack_speed", z. B. Ehrenruf, kommt obendrauf;
+## ein Ersatz-Standardangriff wie Hammerschlag kann langsamer sein, "attack_time").
 func basic_attack_cooldown() -> float:
-	return attack_cooldown / (1.0 + _stat_total("basic_attack_speed") / 100.0)
+	var data := PlayerClasses.skill(GameState.basic_attack_id())
+	return attack_cooldown * data.get("attack_time", 1.0) / (1.0 + _stat_total("basic_attack_speed") / 100.0)
+
+
+## Sitzt die Figur gerade auf dem Pferd (Streitross)?
+func is_mounted() -> bool:
+	return buffs.has("pferd")
 
 
 func _attack(target: Node3D) -> void:
+	var id := GameState.basic_attack_id()
+	var data := PlayerClasses.skill(id)
 	_cooldown_left = basic_attack_cooldown()
 	# Die Animation dauert so lange wie die Pause bis zum nächsten Schlag.
 	animator.play_attack(_cooldown_left, true)
 	# Der Schaden kommt erst, wenn das Schwert in der Animation trifft ("basic_damage": Prozent mehr).
-	var damage := roll_damage(1.0 + _stat_total("basic_damage") / 100.0)
+	var damage := roll_damage(data.get("damage", 1.0) * (1.0 + _stat_total("basic_damage") / 100.0))
+	var rage: float = data.get("rage_per_hit", mana_per_hit)
+	var upgrade := GameState.skill_upgrade(id)
 	hit_later(func():
 		if is_instance_valid(target) and not target.is_dead():
 			target.take_damage(damage)
-			restore_mana(mana_per_hit))
+			restore_mana(rage)
+			if data.has("script"):
+				data.script.call("on_hit", self, target, damage, upgrade))
+
+
+## Gehaltene Fähigkeit (z. B. Schildwall) auf Platz `slot`: beim Drücken starten, solange
+## gedrückt stehen bleiben. Loslassen beendet sie (siehe _physics_process).
+func _update_hold(slot: int, data: Dictionary, held: bool, just_pressed: bool) -> void:
+	var buff_id: String = data.hold_buff
+	if not held:
+		if buffs.has(buff_id):
+			end_buff(buff_id)
+		return
+	if not buffs.has(buff_id):
+		if not use_skill(slot, just_pressed):
+			return
+	_cast_lock_left = maxf(_cast_lock_left, 0.1)
+	_attack_target = null
+	if not animator.is_acting():
+		animator.play_action(data.get("hold_animation", "Sword_Block"))
 
 
 ## Ruft `on_hit` auf, wenn das Schwert in der gerade gestarteten Schlag-Animation trifft

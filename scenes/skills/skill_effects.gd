@@ -167,3 +167,30 @@ static func burst_ring(origin: Node3D, color: Color, radius: float, seconds: flo
 	tween.tween_property(ring, "scale", Vector3(radius, 1.0, radius), seconds).set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_CUBIC)
 	tween.tween_property(material, "albedo_color:a", 0.0, seconds)
 	tween.chain().tween_callback(ring.queue_free)
+
+
+## Zackiger Blitz von `from` nach `to` (Weltpunkte), verblasst schnell.
+static func lightning(tree: SceneTree, from: Vector3, to: Vector3, color: Color = Color(0.7, 0.85, 1.0)) -> void:
+	var tool := SurfaceTool.new()
+	tool.begin(Mesh.PRIMITIVE_TRIANGLES)
+	var segments := 6
+	var points: Array[Vector3] = []
+	for i in segments + 1:
+		var t := float(i) / segments
+		var jitter := Vector3(randf_range(-0.25, 0.25), randf_range(-0.2, 0.2), randf_range(-0.25, 0.25)) if i > 0 and i < segments else Vector3.ZERO
+		points.append(from.lerp(to, t) + jitter)
+	# Breite nach oben, damit der Blitz von der schrägen Kamera aus gut sichtbar ist.
+	var side := Vector3(0, 0.07, 0)
+	for i in segments:
+		var a := points[i]
+		var b := points[i + 1]
+		for vertex in [a - side, a + side, b + side, a - side, b + side, b - side]:
+			tool.add_vertex(vertex)
+	var bolt := MeshInstance3D.new()
+	bolt.mesh = tool.commit()
+	var material := _glow_material(color)
+	bolt.material_override = material
+	tree.current_scene.add_child(bolt)
+	var tween := bolt.create_tween()
+	tween.tween_property(material, "albedo_color:a", 0.0, 0.3)
+	tween.tween_callback(bolt.queue_free)

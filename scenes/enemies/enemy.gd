@@ -368,7 +368,7 @@ func _distance_to_player() -> float:
 
 func _attack() -> void:
 	_cooldown_left = attack_cooldown
-	_player.take_damage(int(round(randi_range(damage_min, damage_max) * (1.0 - _aura_ratio()))))
+	_player.take_damage(int(round(randi_range(damage_min, damage_max) * (1.0 - _aura_ratio()))), self)
 	animator.play_attack(attack_cooldown)
 
 

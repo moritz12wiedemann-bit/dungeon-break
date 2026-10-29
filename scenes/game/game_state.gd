@@ -67,6 +67,7 @@ func set_player_class(class_id: String) -> void:
 	learned_skills.clear()
 	skill_upgrades.clear()
 	passives.clear()
+	subclass_side = ""
 	skill_bar.assign(PlayerClasses.CLASSES[class_id].bar)
 	progress_changed.emit()
 
@@ -78,9 +79,26 @@ func skill_upgrade(skill_id: String) -> int:
 
 ## Fähigkeiten, die man auf die Skill-Leiste legen kann: Standardangriff + gelernte.
 func usable_skills() -> Array[String]:
-	var list: Array[String] = [PlayerClasses.CLASSES[player_class].basic_attack]
-	list.append_array(learned_skills)
+	var basic := basic_attack_id()
+	var list: Array[String] = [basic]
+	for id in learned_skills:
+		if id != basic:
+			list.append(id)
 	return list
+
+
+## Der Standardangriff: der der Klasse, außer eine gelernte Fähigkeit ersetzt ihn (z. B. Hammerschlag).
+func basic_attack_id() -> String:
+	for id in learned_skills:
+		if PlayerClasses.skill(id).get("replaces_basic", false):
+			return id
+	return PlayerClasses.CLASSES[player_class].basic_attack
+
+
+## Kann man die Fähigkeit wegen der Unterklasse lernen? (Nur eine Seite des Baums ist wählbar.)
+func subclass_allows(skill_id: String) -> bool:
+	var sector: String = PlayerClasses.skill(skill_id).get("sector", "base")
+	return sector == "base" or subclass_side == "" or subclass_side == sector
 
 
 ## Noch freie Fähigkeitspunkte bei Spielerstufe `level`.
@@ -129,8 +147,17 @@ func removal_blocked(skill_id: String, upgrade_only: bool) -> bool:
 func learn_skill(skill_id: String) -> void:
 	if skill_id in learned_skills:
 		return
+	var data := PlayerClasses.skill(skill_id)
+	if data.get("sector", "base") != "base":
+		subclass_side = data.sector
+	var old_basic := basic_attack_id()
 	learned_skills.append(skill_id)
-	if not skill_id in skill_bar:
+	if data.get("replaces_basic", false):
+		# Der neue Standardangriff kommt dorthin, wo der alte lag.
+		var slot := skill_bar.find(old_basic)
+		if slot >= 0:
+			skill_bar[slot] = skill_id
+	elif not skill_id in skill_bar:
 		for slot in PlayerClasses.AUTO_SLOTS:
 			if skill_bar[slot] == "":
 				skill_bar[slot] = skill_id
@@ -142,9 +169,14 @@ func learn_skill(skill_id: String) -> void:
 func unlearn_skill(skill_id: String) -> void:
 	learned_skills.erase(skill_id)
 	skill_upgrades.erase(skill_id)
+	var replaced: bool = PlayerClasses.skill(skill_id).get("replaces_basic", false)
 	for slot in skill_bar.size():
 		if skill_bar[slot] == skill_id:
-			skill_bar[slot] = ""
+			# Ein ersetzter Standardangriff kommt zurück.
+			skill_bar[slot] = basic_attack_id() if replaced else ""
+	# Keine Fähigkeit der Unterklasse mehr gelernt: Unterklasse wieder frei wählbar.
+	if subclass_side != "" and not learned_skills.any(func(id): return PlayerClasses.skill(id).get("sector", "base") == subclass_side):
+		subclass_side = ""
 	progress_changed.emit()
 
 

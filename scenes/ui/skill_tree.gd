@@ -15,7 +15,7 @@ extends Control
 signal skill_clicked(skill_id: String, right: bool)
 signal upgrade_clicked(skill_id: String, upgrade: int, right: bool)
 
-const TREE_SIZE := 720.0
+const TREE_SIZE := 770.0
 ## Außenradius jedes Rings (Pixel), passend zu PlayerClasses.RINGS.
 const RING_RADII := [108.0, 170.0, 232.0, 294.0, 350.0]
 ## Bereiche: Mitte und Breite (Grad; 0 = rechts, 90 = unten).
@@ -28,8 +28,8 @@ const LINE_COLOR := Color(0.85, 0.18, 0.15)
 ## Farbe des Bereichs, den jeder der Klasse hat, und der beiden Unterklassen.
 const BASE_COLOR := Color(0.95, 0.78, 0.4)
 const SUBCLASS_COLORS := {"left": Color(0.4, 0.62, 1.0), "right": Color(0.95, 0.36, 0.3)}
-## Wo das Wappen der Unterklasse sitzt (Abstand von der Mitte, Baum-Einheiten).
-const CREST_DISTANCE := 200.0
+## Wo das Wappen der Unterklasse sitzt (Abstand von der Mitte, Baum-Einheiten): außen vor dem Bereich.
+const CREST_DISTANCE := 392.0
 const SKILL_RADIUS := 18.0
 const UPGRADE_RADIUS := 12.0
 const CENTER_RADIUS := 27.0
@@ -254,13 +254,13 @@ func _draw() -> void:
 	draw_line(center, split_end, Color(LINE_COLOR, 0.25), maxf(7.0 * z, 3.0), true)
 	draw_line(center, split_end, LINE_COLOR, maxf(2.5 * z, 1.5), true)
 
-	# Weggabelung: von der Mitte aus teilt sich der Weg zu den beiden Wappen.
+	# Weggabelung: von der Mitte aus teilt sich der Weg in die beiden Unterklassen.
 	var junction := center + Vector2(0, -38.0) * z
 	for side in ["left", "right"]:
-		var crest := center + Vector2.from_angle(deg_to_rad(SECTORS[side].center)) * CREST_DISTANCE * z
-		var control := center + Vector2(70.0 if side == "right" else -70.0, -150.0) * z
+		var fork_end := center + Vector2.from_angle(deg_to_rad(SECTORS[side].center)) * 62.0 * z
+		var control := center + Vector2(30.0 if side == "right" else -30.0, -75.0) * z
 		var active: bool = chosen_side == side
-		_draw_curve(junction, control, crest, Color(SUBCLASS_COLORS[side], 0.95 if active else 0.55), maxf((3.0 if active else 2.0) * z, 1.0), not active)
+		_draw_curve(junction, control, fork_end, Color(SUBCLASS_COLORS[side], 0.95 if active else 0.55), maxf((3.0 if active else 2.0) * z, 1.0), not active)
 	draw_line(center, junction, Color(BASE_COLOR, 0.8), maxf(2.0 * z, 1.0), true)
 	_draw_diamond(junction, 6.0 * z, BASE_COLOR)
 
@@ -286,7 +286,7 @@ func _draw() -> void:
 
 	# Namen und Wappen der Bereiche.
 	if _class_id != "":
-		_draw_tag(font, PlayerClasses.CLASSES[_class_id].name, center + Vector2(0, RING_RADII[-1] - 18.0) * z, BASE_COLOR, 15)
+		_draw_tag(font, PlayerClasses.CLASSES[_class_id].name, center + Vector2(0, RING_RADII[-1] + 24.0) * z, BASE_COLOR, 15)
 		for side in ["left", "right"]:
 			var crest := center + Vector2.from_angle(deg_to_rad(SECTORS[side].center)) * CREST_DISTANCE * z
 			_draw_crest(crest, 24.0 * z, SUBCLASS_COLORS[side], chosen_side == side)

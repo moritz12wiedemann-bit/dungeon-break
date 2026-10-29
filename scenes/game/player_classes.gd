@@ -28,6 +28,11 @@ extends RefCounted
 ## - "uses_attack_speed": Abklingzeit = Zeit zwischen zwei normalen Schlägen (Angriffstempo).
 ## - "spend_all_upgrade": mit dieser Erweiterung keine Abklingzeit, verbraucht aber den ganzen Zorn.
 ## - "upgrade_mana": andere Kosten mit einer Erweiterung, z. B. {1: 15} (siehe skill_cost()).
+## - "replaces_basic": ersetzt, sobald gelernt, den Standardangriff (Linksklick). Dazu "attack_time"
+##   (Pause zwischen Schlägen mal so viel), "damage" (Schaden mal so viel), "rage_per_hit" und
+##   optional ein Skript mit `static func on_hit(player, target, damage, upgrade)`.
+## - "hold": gedrückt halten = aktiv (Buff "hold_buff"), loslassen beendet; die Figur steht dabei.
+## - "mounted_ok": geht auch auf dem Pferd (sonst kann man vom Pferd aus nichts benutzen).
 ## Passive und Erweiterungen können "stats" haben (wie Augment-Karten, z. B. {"armor": 20}).
 
 ## Die Plätze der Skill-Leiste, in dieser Reihenfolge.
@@ -63,9 +68,10 @@ const CLASSES := {
 		# Standardangriff (Linksklick), den jede Klasse von Anfang an hat.
 		"basic_attack": "krieger_schlag",
 		# Die beiden Unterklassen (Namen und Fähigkeiten kommen später).
-		"subclasses": {"left": "Unterklasse 1", "right": "Unterklasse 2"},
+		"subclasses": {"left": "Templer", "right": "Berserker"},
 		"skills": ["krieger_slash", "krieger_stich", "krieger_tausend", "krieger_himmelszorn",
-			"krieger_rolle", "krieger_ehrenruf", "krieger_geschlagen", "krieger_armee"],
+			"krieger_rolle", "krieger_ehrenruf", "krieger_geschlagen", "krieger_armee",
+			"templer_hammerschlag", "templer_hammerwurf", "templer_schildwall", "templer_pferd"],
 		"passives": [],
 		# Startbelegung: Q, W, E, R, Linksklick, Rechtsklick ("" = leer).
 		"bar": ["", "", "", "", "krieger_schlag", ""],
@@ -276,6 +282,105 @@ const SKILLS := {
 			},
 		],
 	},
+	# --- Templer (Unterklasse links) ---
+	"templer_hammerschlag": {
+		"name": "Hammerschlag",
+		"text": "Ersetzt den Standardangriff: Ein wuchtiger Hammerschlag auf einen Gegner. Langsamer als ein normaler Schlag, macht aber 150 % Schaden.",
+		"rage_gain": "2 pro Treffer",
+		"icon": preload("res://assets/icons/skill_hammer_strike.svg"),
+		"script": preload("res://scenes/skills/hammer_strike.gd"),
+		"ring": 0,
+		"sector": "left",
+		"basic_attack": true,
+		"replaces_basic": true,
+		"attack_time": 1.5,
+		"damage": 1.5,
+		"rage_per_hit": 2.0,
+		"mana": 0,
+		"cooldown": 0.0,
+		"upgrades": [
+			{
+				"name": "Kettenblitz",
+				"text": "Vom getroffenen Gegner springt ein Blitz auf bis zu 2 Gegner in der Nähe über (je 40 % des Schadens).",
+				"icon": preload("res://assets/icons/upgrade_hammer_chain.svg"),
+			},
+			{
+				"name": "Bollwerk",
+				"text": "Jeder Treffer gibt einen Stack Bollwerk (+5 Rüstung), ohne Obergrenze. Greifst du 5 Sekunden lang nicht an, sind alle Stacks weg.",
+				"icon": preload("res://assets/icons/upgrade_hammer_armor.svg"),
+			},
+		],
+	},
+	"templer_hammerwurf": {
+		"name": "Hammerwurf",
+		"text": "Wirft einen Hammer, der 10 Sekunden lang um dich kreist und jeden Gegner trifft, den er berührt. Bis zu 3 Hämmer gleichzeitig, jeder mit eigener Zeit.",
+		"icon": preload("res://assets/icons/skill_hammer_throw.svg"),
+		"script": preload("res://scenes/skills/hammer_throw.gd"),
+		"ring": 1,
+		"sector": "left",
+		"mana": 20,
+		"cooldown": 0.5,
+		"cast_time": 0.2,
+		"upgrades": [
+			{
+				"name": "Hammerschild",
+				"text": "Die Hämmer blockieren Geschosse. (Wirkt, sobald es Geschosse im Spiel gibt.)",
+				"icon": preload("res://assets/icons/upgrade_hammer_block.svg"),
+			},
+			{
+				"name": "Schwere Hämmer",
+				"text": "Doppelter Schaden, aber jeder Hammer hält nur 5 Sekunden.",
+				"icon": preload("res://assets/icons/upgrade_hammer_heavy.svg"),
+			},
+		],
+	},
+	"templer_schildwall": {
+		"name": "Schildwall",
+		"text": "Gedrückt halten: Du bleibst standhaft stehen und blockst mit dem Schild. Doppelte Rüstung, solange du hältst. Kostet 5 Zorn pro Sekunde.",
+		"icon": preload("res://assets/icons/skill_shield_wall.svg"),
+		"script": preload("res://scenes/skills/shield_wall.gd"),
+		"ring": 1,
+		"sector": "left",
+		"mana": 5,
+		"upgrade_mana": {2: 25},
+		"cooldown": 0.0,
+		"hold": true,
+		"hold_buff": "schildwall",
+		"upgrades": [
+			{
+				"name": "Dornenschild",
+				"text": "Gegner, die dich währenddessen angreifen, erleiden selbst 50 % des Schadens.",
+				"icon": preload("res://assets/icons/upgrade_shield_thorns.svg"),
+			},
+			{
+				"name": "Unerschütterlich",
+				"text": "Währenddessen bist du unverwundbar, dafür kostet es 25 Zorn pro Sekunde.",
+				"icon": preload("res://assets/icons/upgrade_shield_invulnerable.svg"),
+			},
+		],
+	},
+	"templer_pferd": {
+		"name": "Streitross",
+		"text": "Du reitest 5 Sekunden lang mit doppeltem Tempo. Buffs und Hämmer wirken weiter, angreifen kannst du vom Pferd aus nicht.",
+		"icon": preload("res://assets/icons/skill_horse.svg"),
+		"script": preload("res://scenes/skills/war_horse.gd"),
+		"ring": 2,
+		"sector": "left",
+		"mana": 0,
+		"cooldown": 30.0,
+		"upgrades": [
+			{
+				"name": "Gepanzertes Ross",
+				"text": "Beim Reiten erleidest du 20 % weniger Schaden.",
+				"icon": preload("res://assets/icons/upgrade_horse_guard.svg"),
+			},
+			{
+				"name": "Ritterlicher Abstieg",
+				"text": "Nach dem Reiten 10 Sekunden lang +25 % Rüstung.",
+				"icon": preload("res://assets/icons/upgrade_horse_armor.svg"),
+			},
+		],
+	},
 }
 
 const PASSIVES := {}
@@ -310,6 +415,35 @@ const BUFFS := {
 		"icon": preload("res://assets/icons/skill_beaten.svg"),
 		# Jede Sekunde wird tick() in diesem Skript aufgerufen.
 		"script": preload("res://scenes/skills/beaten_wrath.gd"),
+	},
+	"bollwerk": {
+		"name": "Bollwerk",
+		"text": "+5 Rüstung pro Stack. Alle Stacks weg, wenn du 5 Sekunden nicht angreifst.",
+		"icon": preload("res://assets/icons/upgrade_hammer_armor.svg"),
+		"max_stacks": 9999,
+		"hold": 5.0,
+		# Werte pro Stack; "decay_all": nach Ablauf von "hold" sind alle Stacks auf einmal weg.
+		"stats_per_stack": {"armor": 5.0},
+		"decay_all": true,
+	},
+	"schildwall": {
+		"name": "Schildwall",
+		"text": "Doppelte Rüstung, du bleibst stehen.",
+		"icon": preload("res://assets/icons/skill_shield_wall.svg"),
+		# Jede Sekunde tick(): Zorn verbrauchen.
+		"script": preload("res://scenes/skills/shield_wall.gd"),
+	},
+	"pferd": {
+		"name": "Streitross",
+		"text": "Doppeltes Tempo, kein Angreifen.",
+		"icon": preload("res://assets/icons/skill_horse.svg"),
+		# on_end() beim Absteigen.
+		"script": preload("res://scenes/skills/war_horse.gd"),
+	},
+	"pferd_ruestung": {
+		"name": "Ritterlicher Abstieg",
+		"text": "+25 % Rüstung.",
+		"icon": preload("res://assets/icons/upgrade_horse_armor.svg"),
 	},
 	"armee": {
 		"name": "Ein-Mann-Armee",

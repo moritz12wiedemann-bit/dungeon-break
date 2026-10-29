@@ -114,6 +114,10 @@ func _on_skill_clicked(id: String, right: bool) -> void:
 			show_status("%s verlernt." % skill_name)
 	elif learned:
 		show_status("%s ist schon gelernt." % skill_name)
+	elif not GameState.subclass_allows(id):
+		var subclasses: Dictionary = PlayerClasses.CLASSES[GameState.player_class].subclasses
+		show_status("Du bist schon %s. Für den %s erst alle Punkte dort zurücknehmen." % [
+			subclasses[GameState.subclass_side], subclasses[PlayerClasses.skill(id).sector]], true)
 	elif not GameState.ring_unlocked(ring):
 		show_status("%s: erst ab %d Punkten in den inneren Ringen." % [PlayerClasses.RINGS[ring].name, GameState.ring_requirement(ring)], true)
 	elif _free_points() <= 0:
