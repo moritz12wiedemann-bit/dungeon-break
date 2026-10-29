@@ -1,9 +1,9 @@
 [dungeon]
-Bild gesamt (ms): 262.80
-process: 263.4
-physics: 0.9
-draw_calls: 268.0
-objects: 425.0
-primitives: 218277.0
-Knoten: 5682
+Bild gesamt (ms): 257.65
+process: 259.1
+physics: 0.8
+draw_calls: 262.0
+objects: 419.0
+primitives: 213084.0
+Knoten: 5696
 
