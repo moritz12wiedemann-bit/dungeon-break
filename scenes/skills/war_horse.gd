@@ -3,7 +3,6 @@ extends RefCounted
 ## angreifen und Fähigkeiten gehen nicht (player.gd is_mounted).
 ## Erweiterung 1 "Gepanzertes Ross": beim Reiten 20 % weniger erlittener Schaden.
 ## Erweiterung 2 "Ritterlicher Abstieg": danach 10 s lang +25 % Rüstung (on_end).
-## Ein Pferdemodell gibt es noch nicht.
 
 const SECONDS := 5.0
 const MOVE_SPEED := 100.0
@@ -17,8 +16,8 @@ static func cast(player, _aim: Vector3, _target: Node3D, upgrade: int, _charge: 
 	if upgrade == 1:
 		stats["damage_reduction"] = DAMAGE_REDUCTION
 	player.add_timed_buff("pferd", SECONDS, stats)
+	# Das Pferd selbst setzt player.gd _sync_mount unter die Figur.
 	SkillEffects.burst_ring(player, Color(0.9, 0.75, 0.45, 0.7), 2.0, 0.4)
-	BuffRing.attach(player, "pferd", Color(0.95, 0.8, 0.45, 0.45), 0.8)
 	return true
 
 

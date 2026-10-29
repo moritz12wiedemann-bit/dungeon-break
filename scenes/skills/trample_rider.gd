@@ -34,21 +34,11 @@ func _ready() -> void:
 	visible = false
 	global_position = _start
 	rotation.y = atan2(_direction.x, _direction.z)
-	# Leuchtender Schemen eines Reiters (bis es ein Pferdemodell gibt): Körper, Hals/Kopf, Reiter,
-	# dazu eine schwache Staubspur am Boden. [Radius, Länge, Position, Neigung (Grad um x)]
-	for part in [[0.32, 1.5, Vector3(0, 0.95, 0), 90.0], [0.16, 0.8, Vector3(0, 1.35, 0.75), 40.0],
-			[0.16, 0.75, Vector3(0, 1.55, -0.15), 0.0]]:
-		var mesh := MeshInstance3D.new()
-		var capsule := CapsuleMesh.new()
-		capsule.radius = part[0]
-		capsule.height = part[1]
-		capsule.radial_segments = 12
-		capsule.rings = 4
-		mesh.mesh = capsule
-		mesh.position = part[2]
-		mesh.rotation_degrees.x = part[3]
-		mesh.material_override = SkillEffects._glow_material(Color(1.0, 0.78, 0.4, 0.28))
-		add_child(mesh)
+	# Galoppierendes Pferd mit einer schwachen Staubspur am Boden.
+	var horse := HorseModel.new()
+	horse.running = true
+	horse.run_speed = 1.8
+	add_child(horse)
 	var dust := MeshInstance3D.new()
 	var plane := PlaneMesh.new()
 	plane.size = Vector2(0.9, 3.0)

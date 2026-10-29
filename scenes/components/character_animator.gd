@@ -22,6 +22,8 @@ extends Node
 @export var revive_animation: String = "Revive"
 ## So lange (Sekunden) dauert die zuletzt gestartete Aktion (z. B. ein Schlag) wirklich.
 var last_action_duration: float = 0.0
+## Wenn gesetzt, spielt immer diese Animation statt Stehen/Laufen (z. B. "Sitting" auf dem Pferd).
+var pose_override: String = ""
 ## Überblendzeit zwischen zwei Animationen in Sekunden.
 @export var blend_time: float = 0.15
 
@@ -41,6 +43,9 @@ func _physics_process(delta: float) -> void:
 		return
 	_action_left -= delta
 	if _action_left > 0.0:
+		return
+	if pose_override != "":
+		_play_loop(pose_override, 1.0)
 		return
 	var speed := Vector2(_body.velocity.x, _body.velocity.z).length()
 	if speed > 0.3:

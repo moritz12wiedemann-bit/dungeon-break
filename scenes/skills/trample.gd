@@ -5,7 +5,7 @@ extends RefCounted
 ## nebeneinander über ein großes Gebiet in Richtung Mauszeiger preschen (siehe trample_rider.gd).
 ## Erweiterung 1 "Endlose Herde": Abklingzeit 10 s ("upgrade_cooldown"), braucht NEEDED_FAST Stacks.
 ## Erweiterung 2 "Niedergeritten": Getroffene machen 10 s lang 50 % weniger Schaden.
-## Ein Pferdemodell gibt es noch nicht, die Reiter sind leuchtende Schemen.
+## Die Pferde: HorseModel (Farm-Animals-Pack, grau).
 
 const NEEDED := 20
 const NEEDED_FAST := 30

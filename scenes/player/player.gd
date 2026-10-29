@@ -104,6 +104,8 @@ var buffs: Dictionary = {}
 ## Rolle (Hechtrolle): so lange (Sekunden) rollt die Figur noch, mit dieser Geschwindigkeit.
 var _dash_left: float = 0.0
 var _dash_velocity := Vector3.ZERO
+## Das Pferd unter der Figur, solange sie reitet (Streitross), sonst null.
+var _mount: HorseModel = null
 ## Alle so viele Sekunden verfallen Stacks, wenn man den Buff nicht mehr auffrischt ...
 const BUFF_DECAY_EVERY := 0.5
 ## ... und zwar so viele.
@@ -155,6 +157,25 @@ func _process(delta: float) -> void:
 		skill_cooldowns[id] = maxf(skill_cooldowns[id] - delta, 0.0)
 	_update_buffs(delta)
 	_sync_auras()
+	_sync_mount()
+
+
+## Reitet die Figur (Buff "pferd"), sitzt sie auf einem Pferd; sonst steht sie wieder am Boden.
+func _sync_mount() -> void:
+	var mounted := is_mounted() and not health.is_dead()
+	if mounted == (_mount != null):
+		return
+	var visual: Node3D = $Visual
+	if mounted:
+		_mount = HorseModel.new()
+		add_child(_mount)
+		visual.position.y = HorseModel.SADDLE_HEIGHT
+		animator.pose_override = "Sitting"
+	else:
+		_mount.queue_free()
+		_mount = null
+		visual.position.y = 0.0
+		animator.pose_override = ""
 
 
 ## Gelernte Auren (z. B. Gottes Gerechtigkeit) laufen dauerhaft, auch nach Tod oder Szenenwechsel.
