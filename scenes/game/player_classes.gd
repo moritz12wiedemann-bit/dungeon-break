@@ -48,7 +48,7 @@ const RINGS := [
 	{"name": "Core-Skills", "color": Color(1.0, 0.78, 0.25), "requires": 2},
 	{"name": "Mobility", "color": Color(0.35, 0.85, 0.4), "requires": 4},
 	{"name": "Buffs", "color": Color(0.95, 0.55, 0.3), "requires": 6},
-	{"name": "Ultimate-Skills", "color": Color(0.8, 0.35, 0.95)},
+	{"name": "Ultimate-Skills", "color": Color(0.8, 0.35, 0.95), "requires": 10},
 ]
 
 const START_CLASS := "krieger"
@@ -65,7 +65,7 @@ const CLASSES := {
 		# Die beiden Unterklassen (Namen und Fähigkeiten kommen später).
 		"subclasses": {"left": "Unterklasse 1", "right": "Unterklasse 2"},
 		"skills": ["krieger_slash", "krieger_stich", "krieger_tausend", "krieger_himmelszorn",
-			"krieger_rolle", "krieger_ehrenruf", "krieger_geschlagen"],
+			"krieger_rolle", "krieger_ehrenruf", "krieger_geschlagen", "krieger_armee"],
 		"passives": [],
 		# Startbelegung: Q, W, E, R, Linksklick, Rechtsklick ("" = leer).
 		"bar": ["", "", "", "", "krieger_schlag", ""],
@@ -253,6 +253,29 @@ const SKILLS := {
 			},
 		],
 	},
+	"krieger_armee": {
+		"name": "Ein-Mann-Armee",
+		"text": "20 Sekunden lang erleidest du 50 % weniger Schaden und machst 30 % mehr Schaden (normale Angriffe und Fähigkeiten).",
+		"icon": preload("res://assets/icons/skill_army.svg"),
+		"script": preload("res://scenes/skills/one_man_army.gd"),
+		"ring": 4,
+		"sector": "base",
+		"mana": 0,
+		"cooldown": 120.0,
+		"cast_time": 0.4,
+		"upgrades": [
+			{
+				"name": "Unbändiger Zorn",
+				"text": "Solange sie läuft, bekommst du 3 Zorn pro Sekunde.",
+				"icon": preload("res://assets/icons/upgrade_army_rage.svg"),
+			},
+			{
+				"name": "Kriegeraura",
+				"text": "Solange sie läuft, machen Gegner in einem großen Umkreis um dich 20 % weniger Schaden und erleiden 20 % mehr Schaden.",
+				"icon": preload("res://assets/icons/upgrade_army_aura.svg"),
+			},
+		],
+	},
 }
 
 const PASSIVES := {}
@@ -287,6 +310,13 @@ const BUFFS := {
 		"icon": preload("res://assets/icons/skill_beaten.svg"),
 		# Jede Sekunde wird tick() in diesem Skript aufgerufen.
 		"script": preload("res://scenes/skills/beaten_wrath.gd"),
+	},
+	"armee": {
+		"name": "Ein-Mann-Armee",
+		"text": "50 % weniger erlittener Schaden, 30 % mehr Schaden.",
+		"icon": preload("res://assets/icons/skill_army.svg"),
+		# Mit "Unbändiger Zorn" jede Sekunde tick() (3 Zorn).
+		"script": preload("res://scenes/skills/one_man_army.gd"),
 	},
 }
 

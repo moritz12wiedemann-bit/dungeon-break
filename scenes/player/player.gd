@@ -127,6 +127,9 @@ func _ready() -> void:
 	GameState.progress_changed.connect(recalculate_stats)
 	# Kommt der Spieler aus der Stadt oder einem Dungeon, bekommt er seine Werte zurück.
 	GameState.restore_player(self)
+	# Läuft Ein-Mann-Armee mit Kriegeraura noch, kommt die Aura mit.
+	if buffs.has("armee") and GameState.skill_upgrade("krieger_armee") == 2:
+		ArmyAura.attach(self)
 
 
 func _unhandled_input(event: InputEvent) -> void:
@@ -248,7 +251,8 @@ func _physics_process(delta: float) -> void:
 func take_damage(amount: int) -> void:
 	if _protection_left > 0.0:
 		return
-	var reduced := int(round(amount * 100.0 / (100.0 + armor)))
+	# "damage_reduction": Prozent weniger erlittener Schaden (z. B. Ein-Mann-Armee).
+	var reduced := int(round(amount * 100.0 / (100.0 + armor) * (1.0 - minf(_stat_total("damage_reduction"), 90.0) / 100.0)))
 	health.take_damage(maxi(reduced, 1))
 
 
@@ -367,8 +371,9 @@ func _use_left_skill_on(target: Node3D) -> bool:
 
 
 ## Schaden eines normalen Schlags (mit Stufe und Ausrüstung) mal `multiplier`.
+## "all_damage": Prozent mehr Schaden für Angriffe und Fähigkeiten (z. B. Ein-Mann-Armee).
 func roll_damage(multiplier: float = 1.0) -> int:
-	return int(round((randi_range(damage_min, damage_max) + bonus_damage) * multiplier))
+	return int(round((randi_range(damage_min, damage_max) + bonus_damage) * multiplier * (1.0 + _stat_total("all_damage") / 100.0)))
 
 
 ## Gibt Mana bzw. Zorn zurück (höchstens bis max_mana).

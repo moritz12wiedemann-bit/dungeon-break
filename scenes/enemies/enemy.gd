@@ -79,6 +79,10 @@ var _slow_left: float = 0.0
 ## Schadensanfälligkeit (0.3 = +30 % Schaden) und wie lange noch (Sekunden).
 var _vulnerable: float = 0.0
 var _vulnerable_left: float = 0.0
+## Kriegeraura (Ein-Mann-Armee): bis zu diesem Zeitpunkt (Time.get_ticks_msec) macht der Gegner
+## _aura weniger Schaden und erleidet _aura mehr Schaden.
+var _aura: float = 0.0
+var _aura_until: int = 0
 ## Sog (z. B. Himmelssog): Mitte, Stärke (Meter pro Sekunde) und wie lange noch.
 ## Wird jedes Bild neu gesetzt, solange der Gegner in der Fläche steht.
 var _pull_center := Vector3.ZERO
@@ -161,8 +165,9 @@ func _awake_enemies() -> Array[Node]:
 
 ## Wird vom Spieler aufgerufen, wenn er uns trifft.
 func take_damage(amount: int) -> void:
-	if _vulnerable_left > 0.0:
-		amount = int(round(amount * (1.0 + _vulnerable)))
+	var extra := (_vulnerable if _vulnerable_left > 0.0 else 0.0) + _aura_ratio()
+	if extra > 0.0:
+		amount = int(round(amount * (1.0 + extra)))
 	health.take_damage(amount)
 	# Wer geschlagen wird, wehrt sich, auch wenn er den Spieler noch nicht bemerkt hatte.
 	if state != State.DEAD:
@@ -192,6 +197,16 @@ func apply_vulnerable(ratio: float, seconds: float) -> void:
 	_vulnerable = maxf(_vulnerable, ratio) if _vulnerable_left > 0.0 else ratio
 	_vulnerable_left = maxf(_vulnerable_left, seconds)
 	_update_tint()
+
+
+## Kriegeraura: für `seconds` Sekunden `ratio` weniger Schaden machen und mehr Schaden erleiden.
+func apply_aura(ratio: float, seconds: float) -> void:
+	_aura = ratio
+	_aura_until = Time.get_ticks_msec() + int(seconds * 1000.0)
+
+
+func _aura_ratio() -> float:
+	return _aura if Time.get_ticks_msec() < _aura_until else 0.0
 
 
 func _update_effects(delta: float) -> void:
@@ -353,7 +368,7 @@ func _distance_to_player() -> float:
 
 func _attack() -> void:
 	_cooldown_left = attack_cooldown
-	_player.take_damage(randi_range(damage_min, damage_max))
+	_player.take_damage(int(round(randi_range(damage_min, damage_max) * (1.0 - _aura_ratio()))))
 	animator.play_attack(attack_cooldown)
 
 
