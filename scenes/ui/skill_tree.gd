@@ -29,7 +29,7 @@ const LINE_COLOR := Color(0.85, 0.18, 0.15)
 const BASE_COLOR := Color(0.95, 0.78, 0.4)
 const SUBCLASS_COLORS := {"left": Color(0.4, 0.62, 1.0), "right": Color(0.95, 0.36, 0.3)}
 ## Wo das Wappen der Unterklasse sitzt (Abstand von der Mitte, Baum-Einheiten): außen vor dem Bereich.
-const CREST_DISTANCE := 392.0
+const CREST_DISTANCE := 428.0
 const SKILL_RADIUS := 18.0
 const UPGRADE_RADIUS := 12.0
 const CENTER_RADIUS := 27.0
@@ -286,11 +286,10 @@ func _draw() -> void:
 
 	# Namen und Wappen der Bereiche.
 	if _class_id != "":
-		_draw_tag(font, PlayerClasses.CLASSES[_class_id].name, center + Vector2(0, RING_RADII[-1] + 24.0) * z, BASE_COLOR, 15)
 		for side in ["left", "right"]:
 			var crest := center + Vector2.from_angle(deg_to_rad(SECTORS[side].center)) * CREST_DISTANCE * z
 			_draw_crest(crest, 24.0 * z, SUBCLASS_COLORS[side], chosen_side == side)
-			_draw_tag(font, subclasses.get(side, ""), crest + Vector2(0, 38.0) * z, SUBCLASS_COLORS[side].lerp(Color.WHITE, 0.3), 13)
+			_draw_tag(font, subclasses.get(side, ""), crest + Vector2(0, -40.0) * z, SUBCLASS_COLORS[side].lerp(Color.WHITE, 0.3), 13)
 
 
 ## Fläche eines Bereichs (Tortenstück bis zum äußersten Ring).

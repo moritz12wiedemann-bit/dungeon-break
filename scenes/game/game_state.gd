@@ -82,7 +82,7 @@ func usable_skills() -> Array[String]:
 	var basic := basic_attack_id()
 	var list: Array[String] = [basic]
 	for id in learned_skills:
-		if id != basic:
+		if id != basic and not PlayerClasses.skill(id).get("aura", false):
 			list.append(id)
 	return list
 
@@ -157,7 +157,7 @@ func learn_skill(skill_id: String) -> void:
 		var slot := skill_bar.find(old_basic)
 		if slot >= 0:
 			skill_bar[slot] = skill_id
-	elif not skill_id in skill_bar:
+	elif not skill_id in skill_bar and not data.get("aura", false):
 		for slot in PlayerClasses.AUTO_SLOTS:
 			if skill_bar[slot] == "":
 				skill_bar[slot] = skill_id

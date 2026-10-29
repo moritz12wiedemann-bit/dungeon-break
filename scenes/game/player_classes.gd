@@ -32,6 +32,8 @@ extends RefCounted
 ##   (Pause zwischen Schlägen mal so viel), "damage" (Schaden mal so viel), "rage_per_hit" und
 ##   optional ein Skript mit `static func on_hit(player, target, damage, upgrade)`.
 ## - "hold": gedrückt halten = aktiv (Buff "hold_buff"), loslassen beendet; die Figur steht dabei.
+## - "upgrade_cooldown": andere Abklingzeit mit einer Erweiterung, z. B. {1: 10.0}.
+## - "aura": wirkt dauerhaft, sobald gelernt (Buff "aura_buff"), kommt nicht auf die Leiste.
 ## - "mounted_ok": geht auch auf dem Pferd (sonst kann man vom Pferd aus nichts benutzen).
 ## Passive und Erweiterungen können "stats" haben (wie Augment-Karten, z. B. {"armor": 20}).
 
@@ -71,7 +73,8 @@ const CLASSES := {
 		"subclasses": {"left": "Templer", "right": "Berserker"},
 		"skills": ["krieger_slash", "krieger_stich", "krieger_tausend", "krieger_himmelszorn",
 			"krieger_rolle", "krieger_ehrenruf", "krieger_geschlagen", "krieger_armee",
-			"templer_hammerschlag", "templer_hammerwurf", "templer_schildwall", "templer_pferd"],
+			"templer_hammerschlag", "templer_hammerwurf", "templer_schildwall", "templer_pferd",
+			"templer_gerechtigkeit", "templer_trampeln"],
 		"passives": [],
 		# Startbelegung: Q, W, E, R, Linksklick, Rechtsklick ("" = leer).
 		"bar": ["", "", "", "", "krieger_schlag", ""],
@@ -381,6 +384,54 @@ const SKILLS := {
 			},
 		],
 	},
+	"templer_gerechtigkeit": {
+		"name": "Gottes Gerechtigkeit",
+		"text": "Dauerhafte Aura, sobald gelernt: Gegner im Umkreis von 3 Metern mit weniger als 5 % Leben werden sofort exekutiert.",
+		"icon": preload("res://assets/icons/skill_justice.svg"),
+		"script": preload("res://scenes/skills/divine_justice.gd"),
+		"ring": 3,
+		"sector": "left",
+		"aura": true,
+		"aura_buff": "gerechtigkeit",
+		"mana": 0,
+		"cooldown": 0.0,
+		"upgrades": [
+			{
+				"name": "Gerechter Zorn",
+				"text": "Jeder von der Aura exekutierte Gegner gibt 1 Zorn.",
+				"icon": preload("res://assets/icons/upgrade_justice_rage.svg"),
+			},
+			{
+				"name": "Heiliges Urteil",
+				"text": "Jeder von der Aura exekutierte Gegner heilt dich um 0,5 % deines maximalen Lebens.",
+				"icon": preload("res://assets/icons/upgrade_justice_heal.svg"),
+			},
+		],
+	},
+	"templer_trampeln": {
+		"name": "Trampeln",
+		"text": "Beschwört 5 Pferde, die schnell über ein großes Gebiet in Richtung Mauszeiger reiten und alles niedertrampeln (300 % Schaden). Jeder getötete Gegner gibt einen Stack, erst mit 20 Stacks einsetzbar (verbraucht alle).",
+		"icon": preload("res://assets/icons/skill_trample.svg"),
+		"script": preload("res://scenes/skills/trample.gd"),
+		"ring": 4,
+		"sector": "left",
+		"mana": 0,
+		"cooldown": 20.0,
+		"upgrade_cooldown": {1: 10.0},
+		"cast_time": 0.4,
+		"upgrades": [
+			{
+				"name": "Endlose Herde",
+				"text": "Abklingzeit nur 10 Sekunden, braucht dafür 30 Stacks.",
+				"icon": preload("res://assets/icons/upgrade_trample_fast.svg"),
+			},
+			{
+				"name": "Niedergeritten",
+				"text": "Getroffene Gegner machen 10 Sekunden lang 50 % weniger Schaden.",
+				"icon": preload("res://assets/icons/upgrade_trample_weaken.svg"),
+			},
+		],
+	},
 }
 
 const PASSIVES := {}
@@ -445,6 +496,19 @@ const BUFFS := {
 		"text": "+25 % Rüstung.",
 		"icon": preload("res://assets/icons/upgrade_horse_armor.svg"),
 	},
+	"gerechtigkeit": {
+		"name": "Gottes Gerechtigkeit",
+		"text": "Gegner unter 5 % Leben in 3 Metern werden exekutiert.",
+		"icon": preload("res://assets/icons/skill_justice.svg"),
+		# Alle 0,2 Sekunden tick().
+		"script": preload("res://scenes/skills/divine_justice.gd"),
+	},
+	"trampeln": {
+		"name": "Trampeln",
+		"text": "Getötete Gegner. Ab 20 (bzw. 30) kannst du Trampeln einsetzen.",
+		"icon": preload("res://assets/icons/skill_trample.svg"),
+		"max_stacks": 30,
+	},
 	"armee": {
 		"name": "Ein-Mann-Armee",
 		"text": "50 % weniger erlittener Schaden, 30 % mehr Schaden.",
@@ -479,6 +543,12 @@ static func skill(skill_id: String) -> Dictionary:
 static func skill_cost(skill_id: String, upgrade: int) -> int:
 	var data := skill(skill_id)
 	return data.get("upgrade_mana", {}).get(upgrade, data.get("mana", 0))
+
+
+## Abklingzeit der Fähigkeit mit der Erweiterung `upgrade`.
+static func skill_cooldown(skill_id: String, upgrade: int) -> float:
+	var data := skill(skill_id)
+	return data.get("upgrade_cooldown", {}).get(upgrade, data.get("cooldown", 0.0))
 
 
 ## Beschreibung für den Tooltip, mit gewählter Erweiterung (0 = keine).

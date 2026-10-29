@@ -83,6 +83,9 @@ var _vulnerable_left: float = 0.0
 ## _aura weniger Schaden und erleidet _aura mehr Schaden.
 var _aura: float = 0.0
 var _aura_until: int = 0
+## Geschwächt (z. B. Trampeln "Niedergeritten"): bis dahin _weaken weniger Schaden.
+var _weaken: float = 0.0
+var _weaken_until: int = 0
 ## Sog (z. B. Himmelssog): Mitte, Stärke (Meter pro Sekunde) und wie lange noch.
 ## Wird jedes Bild neu gesetzt, solange der Gegner in der Fläche steht.
 var _pull_center := Vector3.ZERO
@@ -203,6 +206,12 @@ func apply_vulnerable(ratio: float, seconds: float) -> void:
 func apply_aura(ratio: float, seconds: float) -> void:
 	_aura = ratio
 	_aura_until = Time.get_ticks_msec() + int(seconds * 1000.0)
+
+
+## Für `seconds` Sekunden `ratio` weniger Schaden machen (0.5 = halber Schaden).
+func apply_weaken(ratio: float, seconds: float) -> void:
+	_weaken = ratio if Time.get_ticks_msec() >= _weaken_until else maxf(_weaken, ratio)
+	_weaken_until = maxi(_weaken_until, Time.get_ticks_msec() + int(seconds * 1000.0))
 
 
 func _aura_ratio() -> float:
@@ -368,7 +377,7 @@ func _distance_to_player() -> float:
 
 func _attack() -> void:
 	_cooldown_left = attack_cooldown
-	_player.take_damage(int(round(randi_range(damage_min, damage_max) * (1.0 - _aura_ratio()))), self)
+	_player.take_damage(int(round(randi_range(damage_min, damage_max) * (1.0 - _aura_ratio()) * (1.0 - (_weaken if Time.get_ticks_msec() < _weaken_until else 0.0)))), self)
 	animator.play_attack(attack_cooldown)
 
 

@@ -38,6 +38,8 @@ var _bag_slots: Array[ItemSlot] = []
 var _material_slots: Dictionary = {}
 ## Der ausgewählte Orb ("" = keiner).
 var _selected_orb: String = ""
+## Zeit bis zum nächsten Aktualisieren der Werte-Tabelle.
+var _stats_timer: float = 0.0
 ## Bild des ausgewählten Orbs, das dem Mauszeiger folgt.
 var _cursor := TextureRect.new()
 
@@ -87,9 +89,14 @@ func _ready() -> void:
 	add_child(_cursor)
 
 
-func _process(_delta: float) -> void:
+func _process(delta: float) -> void:
 	if _cursor.visible:
 		_cursor.global_position = get_global_mouse_position() + Vector2(6, 6)
+	# Werte laufend aktualisieren (Buffs ändern Rüstung, Tempo ... auch ohne neues Öffnen).
+	_stats_timer -= delta
+	if visible and _stats_timer <= 0.0:
+		_stats_timer = 0.2
+		_refresh_stats()
 
 
 func _unhandled_input(event: InputEvent) -> void:
@@ -155,13 +162,20 @@ func refresh() -> void:
 		if item != null:
 			used += 1
 	bag_title.text = "Tasche  (%d / %d)" % [used, inventory.bag.size()]
+	_refresh_stats()
+
+
+## Nur die Werte-Tabelle (Stufe, Leben, Schaden, Rüstung ...).
+func _refresh_stats() -> void:
+	if _player == null:
+		return
 	var values := [
 		str(_player.experience.level),
 		str(_player.health.max_health),
 		"%.1f / s" % _player.health.regen_per_second,
 		str(int(_player.max_mana)),
 		"%d–%d" % [_player.damage_min + _player.bonus_damage, _player.damage_max + _player.bonus_damage],
-		"%.2f / s" % (1.0 / _player.attack_cooldown),
+		"%.2f / s" % (1.0 / _player.basic_attack_cooldown()),
 		"%d" % _player.armor,
 		"%.1f" % _player.move_speed,
 	]

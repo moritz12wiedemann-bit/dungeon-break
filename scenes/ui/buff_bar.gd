@@ -41,7 +41,11 @@ func _process(_delta: float) -> void:
 		var label: Label = _shown[id].get_child(1)
 		var buff: Dictionary = _player.buffs[id]
 		# Buffs mit Laufzeit zeigen die restlichen Sekunden, die anderen ihre Stacks.
-		label.text = "%ds" % ceili(buff.time) if buff.has("time") else str(buff.stacks)
+		# Buffs ohne Ende (Auren, gehaltene Fähigkeiten) zeigen nichts.
+		if buff.has("time"):
+			label.text = "%ds" % ceili(buff.time) if buff.time < 10000.0 else ""
+		else:
+			label.text = str(buff.stacks)
 
 
 func _make_icon(id: String) -> Panel:

@@ -130,6 +130,10 @@ func _ready() -> void:
 	# Läuft Ein-Mann-Armee mit Kriegeraura noch, kommt die Aura mit.
 	if buffs.has("armee") and GameState.skill_upgrade("krieger_armee") == 2:
 		ArmyAura.attach(self)
+	# Auren startet _sync_auras neu (mit ihrem Ring am Boden).
+	for id in PlayerClasses.CLASSES[GameState.player_class].skills:
+		if PlayerClasses.skill(id).has("aura_buff"):
+			buffs.erase(PlayerClasses.skill(id).aura_buff)
 
 
 func _unhandled_input(event: InputEvent) -> void:
@@ -150,6 +154,23 @@ func _process(delta: float) -> void:
 	for id in skill_cooldowns:
 		skill_cooldowns[id] = maxf(skill_cooldowns[id] - delta, 0.0)
 	_update_buffs(delta)
+	_sync_auras()
+
+
+## Gelernte Auren (z. B. Gottes Gerechtigkeit) laufen dauerhaft, auch nach Tod oder Szenenwechsel.
+func _sync_auras() -> void:
+	if health.is_dead():
+		return
+	for id in PlayerClasses.CLASSES[GameState.player_class].skills:
+		var data := PlayerClasses.skill(id)
+		if not data.get("aura", false):
+			continue
+		var active := buffs.has(data.aura_buff)
+		if id in GameState.learned_skills and not active:
+			add_timed_buff(data.aura_buff, INF, {}, 0.2)
+			BuffRing.attach(self, data.aura_buff, Color(1.0, 0.85, 0.4, 0.35), data.script.RADIUS)
+		elif active and not id in GameState.learned_skills:
+			end_buff(data.aura_buff)
 
 
 func _physics_process(delta: float) -> void:
@@ -355,7 +376,7 @@ func _cast(id: String, aim: Dictionary, charge: float) -> bool:
 		skill_cooldowns[id] = 0.0
 	else:
 		mana -= PlayerClasses.skill_cost(id, upgrade)
-		skill_cooldowns[id] = attack_cooldown if data.get("uses_attack_speed", false) else data.cooldown
+		skill_cooldowns[id] = attack_cooldown if data.get("uses_attack_speed", false) else PlayerClasses.skill_cooldown(id, upgrade)
 	if data.get("channel", false):
 		_attack_target = null
 		nav_agent.target_position = global_position
@@ -424,7 +445,8 @@ func skill_cooldown_ratio(slot: int) -> float:
 	if data.get("basic_attack", false):
 		var basic := basic_attack_cooldown()
 		return clampf(_cooldown_left / basic, 0.0, 1.0) if basic > 0.0 else 0.0
-	var full: float = attack_cooldown if data.get("uses_attack_speed", false) else data.cooldown
+	var skill_id: String = GameState.skill_bar[slot]
+	var full: float = attack_cooldown if data.get("uses_attack_speed", false) else PlayerClasses.skill_cooldown(skill_id, GameState.skill_upgrade(skill_id))
 	if full <= 0.0:
 		return 0.0
 	return clampf(skill_cooldowns.get(GameState.skill_bar[slot], 0.0) / full, 0.0, 1.0)
@@ -528,6 +550,10 @@ func _buff_stat(stat: String) -> float:
 
 ## Ein Gegner ist gestorben (gain_xp). "Blutrausch": Abklingzeit von Zorn des Geschlagenen kürzer.
 func _on_enemy_killed() -> void:
+	# Trampeln: jeder getötete Gegner ein Stack (bis zu so vielen, wie man braucht).
+	if "templer_trampeln" in GameState.learned_skills:
+		add_buff_stacks("trampeln", 1, INF)
+		buffs.trampeln.stacks = mini(buffs.trampeln.stacks, Trample.stacks_needed())
 	if buffs.has("geschlagen") and GameState.skill_upgrade("krieger_geschlagen") == 2:
 		skill_cooldowns["krieger_geschlagen"] = maxf(skill_cooldowns.get("krieger_geschlagen", 0.0) - BeatenWrath.KILL_COOLDOWN_CUT, 0.0)
 
@@ -783,7 +809,11 @@ func _on_leveled_up(new_level: int) -> void:
 func _on_died() -> void:
 	_attack_target = null
 	_dash_left = 0.0
+	# Gesammelte Trampeln-Stacks bleiben, alles andere endet.
+	var trample: Dictionary = buffs.get("trampeln", {})
 	buffs.clear()
+	if not trample.is_empty():
+		buffs.trampeln = trample
 	if charging_slot >= 0:
 		charging_slot = -1
 		if is_instance_valid(_charge_effect):
