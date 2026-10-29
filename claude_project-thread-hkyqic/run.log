@@ -27,12 +27,12 @@ SHOT inventar_schmuck
 SHOT tooltip_vergleich
 SHOT dungeon_spieler
 [dungeon]
-Bild gesamt (ms): 207.56
-process: 208.9
-physics: 0.9
-draw_calls: 260.0
-objects: 417.0
-primitives: 216991.0
-Knoten: 5695
+Bild gesamt (ms): 163.71
+process: 169.0
+physics: 1.0
+draw_calls: 267.0
+objects: 424.0
+primitives: 217945.0
+Knoten: 5699
 SHOT dungeon_nah
 CAPTURE DONE
