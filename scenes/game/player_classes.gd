@@ -27,6 +27,7 @@ extends RefCounted
 ## - "channel": gedrückt halten wirkt immer wieder, die Figur bleibt dabei stehen.
 ## - "uses_attack_speed": Abklingzeit = Zeit zwischen zwei normalen Schlägen (Angriffstempo).
 ## - "spend_all_upgrade": mit dieser Erweiterung keine Abklingzeit, verbraucht aber den ganzen Zorn.
+## - "upgrade_mana": andere Kosten mit einer Erweiterung, z. B. {1: 15} (siehe skill_cost()).
 ## Passive und Erweiterungen können "stats" haben (wie Augment-Karten, z. B. {"armor": 20}).
 
 ## Die Plätze der Skill-Leiste, in dieser Reihenfolge.
@@ -45,8 +46,8 @@ const MAX_PASSIVES := 3
 const RINGS := [
 	{"name": "Basis-Skills", "color": Color(0.35, 0.55, 1.0)},
 	{"name": "Core-Skills", "color": Color(1.0, 0.78, 0.25), "requires": 2},
-	{"name": "Mobility", "color": Color(0.35, 0.85, 0.4)},
-	{"name": "Buffs", "color": Color(0.95, 0.55, 0.3)},
+	{"name": "Mobility", "color": Color(0.35, 0.85, 0.4), "requires": 4},
+	{"name": "Buffs", "color": Color(0.95, 0.55, 0.3), "requires": 6},
 	{"name": "Ultimate-Skills", "color": Color(0.8, 0.35, 0.95)},
 ]
 
@@ -63,7 +64,8 @@ const CLASSES := {
 		"basic_attack": "krieger_schlag",
 		# Die beiden Unterklassen (Namen und Fähigkeiten kommen später).
 		"subclasses": {"left": "Unterklasse 1", "right": "Unterklasse 2"},
-		"skills": ["krieger_slash", "krieger_stich", "krieger_tausend", "krieger_himmelszorn"],
+		"skills": ["krieger_slash", "krieger_stich", "krieger_tausend", "krieger_himmelszorn",
+			"krieger_rolle", "krieger_ehrenruf", "krieger_geschlagen"],
 		"passives": [],
 		# Startbelegung: Q, W, E, R, Linksklick, Rechtsklick ("" = leer).
 		"bar": ["", "", "", "", "krieger_schlag", ""],
@@ -181,17 +183,110 @@ const SKILLS := {
 			},
 		],
 	},
+	"krieger_rolle": {
+		"name": "Hechtrolle",
+		"text": "Schnelle Rolle nach vorne in Richtung Mauszeiger (etwa 4 Meter).",
+		"icon": preload("res://assets/icons/skill_roll.svg"),
+		"script": preload("res://scenes/skills/dive_roll.gd"),
+		"ring": 2,
+		"sector": "base",
+		"mana": 5,
+		"cooldown": 3.0,
+		"cast_time": 0.4,
+		"upgrades": [
+			{
+				"name": "Gepanzerte Rolle",
+				"text": "Nach der Rolle hast du 5 Sekunden lang 10 % mehr Rüstung.",
+				"icon": preload("res://assets/icons/upgrade_roll_armor.svg"),
+			},
+			{
+				"name": "Flinke Rolle",
+				"text": "Nach der Rolle bist du 5 Sekunden lang 15 % schneller.",
+				"icon": preload("res://assets/icons/upgrade_roll_speed.svg"),
+			},
+		],
+	},
+	"krieger_ehrenruf": {
+		"name": "Ehrenruf",
+		"text": "Kampfruf: 15 Sekunden lang machen normale Angriffe 20 % mehr Schaden und sind 25 % schneller.",
+		"icon": preload("res://assets/icons/skill_honor.svg"),
+		"script": preload("res://scenes/skills/honor_call.gd"),
+		"ring": 3,
+		"sector": "base",
+		"mana": 0,
+		"upgrade_mana": {1: 15},
+		"cooldown": 60.0,
+		"cast_time": 0.3,
+		"upgrades": [
+			{
+				"name": "Kampfschrei",
+				"text": "Normale Angriffe machen stattdessen 30 % mehr Schaden, dafür kostet der Ruf 15 Zorn.",
+				"icon": preload("res://assets/icons/upgrade_honor_damage.svg"),
+			},
+			{
+				"name": "Sturmruf",
+				"text": "Zusätzlich 15 % mehr Bewegungstempo, ohne Zornkosten.",
+				"icon": preload("res://assets/icons/upgrade_honor_speed.svg"),
+			},
+		],
+	},
+	"krieger_geschlagen": {
+		"name": "Zorn des Geschlagenen",
+		"text": "10 Sekunden lang verlierst du pro Sekunde 3 % deines maximalen Lebens und bekommst dafür 2 Zorn. Tötet dich nicht: bei 1 Leben endet der Buff.",
+		"icon": preload("res://assets/icons/skill_beaten.svg"),
+		"script": preload("res://scenes/skills/beaten_wrath.gd"),
+		"ring": 3,
+		"sector": "base",
+		"mana": 0,
+		"cooldown": 60.0,
+		"cast_time": 0.25,
+		"upgrades": [
+			{
+				"name": "Umgekehrter Zorn",
+				"text": "Umgekehrt: pro Sekunde 2 Zorn verbrauchen und dafür 3 % Leben herstellen. Endet, wenn der Zorn leer ist.",
+				"icon": preload("res://assets/icons/upgrade_beaten_heal.svg"),
+			},
+			{
+				"name": "Blutrausch",
+				"text": "Solange der Buff läuft, verkürzt jeder getötete Gegner die Abklingzeit um 3 Sekunden.",
+				"icon": preload("res://assets/icons/upgrade_beaten_kill.svg"),
+			},
+		],
+	},
 }
 
 const PASSIVES := {}
 
-## Buffs (kleine Bilder über der Skill-Leiste, mit Anzahl der Stacks).
+## Buffs (kleine Bilder über der Skill-Leiste, mit Anzahl der Stacks bzw. den restlichen Sekunden).
+## Was ein Buff mit Laufzeit bewirkt, steht beim Spieler im Buff selbst ("stats", siehe player.gd add_timed_buff).
 const BUFFS := {
 	"tausend": {
 		"name": "1000 Schläge",
 		"text": "+10 % Schaden für 1000 Schläge pro Stack.",
 		"icon": preload("res://assets/icons/skill_thousand.svg"),
 		"max_stacks": 30,
+	},
+	"rolle_ruestung": {
+		"name": "Gepanzerte Rolle",
+		"text": "+10 % Rüstung.",
+		"icon": preload("res://assets/icons/upgrade_roll_armor.svg"),
+	},
+	"rolle_tempo": {
+		"name": "Flinke Rolle",
+		"text": "+15 % Bewegungstempo.",
+		"icon": preload("res://assets/icons/upgrade_roll_speed.svg"),
+	},
+	"ehrenruf": {
+		"name": "Ehrenruf",
+		"text": "Normale Angriffe machen mehr Schaden und sind schneller.",
+		"icon": preload("res://assets/icons/skill_honor.svg"),
+	},
+	"geschlagen": {
+		"name": "Zorn des Geschlagenen",
+		"text": "Leben wird zu Zorn (bzw. Zorn zu Leben).",
+		"icon": preload("res://assets/icons/skill_beaten.svg"),
+		# Jede Sekunde wird tick() in diesem Skript aufgerufen.
+		"script": preload("res://scenes/skills/beaten_wrath.gd"),
 	},
 }
 
@@ -216,6 +311,12 @@ static func skill(skill_id: String) -> Dictionary:
 	return SKILLS.get(skill_id, {})
 
 
+## Was die Fähigkeit mit der Erweiterung `upgrade` kostet (Mana bzw. Zorn).
+static func skill_cost(skill_id: String, upgrade: int) -> int:
+	var data := skill(skill_id)
+	return data.get("upgrade_mana", {}).get(upgrade, data.get("mana", 0))
+
+
 ## Beschreibung für den Tooltip, mit gewählter Erweiterung (0 = keine).
 static func describe_skill(skill_id: String, upgrade: int = 0, class_id: String = START_CLASS) -> String:
 	var data := skill(skill_id)
@@ -225,8 +326,9 @@ static func describe_skill(skill_id: String, upgrade: int = 0, class_id: String 
 	if data.has("ring"):
 		lines[0] += "  (%s)" % RINGS[data.ring].name
 	lines.append(data.text)
-	if data.mana > 0:
-		lines.append("Kostet %d %s%s" % [data.mana, resource_name(class_id), " pro Schlag" if data.get("channel", false) else ""])
+	var cost := skill_cost(skill_id, upgrade)
+	if cost > 0:
+		lines.append("Kostet %d %s%s" % [cost, resource_name(class_id), " pro Schlag" if data.get("channel", false) else ""])
 	if data.has("rage_gain"):
 		lines.append("Bringt %s %s" % [resource_name(class_id), data.rage_gain])
 	if data.cooldown > 0.0:

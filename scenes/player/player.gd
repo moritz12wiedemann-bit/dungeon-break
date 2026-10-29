@@ -98,7 +98,12 @@ var charge_time: float = 0.0
 var _charge_effect: Node3D = null
 ## Buffs (siehe PlayerClasses.BUFFS): Name → {"stacks": Anzahl, "hold": Sekunden, bis Stacks
 ## verfallen, "tick": Zeit bis zum nächsten Verfall}.
+## Buffs mit Laufzeit (add_timed_buff): {"stacks": 1, "time": restliche Sekunden, "stats": Werte,
+## "every"/"next": alle so viele Sekunden wird tick() im Skript des Buffs aufgerufen}.
 var buffs: Dictionary = {}
+## Rolle (Hechtrolle): so lange (Sekunden) rollt die Figur noch, mit dieser Geschwindigkeit.
+var _dash_left: float = 0.0
+var _dash_velocity := Vector3.ZERO
 ## Alle so viele Sekunden verfallen Stacks, wenn man den Buff nicht mehr auffrischt ...
 const BUFF_DECAY_EVERY := 0.5
 ## ... und zwar so viele.
@@ -186,7 +191,12 @@ func _physics_process(delta: float) -> void:
 		_interact_target = null
 
 	var horizontal := Vector3.ZERO
-	if _cast_lock_left > 0.0 or charging_slot >= 0:
+	if _dash_left > 0.0:
+		# Beim Rollen geht es schnell geradeaus, ohne Wegfindung.
+		_dash_left -= delta
+		horizontal = _dash_velocity
+		nav_agent.target_position = global_position
+	elif _cast_lock_left > 0.0 or charging_slot >= 0:
 		# Beim Zaubern und Aufladen bleibt die Figur stehen und schaut zum Mauszeiger.
 		nav_agent.target_position = global_position
 		if charging_slot >= 0:
@@ -244,6 +254,7 @@ func take_damage(amount: int) -> void:
 
 ## Wird von Gegnern aufgerufen, wenn sie sterben.
 func gain_xp(amount: int) -> void:
+	_on_enemy_killed()
 	if experience.is_max_level():
 		return
 	experience.add_xp(amount)
@@ -287,7 +298,7 @@ func use_skill(slot: int, show_errors: bool = true, aim: Dictionary = {}, channe
 		if show_errors:
 			DamageNumber.spawn_text(self, "Noch nicht bereit", Color(0.7, 0.7, 0.7))
 		return false
-	if mana < data.mana:
+	if mana < PlayerClasses.skill_cost(id, GameState.skill_upgrade(id)):
 		if show_errors:
 			DamageNumber.spawn_text(self, "Nicht genug %s" % PlayerClasses.resource_name(GameState.player_class), Color(0.85, 0.3, 0.3))
 		return false
@@ -315,7 +326,7 @@ func _cast(id: String, aim: Dictionary, charge: float) -> bool:
 		mana = 0.0
 		skill_cooldowns[id] = 0.0
 	else:
-		mana -= data.mana
+		mana -= PlayerClasses.skill_cost(id, upgrade)
 		skill_cooldowns[id] = attack_cooldown if data.get("uses_attack_speed", false) else data.cooldown
 	if data.get("channel", false):
 		_attack_target = null
@@ -379,7 +390,8 @@ func skill_cooldown_ratio(slot: int) -> float:
 	if data.is_empty():
 		return 0.0
 	if data.get("basic_attack", false):
-		return clampf(_cooldown_left / attack_cooldown, 0.0, 1.0) if attack_cooldown > 0.0 else 0.0
+		var basic := basic_attack_cooldown()
+		return clampf(_cooldown_left / basic, 0.0, 1.0) if basic > 0.0 else 0.0
 	var full: float = attack_cooldown if data.get("uses_attack_speed", false) else data.cooldown
 	if full <= 0.0:
 		return 0.0
@@ -403,10 +415,46 @@ func add_buff_stacks(id: String, amount: int, hold: float) -> void:
 	recalculate_stats()
 
 
+## Gibt den Buff `id` für `seconds` Sekunden (neu oder aufgefrischt). `stats`: Werte, die er
+## gibt (z. B. {"move_speed": 15}). `every` > 0: alle so viele Sekunden tick() im Skript des Buffs.
+func add_timed_buff(id: String, seconds: float, stats: Dictionary = {}, every: float = 0.0) -> void:
+	buffs[id] = {"stacks": 1, "time": seconds, "stats": stats, "every": every, "next": every}
+	recalculate_stats()
+
+
+## Beendet den Buff `id` sofort.
+func end_buff(id: String) -> void:
+	if buffs.erase(id):
+		recalculate_stats()
+
+
+## Rollt `distance` Meter in `seconds` Sekunden in Richtung `direction`.
+func dash(direction: Vector3, distance: float, seconds: float) -> void:
+	direction.y = 0.0
+	if direction.length() < 0.01:
+		direction = global_transform.basis.z
+	_dash_velocity = direction.normalized() * distance / seconds
+	_dash_left = seconds
+	_attack_target = null
+	_interact_target = null
+
+
 func _update_buffs(delta: float) -> void:
 	var changed := false
 	for id in buffs.keys():
 		var buff: Dictionary = buffs[id]
+		if buff.has("time"):
+			if buff.every > 0.0:
+				buff.next -= delta
+				if buff.next <= 0.0:
+					buff.next += buff.every
+					if not PlayerClasses.BUFFS[id].script.call("tick", self):
+						buff.time = 0.0
+			buff.time -= delta
+			if buff.time <= 0.0 and buffs.has(id):
+				buffs.erase(id)
+				changed = true
+			continue
 		if buff.hold > 0.0:
 			buff.hold -= delta
 			continue
@@ -421,17 +469,26 @@ func _update_buffs(delta: float) -> void:
 		recalculate_stats()
 
 
-## Werte aus Buffs (z. B. "Standhafte Schläge": pro Stack 1000 Schläge Angriffstempo und Rüstung).
+## Werte aus Buffs: Buffs mit Laufzeit bringen ihre "stats" mit, dazu "Standhafte Schläge"
+## (pro Stack 1000 Schläge Angriffstempo und Rüstung).
 func _buff_stat(stat: String) -> float:
-	if GameState.skill_upgrade("krieger_tausend") != 2:
-		return 0.0
-	var stacks := buff_stacks("tausend")
-	match stat:
-		"attack_speed":
-			return stacks * 0.5
-		"armor":
-			return stacks * 1.0
-	return 0.0
+	var total := 0.0
+	for id in buffs:
+		total += buffs[id].get("stats", {}).get(stat, 0.0)
+	if GameState.skill_upgrade("krieger_tausend") == 2:
+		var stacks := buff_stacks("tausend")
+		match stat:
+			"attack_speed":
+				total += stacks * 0.5
+			"armor":
+				total += stacks * 1.0
+	return total
+
+
+## Ein Gegner ist gestorben (gain_xp). "Blutrausch": Abklingzeit von Zorn des Geschlagenen kürzer.
+func _on_enemy_killed() -> void:
+	if buffs.has("geschlagen") and GameState.skill_upgrade("krieger_geschlagen") == 2:
+		skill_cooldowns["krieger_geschlagen"] = maxf(skill_cooldowns.get("krieger_geschlagen", 0.0) - BeatenWrath.KILL_COOLDOWN_CUT, 0.0)
 
 
 ## Teleportiert in die Stadt (Taste T). Geht nicht, wenn man tot oder schon in der Stadt ist.
@@ -599,11 +656,12 @@ func recalculate_stats() -> void:
 	var level_bonus := experience.level - 1
 	health.set_max_health(_base_max_health + level_bonus * health_per_level + int(_stat_total("health")))
 	health.regen_per_second = _base_regen + _stat_total("regen")
-	# Höchstens +25 % Laufgeschwindigkeit.
-	move_speed = _base_move_speed * (1.0 + minf(_stat_total("move_speed"), 25.0) / 100.0)
+	# Höchstens +25 % Laufgeschwindigkeit aus Ausrüstung und Karten, Buffs kommen obendrauf.
+	move_speed = _base_move_speed * (1.0 + (minf(_stat_total("move_speed") - _buff_stat("move_speed"), 25.0) + _buff_stat("move_speed")) / 100.0)
 	# Angriffstempo: höchstens +50 %.
 	attack_cooldown = _base_attack_cooldown / (1.0 + minf(_stat_total("attack_speed"), 50.0) / 100.0)
-	armor = _stat_total("armor")
+	# "armor_percent": Rüstung um so viel Prozent mehr (z. B. Gepanzerte Rolle).
+	armor = _stat_total("armor") * (1.0 + _stat_total("armor_percent") / 100.0)
 	bonus_damage = level_bonus * damage_per_level + int(_stat_total("damage"))
 
 
@@ -612,12 +670,17 @@ func _stat_total(stat: String) -> float:
 	return inventory.get_stat_total(stat) + GameState.card_stat_total(stat) + GameState.skill_stat_total(stat) + _buff_stat(stat)
 
 
+## Pause zwischen zwei normalen Angriffen ("basic_attack_speed", z. B. Ehrenruf, kommt obendrauf).
+func basic_attack_cooldown() -> float:
+	return attack_cooldown / (1.0 + _stat_total("basic_attack_speed") / 100.0)
+
+
 func _attack(target: Node3D) -> void:
-	_cooldown_left = attack_cooldown
+	_cooldown_left = basic_attack_cooldown()
 	# Die Animation dauert so lange wie die Pause bis zum nächsten Schlag.
-	animator.play_attack(attack_cooldown, true)
-	# Der Schaden kommt erst, wenn das Schwert in der Animation trifft.
-	var damage := roll_damage()
+	animator.play_attack(_cooldown_left, true)
+	# Der Schaden kommt erst, wenn das Schwert in der Animation trifft ("basic_damage": Prozent mehr).
+	var damage := roll_damage(1.0 + _stat_total("basic_damage") / 100.0)
 	hit_later(func():
 		if is_instance_valid(target) and not target.is_dead():
 			target.take_damage(damage)
@@ -648,6 +711,7 @@ func _on_leveled_up(new_level: int) -> void:
 
 func _on_died() -> void:
 	_attack_target = null
+	_dash_left = 0.0
 	buffs.clear()
 	if charging_slot >= 0:
 		charging_slot = -1

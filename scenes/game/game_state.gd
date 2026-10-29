@@ -52,6 +52,9 @@ var _equipped: Dictionary = {}
 var _materials: Dictionary = {}
 var _gold: int = 0
 var _mana: float = 0.0
+## Abklingzeiten der Fähigkeiten und laufende Buffs (beim Wechsel zwischen Stadt und Dungeon).
+var _skill_cooldowns: Dictionary = {}
+var _buffs: Dictionary = {}
 
 
 func _ready() -> void:
@@ -242,6 +245,8 @@ func save_player(player: Node) -> void:
 	_materials = player.inventory.materials.duplicate()
 	_gold = player.inventory.gold
 	_mana = player.mana
+	_skill_cooldowns = player.skill_cooldowns.duplicate()
+	_buffs = player.buffs.duplicate(true)
 
 
 ## Gibt einer neuen Spielerfigur die gemerkten Werte zurück (am Spielstart: nichts zu tun).
@@ -255,6 +260,8 @@ func restore_player(player: Node) -> void:
 	player.inventory.materials = _materials.duplicate()
 	player.inventory.gold = _gold
 	player.mana = _mana
+	player.skill_cooldowns = _skill_cooldowns.duplicate()
+	player.buffs = _buffs.duplicate(true)
 	player.recalculate_stats()
 	# -1 = voll geheilt (siehe go_to_town).
 	player.health.current = player.health.max_health if _health < 0 else clampi(_health, 1, player.health.max_health)

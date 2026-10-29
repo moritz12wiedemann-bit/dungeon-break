@@ -148,3 +148,22 @@ static func _glow_material(color: Color) -> StandardMaterial3D:
 	material.cull_mode = BaseMaterial3D.CULL_DISABLED
 	material.no_depth_test = false
 	return material
+
+
+## Leuchtender Ring am Boden, der sich von `origin` aus bis `radius` Meter ausbreitet und verblasst
+## (z. B. Kampfruf). Folgt der Figur nicht.
+static func burst_ring(origin: Node3D, color: Color, radius: float, seconds: float = 0.5) -> void:
+	var ring := MeshInstance3D.new()
+	var torus := TorusMesh.new()
+	torus.inner_radius = 0.85
+	torus.outer_radius = 1.0
+	ring.mesh = torus
+	var material := _glow_material(color)
+	ring.material_override = material
+	origin.get_tree().current_scene.add_child(ring)
+	ring.global_position = origin.global_position + Vector3(0, 0.1, 0)
+	ring.scale = Vector3(0.3, 0.3, 0.3)
+	var tween := ring.create_tween().set_parallel()
+	tween.tween_property(ring, "scale", Vector3(radius, 1.0, radius), seconds).set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_CUBIC)
+	tween.tween_property(material, "albedo_color:a", 0.0, seconds)
+	tween.chain().tween_callback(ring.queue_free)

@@ -15,9 +15,9 @@ extends Control
 signal skill_clicked(skill_id: String, right: bool)
 signal upgrade_clicked(skill_id: String, upgrade: int, right: bool)
 
-const TREE_SIZE := 520.0
+const TREE_SIZE := 720.0
 ## Außenradius jedes Rings (Pixel), passend zu PlayerClasses.RINGS.
-const RING_RADII := [108.0, 170.0, 205.0, 234.0, 256.0]
+const RING_RADII := [108.0, 170.0, 232.0, 294.0, 350.0]
 ## Bereiche: Mitte und Breite (Grad; 0 = rechts, 90 = unten).
 const SECTORS := {
 	"base": {"center": 90.0, "span": 120.0},
@@ -29,7 +29,7 @@ const LINE_COLOR := Color(0.85, 0.18, 0.15)
 const BASE_COLOR := Color(0.95, 0.78, 0.4)
 const SUBCLASS_COLORS := {"left": Color(0.4, 0.62, 1.0), "right": Color(0.95, 0.36, 0.3)}
 ## Wo das Wappen der Unterklasse sitzt (Abstand von der Mitte, Baum-Einheiten).
-const CREST_DISTANCE := 150.0
+const CREST_DISTANCE := 200.0
 const SKILL_RADIUS := 18.0
 const UPGRADE_RADIUS := 12.0
 const CENTER_RADIUS := 27.0
@@ -258,7 +258,7 @@ func _draw() -> void:
 	var junction := center + Vector2(0, -38.0) * z
 	for side in ["left", "right"]:
 		var crest := center + Vector2.from_angle(deg_to_rad(SECTORS[side].center)) * CREST_DISTANCE * z
-		var control := center + Vector2(55.0 if side == "right" else -55.0, -115.0) * z
+		var control := center + Vector2(70.0 if side == "right" else -70.0, -150.0) * z
 		var active: bool = chosen_side == side
 		_draw_curve(junction, control, crest, Color(SUBCLASS_COLORS[side], 0.95 if active else 0.55), maxf((3.0 if active else 2.0) * z, 1.0), not active)
 	draw_line(center, junction, Color(BASE_COLOR, 0.8), maxf(2.0 * z, 1.0), true)

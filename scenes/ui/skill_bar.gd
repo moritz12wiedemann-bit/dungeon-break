@@ -61,7 +61,8 @@ func _process(_delta: float) -> void:
 		var ratio: float = _player.skill_cooldown_ratio(slot)
 		_shades[slot].anchor_top = 1.0 - ratio
 		var data := PlayerClasses.skill(GameState.skill_bar[slot])
-		var short_on_mana: bool = not data.is_empty() and _player.mana < data.mana
+		var id: String = GameState.skill_bar[slot]
+		var short_on_mana: bool = not data.is_empty() and _player.mana < PlayerClasses.skill_cost(id, GameState.skill_upgrade(id))
 		_icons[slot].modulate = Color(1.0, 0.4, 0.4) if short_on_mana else Color.WHITE
 
 

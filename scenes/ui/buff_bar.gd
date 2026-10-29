@@ -1,7 +1,7 @@
 class_name BuffBar
 extends HBoxContainer
 ## Kleine Buff-Leiste direkt über der Skill-Leiste: ein Bild pro aktivem Buff
-## (siehe PlayerClasses.BUFFS) mit der Zahl der Stacks unten rechts.
+## (siehe PlayerClasses.BUFFS) mit der Zahl der Stacks bzw. den restlichen Sekunden unten rechts.
 
 const ICON_SIZE := 30.0
 
@@ -39,7 +39,9 @@ func _process(_delta: float) -> void:
 		if not _shown.has(id):
 			_shown[id] = _make_icon(id)
 		var label: Label = _shown[id].get_child(1)
-		label.text = str(_player.buffs[id].stacks)
+		var buff: Dictionary = _player.buffs[id]
+		# Buffs mit Laufzeit zeigen die restlichen Sekunden, die anderen ihre Stacks.
+		label.text = "%ds" % ceili(buff.time) if buff.has("time") else str(buff.stacks)
 
 
 func _make_icon(id: String) -> Panel:
