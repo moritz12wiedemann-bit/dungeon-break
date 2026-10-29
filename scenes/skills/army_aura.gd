@@ -4,7 +4,7 @@ extends Node3D
 ## Gegner darin machen RATIO weniger Schaden und erleiden RATIO mehr (enemy.apply_aura).
 ## Verschwindet von selbst, sobald der Buff "armee" vorbei ist.
 
-const RADIUS := 6.0
+const RADIUS := 3.0
 const RATIO := 0.2
 const EVERY := 0.25
 

@@ -3,7 +3,7 @@ extends Node3D
 ## Ein Hammer, der um den Spieler kreist (Hammerwurf) und jeden Gegner trifft, den er berührt
 ## (denselben Gegner höchstens alle HIT_EVERY Sekunden). Verschwindet nach `time_left` Sekunden.
 
-const RADIUS := 2.3
+const RADIUS := 3.2
 const SPEED := 3.2
 const HIT_RADIUS := 0.9
 const HIT_EVERY := 0.6

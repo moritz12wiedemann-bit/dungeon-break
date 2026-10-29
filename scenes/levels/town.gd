@@ -45,16 +45,26 @@ const TOWN_PLANTS := [["Grass_Common_Short", 0.4, 0.7], ["Grass_Wispy_Short", 0.
 @onready var player: CharacterBody3D = $Player
 @onready var hud: CanvasLayer = $HUD
 
+const HEALING_ORB_POSITION := Vector3(-3.5, 0, 9.0)
+
 var _batch := ModelBatch.new()
 var _rng := RandomNumberGenerator.new()
 
 
 func _ready() -> void:
 	_build_ground_and_forest()
+	_add_healing_orb()
 	nav_region.bake_navigation_mesh(false)
 	hud.track_player(player)
 	hud.set_location("Stadt")
 	hud.show_toast("Klicke auf den Dungeon-Altar, um einen Dungeon zu betreten.")
+
+
+## Kugel der Erneuerung (Leben, Zorn und Abklingzeiten auffüllen) neben der Straße vom Eingang.
+func _add_healing_orb() -> void:
+	var orb := HealingOrb.new()
+	orb.position = HEALING_ORB_POSITION
+	$NavigationRegion3D/Geometry.add_child(orb)
 
 
 func _build_ground_and_forest() -> void:

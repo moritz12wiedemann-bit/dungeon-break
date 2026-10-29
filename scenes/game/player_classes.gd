@@ -280,7 +280,7 @@ const SKILLS := {
 			},
 			{
 				"name": "Kriegeraura",
-				"text": "Solange sie läuft, machen Gegner in einem großen Umkreis um dich 20 % weniger Schaden und erleiden 20 % mehr Schaden.",
+				"text": "Solange sie läuft, machen Gegner im Umkreis von 3 Metern um dich 20 % weniger Schaden und erleiden 20 % mehr Schaden.",
 				"icon": preload("res://assets/icons/upgrade_army_aura.svg"),
 			},
 		],
